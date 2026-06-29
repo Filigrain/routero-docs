@@ -1,8 +1,9 @@
-// Routero AI brand tokens — applied on top of the Just the Docs dark scheme.
+// Routero AI brand tokens (imported before the color scheme).
 // Docs: https://just-the-docs.com/docs/customization/
 
-// Brand green — matches routero.ai --brand (#33bc95)
-$link-color: #33bc95;
+// Brand teal — matches the product --brand-primary (#2fb68f).
+// The routero color scheme also sets this; kept here for any pre-scheme use.
+$link-color: #2fb68f;
 
-// Code font — matches routero.ai
+// Code font
 $mono-font-family: "JetBrains Mono", "Fira Code", "Fira Mono", ui-monospace, monospace;

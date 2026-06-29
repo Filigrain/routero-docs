@@ -27,25 +27,17 @@ The full Routero AI API is documented below via the auto-generated OpenAPI spec 
     {
       theme: {
         colors: {
-          primary: { main: '#33bc95' },
-          text: { primary: '#e6e1e8', secondary: '#959396' },
-          border: { dark: '#44434d', light: '#44434d' },
+          primary: { main: '#2fb68f' },
           http: {
-            get: '#33bc95', post: '#6cc8ff', put: '#f7d12e', delete: '#f96e65',
+            get: '#2fb68f', post: '#3b82f6', put: '#f59e0b', delete: '#ef4444',
           },
         },
         typography: {
           fontFamily: 'Inter, system-ui, sans-serif',
           headings: { fontFamily: 'Inter, system-ui, sans-serif' },
-          code: {
-            fontFamily: '"JetBrains Mono", "Fira Mono", monospace',
-            color: '#33bc95',
-            backgroundColor: '#0d1117',
-          },
+          code: { fontFamily: '"JetBrains Mono", "Fira Mono", monospace' },
         },
-        sidebar: { backgroundColor: '#201f23', textColor: '#e6e1e8' },
-        rightPanel: { backgroundColor: '#1b1a1e', textColor: '#e6e1e8' },
-        schema: { nestedBackground: '#201f23' },
+        sidebar: { backgroundColor: '#f6f8fa' },
       },
       hideDownloadButton: false,
       expandResponses: '200',

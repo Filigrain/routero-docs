@@ -7,10 +7,9 @@ url: "https://docs.routero.ai"
 
 theme: just-the-docs
 
-color_scheme: dark
+color_scheme: routero
 
-# Uncomment once logo SVG is added to assets/images/
-# logo: "/assets/images/routero-logo.svg"
+logo: "/assets/images/routero-logo.png"
 
 # External nav links (shown in the header)
 nav_external_links:

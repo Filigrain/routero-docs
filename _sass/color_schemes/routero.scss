@@ -1,0 +1,25 @@
+// Routero custom color scheme — light content with a teal sidebar,
+// matching the Admin Portal product UI (brand tokens from llmrouter globals.css).
+// Just the Docs imports color_schemes/light first, then this file, so we only
+// override what differs from the light base.
+
+$color-scheme: light;
+
+// Brand teal — the product's --brand-primary
+$link-color: #2fb68f;
+$btn-primary-color: #2fb68f;
+
+// Teal sidebar (white nav text is set in _sass/custom/custom.scss)
+$sidebar-color: #2fb68f;
+
+// Light content surface
+$body-background-color: #ffffff;
+$body-heading-color: #111827;
+$body-text-color: #374151;
+$border-color: #e7e7ec;
+
+// Code + search on the light surface
+$code-background-color: #f6f8fa;
+$search-background-color: #ffffff;
+$search-result-preview-color: #6b7280;
+$table-background-color: #ffffff;

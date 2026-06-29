@@ -1,26 +1,92 @@
-// Additional brand overrides beyond what _sass/custom/setup.scss can do.
+// Routero brand overrides — light content + teal sidebar (matches Admin Portal).
 
 :root {
-  --routero-green: #33bc95;
-  --routero-blue: #6cc8ff;
+  --routero-teal: #2fb68f;          // --brand-primary
+  --routero-teal-hover: #23866a;    // --brand-primary-emphasis
 }
 
-// Sidebar nav: soft off-white for inactive links (premium dark aesthetic),
-// brightening on hover, brand green for the active page.
+// ---------------------------------------------------------------------------
+// Sidebar (solid brand teal, white nav — mirrors the product Admin Portal)
+// ---------------------------------------------------------------------------
+.side-bar {
+  background-color: var(--routero-teal);
+  border-right: none;
+}
+
+.site-header {
+  border-bottom: none;
+}
+
+// Header: icon + "Routero" wordmark, left-aligned (mirrors the Admin Portal).
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.site-title,
+.site-title:hover {
+  color: #fff;
+  font-weight: 700;
+}
+.site-title::after {
+  content: "Routero";
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+// The product icon is a solid-teal tile with transparent arrow cut-outs.
+// Invert it to white so it reads as a white tile on the teal sidebar —
+// the same technique the Admin Portal uses (brightness-0 invert).
+.site-logo {
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  background-position: center;
+  filter: brightness(0) invert(1);
+}
+
+// Nav links: soft white inactive, brighter on hover, white pill when active
 .nav-list .nav-list-item .nav-list-link {
-  color: #c5c2ca;
+  color: rgba(255, 255, 255, 0.82);
 }
 .nav-list .nav-list-item .nav-list-link:hover {
-  color: #f5f6fa;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
 .nav-list .nav-list-item .nav-list-link.active {
-  color: var(--routero-green) !important;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff !important;
+  font-weight: 600;
+}
+// Remove the default teal active marker (we use a white pill instead)
+.nav-list .nav-list-item .nav-list-link.active::before {
+  display: none;
 }
 
-// Content links use brand green (overrides the dark scheme's default blue).
-// Scoped to the article body so nav/breadcrumb chrome keeps theme styling.
+// Expander chevrons for nested nav
+.nav-list-expander svg {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+// Sidebar footer
+.site-footer {
+  color: rgba(255, 255, 255, 0.7);
+  border-top: none;
+}
+.site-footer a {
+  color: #fff;
+}
+
+// ---------------------------------------------------------------------------
+// Main content
+// ---------------------------------------------------------------------------
 .main-content a {
-  color: var(--routero-green);
+  color: var(--routero-teal);
+}
+.main-content a:hover {
+  color: var(--routero-teal-hover);
 }
 
 // Table styling — cleaner enterprise look
@@ -40,14 +106,14 @@ p.tagline,
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.4;
-  color: var(--routero-green);
+  color: var(--routero-teal);
   margin-bottom: 1.5rem;
 }
 
 // Endpoint code pill in API pages
 code.endpoint {
-  background: rgba(51, 188, 149, 0.12);
-  color: var(--routero-green);
+  background: rgba(47, 182, 143, 0.12);
+  color: var(--routero-teal);
   padding: 0.1em 0.4em;
   border-radius: 3px;
   font-size: 0.9em;
