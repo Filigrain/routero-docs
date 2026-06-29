@@ -20,7 +20,7 @@ description: "使用 Docker Compose 在本地或本地环境（on-prem）运行 
 运行网关所需的最低配置：代理容器 + 一个 Postgres 数据库。
 
 ```yaml
-# docker-compose.minimal.yml
+# docker-compose.minimal.yml（最小配置）
 services:
   litellm:
     image: ghcr.io/filigrain/routero-proxy:latest

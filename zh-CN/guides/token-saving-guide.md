@@ -79,7 +79,7 @@ response = client.chat.completions.create(
 
 ```bash
 GET /token-saving/plans/support-bot-cache/stats
-# Returns: total_requests, cache_hits, cache_hit_rate, tokens_saved, cost_saved_usd
+# 返回：total_requests, cache_hits, cache_hit_rate, tokens_saved, cost_saved_usd
 ```
 
 ---
@@ -98,7 +98,7 @@ GET /token-saving/plans/support-bot-cache/stats
 ## 按请求退出缓存
 
 ```python
-# Skip cache for this request (e.g., a real-time, time-sensitive query)
+# 跳过本次请求的缓存（例如，实时性强、对时效敏感的查询）
 extra_body={
     "token_saving_plan_id": "support-bot-cache",
     "cache": {"no-store": True}

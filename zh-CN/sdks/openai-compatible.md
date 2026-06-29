@@ -88,7 +88,7 @@ curl https://api.routero.ai/v1/chat/completions \
 通过 SDK 的 `extra_body` 参数（Python/TS）或作为请求体中的额外 JSON 字段，传入高级功能 ID：
 
 ```python
-# Python — extra_body
+# Python — extra_body 参数
 response = client.chat.completions.create(
     model="smart/balanced",
     messages=[...],

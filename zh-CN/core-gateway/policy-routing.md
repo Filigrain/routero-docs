@@ -41,19 +41,19 @@ workspace: finance
 version: 18
 
 rules:
-  # PII detected → route to internal redacted model
+  # 检测到 PII → 路由至内部脱敏模型
   - when:
       content.pii_detected: true
     route: internal/llama-4-maverick-redacted
     on_redaction_fail: block
 
-  # EU users → EU-only providers (data residency)
+  # EU 用户 → 仅限 EU 供应商（数据驻留）
   - when:
       identity.region: eu
     route: eu/anthropic-frankfurt
     residency: eu-only
 
-  # Budget below 20% → downgrade + alert
+  # 预算低于 20% → 降级并告警
   - when:
       budget.remaining_pct: { lt: 20 }
     route: smart/cheap
@@ -61,7 +61,7 @@ rules:
       channel: slack
       message: "Finance workspace budget below 20%"
 
-  # Default
+  # 默认
   - route: smart/balanced
     audit:
       log_inputs: true

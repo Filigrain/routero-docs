@@ -102,7 +102,7 @@ response = client.chat.completions.create(
     messages=[...],
     extra_body={
         "memory_id": memory_id,
-        "store_memory": False,   # retrieve context but don't store this turn
+        "store_memory": False,   # 检索上下文但不存储本轮对话
     },
 )
 ```
@@ -112,13 +112,13 @@ response = client.chat.completions.create(
 ## 查看和管理已存储的事实
 
 ```bash
-# List all stored facts for a user
+# 列出某个用户的所有已存储事实
 GET /memory/session/{memory_id}/facts
 
-# Delete a specific fact (e.g., user data deletion request)
+# 删除某条特定事实（例如，用户数据删除请求）
 DELETE /memory/session/{memory_id}/facts/{fact_id}
 
-# Delete the entire session (GDPR right to erasure)
+# 删除整个会话（GDPR 被遗忘权）
 DELETE /memory/session/{memory_id}
 ```
 

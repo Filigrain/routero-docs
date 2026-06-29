@@ -103,16 +103,16 @@ Routero 审计日志是一份不可篡改、仅追加、以密码学方式链接
 ## 查询审计日志
 
 ```bash
-# Last 100 events
+# 最近 100 条事件
 GET /audit-log?limit=100
 
-# Events for a specific key
+# 特定密钥的事件
 GET /audit-log?key_hash=sha256:...&start_date=2026-06-01
 
-# Guardrail violations only
+# 仅限护栏违规
 GET /audit-log?event_type=request.guardrail_triggered
 
-# Export as CSV
+# 导出为 CSV
 GET /audit-log?format=csv&start_date=2026-06-01&end_date=2026-06-30
 ```
 

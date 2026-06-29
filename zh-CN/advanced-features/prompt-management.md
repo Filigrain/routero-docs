@@ -30,7 +30,7 @@ response = client.chat.completions.create(
             "language": "English",
             "tone": "executive"
         },
-        # Optional: pin to a specific version
+        # 可选：固定到特定版本
         # "prompt_version": 3
     },
 )
@@ -53,7 +53,7 @@ response = client.chat.completions.create(
 ## 创建提示词与版本管理
 
 ```bash
-# Create a prompt (version 1)
+# 创建提示词（版本 1）
 curl -X POST https://api.routero.ai/prompts \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -68,7 +68,7 @@ curl -X POST https://api.routero.ai/prompts \
     "variables": ["company", "language", "tone"]
   }'
 
-# Update (creates version 2, retains version 1)
+# 更新（创建版本 2，保留版本 1）
 curl -X PUT https://api.routero.ai/prompts/analyst-system-v2 \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -d '{

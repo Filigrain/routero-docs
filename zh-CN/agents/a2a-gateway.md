@@ -30,14 +30,14 @@ A2A 智能体网关让你能够注册、调用并治理实现了 [Agent-to-Agent
 ## 智能体管理
 
 ```bash
-# Register an A2A agent
+# 注册 A2A 智能体
 POST /v1/agents
 { "agent_name": "my-agent", "agent_card_url": "https://agent.example.com/.well-known/agent.json" }
 
-# List registered agents
+# 列出已注册的智能体
 GET /v1/agents
 
-# Make public (accessible without a Routero key)
+# 设为公开（无需 Routero 密钥即可访问）
 POST /v1/agents/{agent_id}/make_public
 ```
 

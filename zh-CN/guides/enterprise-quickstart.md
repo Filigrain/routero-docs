@@ -29,7 +29,7 @@ description: "预置工作区、配置路由策略、设置团队预算，并路
 先添加两个供应商以实现故障转移：
 
 ```bash
-# Add OpenAI
+# 添加 OpenAI
 curl -X POST https://api.routero.ai/model/new \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -d '{
@@ -37,7 +37,7 @@ curl -X POST https://api.routero.ai/model/new \
     "litellm_params": {"model": "openai/gpt-4o", "api_key": "sk-openai-..."}
   }'
 
-# Add Anthropic as fallback
+# 添加 Anthropic 作为回退
 curl -X POST https://api.routero.ai/model/new \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -d '{
@@ -74,7 +74,7 @@ curl -X POST https://api.routero.ai/key/generate \
     "duration": "30d",
     "key_alias": "engineering-prod"
   }'
-# Returns: { "key": "sk-..." }
+# 返回：{ "key": "sk-..." }
 ```
 
 ---
@@ -85,7 +85,7 @@ curl -X POST https://api.routero.ai/key/generate \
 import openai
 
 client = openai.OpenAI(
-    api_key="sk-...",  # the team key from step 4
+    api_key="sk-...",  # 步骤 4 中的团队密钥
     base_url="https://api.routero.ai/v1",
 )
 

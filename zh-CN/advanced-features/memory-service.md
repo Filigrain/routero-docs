@@ -79,15 +79,15 @@ curl -X POST https://api.routero.ai/memory/session/create \
 你可以直接摄入事实（无需经过一轮聊天），并以编程方式查询会话：
 
 ```bash
-# Ingest a fact manually
+# 手动摄入事实
 curl -X POST https://api.routero.ai/memory/session/add \
   -d '{"memory_id": "user-alice", "messages": [{"role": "user", "content": "My team is in Singapore."}]}'
 
-# Search the session
+# 查询会话
 curl -X POST https://api.routero.ai/memory/session/search \
   -d '{"memory_id": "user-alice", "query": "location preferences"}'
 
-# List all stored facts
+# 列出所有已存储的事实
 curl "https://api.routero.ai/memory/session/user-alice/facts"
 ```
 

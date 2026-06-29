@@ -19,7 +19,7 @@ Routero AI 将供应商宕机视为路由问题，而非应用错误。配置一
 ## 配置回退链
 
 ```yaml
-# In your router config or policy YAML
+# 在路由器配置或策略 YAML 中
 router_settings:
   fallbacks:
     - openai/gpt-4o:

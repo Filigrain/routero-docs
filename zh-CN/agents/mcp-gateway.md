@@ -26,17 +26,17 @@ MCP 网关让你能够集中注册 [Model Context Protocol（MCP）](https://mod
 ## 服务器管理
 
 ```bash
-# Register an MCP server
+# 注册 MCP 服务器
 POST /mcp-rest/server
 { "server_name": "github-tools", "server_url": "https://mcp.github.example.com" }
 
-# List servers
+# 列出服务器
 GET /mcp-rest/server
 
-# Check health
+# 检查健康状态
 GET /mcp-rest/server/health
 
-# Manage access groups
+# 管理访问组
 POST /mcp-rest/access_groups
 ```
 

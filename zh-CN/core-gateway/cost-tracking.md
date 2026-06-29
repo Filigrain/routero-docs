@@ -17,13 +17,13 @@ description: "按请求的成本管线、预付钱包、发票和支出分析。
 ## 支出管线
 
 ```
-Provider response received
-  → Token counts extracted from response
-  → Cost calculated (model price × token counts)
-  → Cost attached to response metadata / headers
-  → Spend increment queued in Redis
-  → Coworker service drains Redis → Postgres atomically
-  → Available in dashboard and API within ~5 minutes
+收到供应商响应
+  → 从响应中提取 token 数量
+  → 计算成本（模型单价 × token 数量）
+  → 将成本附加到响应元数据 / 标头
+  → 将支出增量排队写入 Redis
+  → Coworker 服务原子性地将 Redis 数据排空写入 Postgres
+  → 约 5 分钟内在仪表板和 API 中可见
 ```
 
 coworker 服务使用基于 Redis 的领导者选举，因此即便在多副本部署中，支出也只会被精确持久化一次。
