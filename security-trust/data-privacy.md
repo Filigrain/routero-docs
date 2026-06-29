@@ -62,8 +62,7 @@ Guardrail violations record the **entity type** (e.g., `EMAIL_ADDRESS`) — not 
 |---|---|
 | Routero Cloud | AWS RDS, ap-southeast-1 (Singapore) |
 | Single-Tenant Cloud | AWS RDS in your chosen region |
-| Self-Hosted (AWS) | Your own RDS, your region |
-| Self-Hosted (Docker) | Your own Postgres, wherever you run it |
+| Private Deployments | Your own database, your infrastructure, your region |
 
 For EU data residency, use Single-Tenant Cloud in `eu-west-1` or `eu-central-1`. → [Data Residency & Regions]({% link deployment/data-residency.md %})
 
@@ -73,7 +72,7 @@ For EU data residency, use Single-Tenant Cloud in `eu-west-1` or `eu-central-1`.
 
 **Right of access** — Routero holds audit metadata and account data, not prompt content. Access requests can be fulfilled from the audit log.
 
-**Right to erasure** — For Routero Cloud, contact privacy@routero.ai. For self-hosted, execute deletions directly in your RDS. Memory session data is deleted via `DELETE /memory/session/{id}` — this is atomic across Postgres and the vector index.
+**Right to erasure** — For Routero Cloud, contact privacy@routero.ai. For Private Deployments, execute deletions directly in your database. Memory session data is deleted via `DELETE /memory/session/{id}` — this is atomic across Postgres and the vector index.
 
 **Right to portability** — Audit log data can be exported in JSON or CSV via the dashboard or API.
 

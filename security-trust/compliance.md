@@ -16,7 +16,7 @@ Routero AI is built for regulated enterprises. This page summarises current cert
 | Standard | Status | Notes |
 |---|---|---|
 | **SOC 2 Type II** | Current | Annual audit. Report available under NDA to Enterprise customers. |
-| **HIPAA BAA** | Available | Enterprise plan. Requires dedicated deployment (Single-Tenant or Self-Hosted). |
+| **HIPAA BAA** | Available | Enterprise plan. Requires dedicated deployment (Single-Tenant or Private Deployments). |
 | **ISO 27001** | In progress | Target certification: H2 2026. |
 | **GDPR DPA** | Available | EU Standard Contractual Clauses (SCCs) included. Available to all EU customers. |
 | **PCI DSS** | Not certified | Routero does not process payment card data. |

@@ -21,7 +21,7 @@ This guide adds persistent, per-user memory to an existing chat application. Aft
 
 ## Prerequisites
 
-Mem0 requires Postgres with pgvector. For Docker Compose, enable with `--profile semantic`. For self-hosted AWS, enable the `memory` Terraform module (`enable_memory_tier = true`).
+Mem0 requires Postgres with pgvector. For Private Deployments, enable the memory tier via the deployment package (covered in your onboarding guide).
 
 ---
 

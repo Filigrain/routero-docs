@@ -80,4 +80,4 @@ response = router.completion(model="smart/balanced", messages=[{"role": "user", 
 | **Advanced Features** | Not included | Token Saving, Guardrails, Prompts, Memory |
 | **Best for** | Internal tooling, scripts, data pipelines | Production applications, multi-team platforms |
 
-For most enterprise deployments, the proxy (Routero Cloud or self-hosted) is the recommended path. The SDK is useful for scripts and internal tooling where standing up a gateway is unnecessary.
+For most enterprise deployments, the proxy (Routero Cloud or Private Deployments) is the recommended path. The SDK is useful for scripts and internal tooling where standing up a gateway is unnecessary.

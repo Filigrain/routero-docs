@@ -119,7 +119,7 @@ Memory sessions belong to the organization of the creating key. Sessions are IDO
 | Mem0 | `mem0ai` | Postgres + pgvector |
 | Cognee | `cognee` | Neo4j + Postgres + pgvector |
 
-Both are pre-configured in the [Docker Compose full stack]({% link deployment/self-hosted-docker.md %}) and [AWS Terraform memory module]({% link deployment/reference-architecture.md %}).
+Both are available in Private Deployments — see [Reference Architecture]({% link deployment/reference-architecture.md %}) for infrastructure requirements.
 
 ---
 

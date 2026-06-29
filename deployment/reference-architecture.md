@@ -7,31 +7,26 @@ description: "The canonical Routero AI AWS topology: VPC, ALB, ECS Fargate, RDS,
 
 # Reference Architecture
 
-The canonical production topology used by both Routero Cloud and the self-hosted AWS option. Understanding this architecture answers most security-review questions about where data lives and how traffic flows.
+The canonical production topology used by both Routero Cloud and Private Deployments. Understanding this architecture answers most security-review questions about where data lives and how traffic flows.
 
 ---
 
 ## Topology overview
 
-```
-Internet
-  ↓
-Cloudflare (WAF · DDoS · global edge · origin-pull mTLS)
-  ↓
-AWS ALB (HTTPS/443, ingress restricted to Cloudflare IP ranges)
-  ↓  ↓  ↓
-[ECS Fargate — private subnets, 3 AZs]
-  routero-proxy (port 4000)    ←→   routero-coworker (no ingress)
-       ↓                                    ↓
-  [ElastiCache Redis]         [RDS Postgres — Multi-AZ]
-                                  litellm DB · mem0 DB · cognee DB
+**Traffic path:** Internet → Cloudflare → AWS ALB → ECS Fargate (private subnets, 3 AZs)
 
-  [Cerbos PBAC engine]         [ECS Memory Tier — optional, on EFS]
-  (ECS task, internal only)     Neo4j · Qdrant · Redis-Stack
-
-  [GitHub Actions CI/CD]        [CloudWatch · Prometheus]
-  OIDC auth (no long-lived keys)
-```
+| Layer | Component | Role |
+|---|---|---|
+| **Edge** | Cloudflare | WAF, DDoS, global CDN, TLS termination, origin-pull mTLS |
+| **Ingress** | AWS ALB (HTTPS/443) | Ingress locked to Cloudflare IP ranges only — no direct internet access |
+| **Compute** | `routero-proxy` (port 4000) | Stateless gateway — routing, policy, audit; autoscales 1 → 10 tasks |
+| **Compute** | `routero-coworker` (no ingress) | Background worker — spend sync, cache warm-up; Redis lease-based leader election |
+| **Cache** | ElastiCache Redis | Rate-limit counters, key cache, spend event queue, response cache |
+| **Database** | RDS Postgres — Multi-AZ | Three instances: `litellm` (keys/orgs/spend) · `mem0` · `cognee` |
+| **AuthZ** | Cerbos (ECS, internal) | PBAC/RBAC policy engine — called by proxy for every authorization decision |
+| **Memory (opt.)** | Neo4j · Qdrant · Redis-Stack | EFS-backed ECS tasks — enabled via `enable_memory_tier` |
+| **CI/CD** | GitHub Actions (OIDC) | Keyless deploys — no stored AWS credentials |
+| **Observability** | CloudWatch · Prometheus | Metrics, logs, alerts |
 
 ---
 

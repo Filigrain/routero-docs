@@ -7,7 +7,7 @@ description: "Region options, data residency for regulated markets, and the AWS 
 
 # Data Residency & Regions
 
-Routero AI can run in multiple AWS regions. For most customers, Routero Cloud (Singapore) is sufficient. Regulated markets — particularly those with data-localisation requirements — should use Single-Tenant Cloud or Self-Hosted with an appropriate region selection.
+Routero AI can run in multiple AWS regions. For most customers, Routero Cloud (Singapore) is sufficient. Regulated markets — particularly those with data-localisation requirements — should use Single-Tenant Cloud or Private Deployments with an appropriate region selection.
 
 ---
 
@@ -15,12 +15,12 @@ Routero AI can run in multiple AWS regions. For most customers, Routero Cloud (S
 
 | Region | AWS Region | Available via |
 |---|---|---|
-| Singapore (default) | `ap-southeast-1` | Routero Cloud, Self-Hosted |
-| US East | `us-east-1` | Single-Tenant Cloud, Self-Hosted |
-| US West | `us-west-2` | Single-Tenant Cloud, Self-Hosted |
-| EU West | `eu-west-1` | Single-Tenant Cloud, Self-Hosted |
-| EU Central | `eu-central-1` | Single-Tenant Cloud, Self-Hosted |
-| APAC Southeast | `ap-southeast-1` / `ap-southeast-2` | Single-Tenant Cloud, Self-Hosted |
+| Singapore (default) | `ap-southeast-1` | Routero Cloud, Private Deployments |
+| US East | `us-east-1` | Single-Tenant Cloud, Private Deployments |
+| US West | `us-west-2` | Single-Tenant Cloud, Private Deployments |
+| EU West | `eu-west-1` | Single-Tenant Cloud, Private Deployments |
+| EU Central | `eu-central-1` | Single-Tenant Cloud, Private Deployments |
+| APAC Southeast | `ap-southeast-1` / `ap-southeast-2` | Single-Tenant Cloud, Private Deployments |
 | China Beijing | `cn-north-1` (Sinnet) | Single-Tenant Cloud only |
 
 {: .note }
@@ -57,4 +57,4 @@ Contact your solutions engineer for China deployment availability and onboarding
 | Spend and usage | Per-request cost, per-key/team/org aggregates | Your region's RDS |
 
 {: .note }
-In the self-hosted deployments, all of the above lives in your own database. In Routero Cloud, it lives in Routero's RDS in Singapore. In Single-Tenant Cloud, it lives in your dedicated RDS in your chosen region.
+In Private Deployments, all of the above lives in your own database. In Routero Cloud, it lives in Routero's RDS in Singapore. In Single-Tenant Cloud, it lives in your dedicated RDS in your chosen region.

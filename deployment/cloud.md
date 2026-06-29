@@ -47,7 +47,7 @@ Routero never trains on, resells, or shares your prompts. → [Data Handling & P
 
 ---
 
-## Limitations vs. self-hosted
+## Limitations vs. private deployments
 
-- Data physically resides in Routero's AWS account (Singapore). If your compliance regime requires data sovereignty in a different jurisdiction, use [Single-Tenant Cloud]({% link deployment/single-tenant.md %}) or [Self-Hosted on AWS]({% link deployment/self-hosted-aws.md %}).
+- Data physically resides in Routero's AWS account (Singapore). If your compliance regime requires data sovereignty in a different jurisdiction, use [Single-Tenant Cloud]({% link deployment/single-tenant.md %}) or [Private Deployments]({% link deployment/private.md %}).
 - You cannot customise infrastructure-level configuration (VPC CIDR, instance types, etc.).

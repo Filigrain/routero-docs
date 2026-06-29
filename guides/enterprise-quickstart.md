@@ -13,7 +13,7 @@ This guide walks a platform engineer through the minimum viable production setup
 
 ## Step 1 — Create a workspace
 
-Sign up at [platform.routero.ai](https://platform.routero.ai). If you're on Single-Tenant or Self-Hosted, use your instance URL instead.
+Sign up at [platform.routero.ai](https://platform.routero.ai). If you're on Single-Tenant Cloud or a Private Deployment, use your instance URL instead.
 
 Your first workspace is created automatically. Note your admin key (`sk-admin-...`) from **Settings → API Keys**.
 

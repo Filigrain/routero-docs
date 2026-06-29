@@ -2,6 +2,7 @@
 title: Self-Hosted on AWS
 parent: Deployment Options
 nav_order: 3
+nav_exclude: true
 description: "Deploy Routero AI in your own AWS account using the Terraform reference architecture."
 ---
 

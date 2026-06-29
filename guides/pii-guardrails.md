@@ -22,7 +22,7 @@ pip install presidio-analyzer presidio-anonymizer
 python -m spacy download en_core_web_sm  # English NLP model
 ```
 
-For Docker deployments, the full-stack Compose profile includes Presidio. For self-hosted AWS, include the `presidio` extras when building the proxy image.
+For Private Deployments, include the `presidio` extras when building the proxy image (covered in the deployment package).
 
 ---
 

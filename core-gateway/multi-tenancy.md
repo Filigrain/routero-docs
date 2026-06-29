@@ -26,7 +26,7 @@ The top-level isolation boundary. Each organization has:
 - Separate audit logs
 - Own SAML/SSO and SCIM configuration (Enterprise)
 
-In Routero Cloud, an organization maps to your company. In self-hosted or single-tenant deployments, you can create multiple organizations for different business units, subsidiaries, or customer-tenants.
+In Routero Cloud, an organization maps to your company. In Private Deployments or Single-Tenant Cloud, you can create multiple organizations for different business units, subsidiaries, or customer-tenants.
 
 ---
 

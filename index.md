@@ -76,13 +76,14 @@ SAML 2.0 · SCIM 2.0 auto-provisioning · Cerbos fine-grained authorization · s
 
 ## Deployment: pick your trust boundary
 
-The same control plane runs in three configurations. Your security team picks where data lives.
+The same control plane runs in four configurations. Your security team picks where data lives.
 
 | Deployment | Best for | Where data lives |
 |---|---|---|
 | **Routero Cloud** | Fastest onboarding, elastic scale | Routero's AWS (Singapore), SOC 2 |
 | **Single-Tenant Cloud** | Dedicated region, physical isolation, data residency | Your chosen region, Routero-managed |
-| **Self-Hosted (AWS / Docker)** | VPC isolation, full key control, air-gap-ready | Entirely your infrastructure |
+| **Private Deployments** | VPC isolation, full key control, air-gap-ready | Entirely your infrastructure |
+| **Local** | Development, evaluation, air-gapped CI | Your machine |
 
 [→ Deployment Options]({% link deployment.md %})
 

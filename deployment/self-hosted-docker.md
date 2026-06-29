@@ -2,6 +2,7 @@
 title: Self-Hosted with Docker
 parent: Deployment Options
 nav_order: 4
+nav_exclude: true
 description: "Run Routero AI locally or on-prem using Docker Compose — minimal footprint, full control."
 ---
 

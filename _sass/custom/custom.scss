@@ -21,13 +21,23 @@
   .side-bar {
     align-items: flex-start;
   }
+  // JtD reserves 48px padding-top on .site-nav for the mobile toggle button.
+  // On desktop the toggle is hidden — collapse that gap so the nav sits flush under the logo.
+  .site-nav {
+    padding-top: 0;
+  }
 }
 @media (min-width: 66.5rem) {
+  // JtD has min-width: 16.5rem on .side-bar, so our earlier 15.5rem width was being
+  // overridden to 16.5rem while margin-left stayed at 15.5rem — a 16px mismatch at
+  // wide viewports where the main content started under the sidebar. Fix: both values
+  // match the sidebar's actual rendered width and min-width is cleared.
   .side-bar {
-    width: 15.5rem;
+    width: 16.5rem;
+    min-width: 0;
   }
   .side-bar + .main {
-    margin-left: 15.5rem;
+    margin-left: 16.5rem;
   }
 }
 
