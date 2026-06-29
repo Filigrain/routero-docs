@@ -147,6 +147,13 @@ p.tagline,
 .main-content pre.highlight {
   background-color: #0d1117;
 }
+// The light scheme sets code text to dark #374151, which is unreadable on the
+// #0d1117 background for plain (unhighlighted) tokens like file paths. Pin the
+// base text to github-dark's foreground; syntax-token spans keep their own colors.
+.main-content div.highlighter-rouge pre.highlight,
+.main-content div.highlighter-rouge pre.highlight code {
+  color: #e6edf3;
+}
 
 // Endpoint code pill in API pages
 code.endpoint {

@@ -2,6 +2,7 @@
 title: Reference Architecture
 parent: Deployment Options
 nav_order: 5
+nav_exclude: true
 description: "The canonical Routero AI AWS topology: VPC, ALB, ECS Fargate, RDS, Redis, Cerbos, and the coworker service."
 ---
 
