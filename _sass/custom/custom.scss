@@ -13,6 +13,24 @@
   border-right: none;
 }
 
+// Fixed-width teal sidebar pinned left (like the Admin Portal). By default JtD
+// widens the sidebar to fill the left margin on >1064px screens and right-aligns
+// the nav — which leaves an empty teal void with a coloured sidebar. Keep it a
+// fixed column with left-aligned content at every desktop width instead.
+@media (min-width: 50rem) {
+  .side-bar {
+    align-items: flex-start;
+  }
+}
+@media (min-width: 66.5rem) {
+  .side-bar {
+    width: 15.5rem;
+  }
+  .side-bar + .main {
+    margin-left: 15.5rem;
+  }
+}
+
 .site-header {
   border-bottom: none;
 }
