@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/policy-routing
 title: Policy Routing
 parent: Core Gateway
 nav_order: 4

@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment
 title: Deployment Options
 nav_order: 3
 has_children: true

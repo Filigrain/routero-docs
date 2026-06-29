@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides
 title: Guides
 nav_order: 10
 has_children: true

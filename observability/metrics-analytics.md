@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: observability/metrics-analytics
 title: Metrics & Analytics
 parent: Observability
 nav_order: 2

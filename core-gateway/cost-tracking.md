@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/cost-tracking
 title: Cost Tracking & Billing
 parent: Core Gateway
 nav_order: 8

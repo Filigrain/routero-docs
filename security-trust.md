@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: security-trust
 title: Security & Trust
 nav_order: 11
 has_children: true

@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/long-term-memory
 title: Give Your App Long-Term Memory
 parent: Guides
 nav_order: 8

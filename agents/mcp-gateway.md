@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: agents/mcp-gateway
 title: MCP Gateway
 parent: Agents & Tools
 nav_order: 2

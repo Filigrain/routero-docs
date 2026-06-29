@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/multi-team-workspace
 title: Govern a Multi-Team Workspace
 parent: Guides
 nav_order: 4

@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: quickstart
 title: Quickstart
 nav_order: 2
 description: "Make your first request through Routero AI in under 5 minutes."

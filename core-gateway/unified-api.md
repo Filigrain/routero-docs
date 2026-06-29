@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/unified-api
 title: Unified API
 parent: Core Gateway
 nav_order: 1

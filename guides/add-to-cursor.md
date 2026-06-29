@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/add-to-cursor
 title: Add to Cursor / Claude Code
 parent: Guides
 nav_order: 2

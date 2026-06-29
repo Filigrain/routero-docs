@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: advanced-features
 title: Advanced Features
 nav_order: 5
 has_children: true

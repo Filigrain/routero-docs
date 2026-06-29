@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/self-hosted-docker
 title: Self-Hosted with Docker
 parent: Deployment Options
 nav_order: 4

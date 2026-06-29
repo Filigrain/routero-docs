@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: security-trust/compliance
 title: Compliance
 parent: Security & Trust
 nav_order: 2

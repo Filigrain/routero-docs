@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/budgets
 title: Budgets & Spend Guards
 parent: Core Gateway
 nav_order: 5

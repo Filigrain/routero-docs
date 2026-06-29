@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/enterprise-quickstart
 title: Enterprise Quickstart
 parent: Guides
 nav_order: 1

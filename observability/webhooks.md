@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: observability/webhooks
 title: Webhooks
 parent: Observability
 nav_order: 4

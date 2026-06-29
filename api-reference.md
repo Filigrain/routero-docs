@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: api-reference
 title: API Reference
 nav_order: 8
 description: "Interactive API reference for the Routero AI gateway, generated from the FastAPI OpenAPI spec."

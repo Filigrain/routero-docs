@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/local
 title: Local Deployment
 parent: Deployment Options
 nav_order: 5

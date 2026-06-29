@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: agents
 title: Agents & Tools
 nav_order: 6
 has_children: true

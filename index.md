@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: index
 title: Introduction
 nav_order: 1
 description: "What Routero AI is, why enterprises choose it, and how to navigate this documentation."

@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/single-tenant
 title: Single-Tenant Cloud
 parent: Deployment Options
 nav_order: 2

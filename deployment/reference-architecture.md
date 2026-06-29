@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/reference-architecture
 title: Reference Architecture
 parent: Deployment Options
 nav_order: 5

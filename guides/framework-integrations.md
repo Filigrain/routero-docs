@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/framework-integrations
 title: Framework Integrations
 parent: Guides
 nav_order: 3
