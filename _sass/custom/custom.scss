@@ -21,6 +21,7 @@
 .site-title {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.55rem;
 }
 .site-title,
@@ -108,6 +109,15 @@ p.tagline,
   line-height: 1.4;
   color: var(--routero-teal);
   margin-bottom: 1.5rem;
+}
+
+// Dark fenced code blocks on the light page (tokens come from github-dark,
+// imported in the routero color scheme). Inline code stays light.
+.main-content div.highlighter-rouge,
+.main-content figure.highlight,
+.main-content div.highlighter-rouge .highlight,
+.main-content pre.highlight {
+  background-color: #0d1117;
 }
 
 // Endpoint code pill in API pages

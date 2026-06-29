@@ -11,6 +11,8 @@ $btn-primary-color: #2fb68f;
 
 // Teal sidebar (white nav text is set in _sass/custom/custom.scss)
 $sidebar-color: #2fb68f;
+// Nested/child nav links must stay readable on the teal sidebar
+$nav-child-link-color: rgba(255, 255, 255, 0.82);
 
 // Light content surface
 $body-background-color: #ffffff;
@@ -18,8 +20,12 @@ $body-heading-color: #111827;
 $body-text-color: #374151;
 $border-color: #e7e7ec;
 
-// Code + search on the light surface
+// Inline code stays light on the light surface (code blocks are darkened below)
 $code-background-color: #f6f8fa;
 $search-background-color: #ffffff;
 $search-result-preview-color: #6b7280;
 $table-background-color: #ffffff;
+
+// Dark syntax highlighting for fenced code blocks (premium developer feel).
+// Overrides the light scheme's github-light tokens + sets .highlight bg #0d1117.
+@import "./vendor/accessible-pygments/github-dark";
