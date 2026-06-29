@@ -1,0 +1,146 @@
+---
+title: Quickstart
+nav_order: 2
+description: "Make your first request through Routero AI in under 5 minutes."
+---
+
+# Quickstart
+
+Get your first request routed through Routero AI in under 5 minutes. If you already use the OpenAI SDK, this is a one-line change.
+
+{: .enterprise }
+> **Prerequisites:** An API key from [platform.routero.ai](https://platform.routero.ai). If you don't have one yet, [sign up free](https://platform.routero.ai) — no credit card required.
+
+---
+
+## Three ways to integrate
+
+| Approach | Best for | What changes |
+|---|---|---|
+| **OpenAI SDK (drop-in)** | Existing OpenAI codebases | `base_url` only |
+| **Direct REST API** | Any language, no SDK dependency | — |
+| **litellm Python library** | In-process routing, no proxy server | `model` prefix |
+
+---
+
+## Option 1 — OpenAI SDK drop-in (recommended)
+
+Change `base_url` to `https://api.routero.ai/v1`. Everything else — messages, tools, streaming, vision, structured outputs — stays identical.
+
+### Python
+
+```python
+import openai
+
+client = openai.OpenAI(
+    api_key="YOUR_ROUTERO_KEY",          # your Routero virtual key
+    base_url="https://api.routero.ai/v1",
+)
+
+response = client.chat.completions.create(
+    model="smart/balanced",              # smart alias, or "openai/gpt-4o", "anthropic/claude-sonnet-4-6", etc.
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+print(response.choices[0].message.content)
+```
+
+### TypeScript / Node
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: "YOUR_ROUTERO_KEY",
+  baseURL: "https://api.routero.ai/v1",
+});
+
+const response = await client.chat.completions.create({
+  model: "smart/balanced",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+console.log(response.choices[0].message.content);
+```
+
+### curl
+
+```bash
+curl https://api.routero.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "smart/balanced",
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }'
+```
+
+---
+
+## Option 2 — Direct REST API
+
+The gateway exposes a standard OpenAI-compatible REST interface. Use any HTTP client.
+
+**Base URL:** `https://api.routero.ai/v1`
+
+**Authentication:** `Authorization: Bearer YOUR_ROUTERO_KEY`
+
+**Supported endpoints:** `/chat/completions` · `/completions` · `/embeddings` · `/images/generations` · `/audio/speech` · `/audio/transcriptions` · `/rerank` · `/batches` · `/models` and more. See [Unified API]({% link core-gateway/unified-api.md %}) for the full list.
+
+---
+
+## Model strings
+
+Routero passes any model string to the appropriate provider. You can use:
+
+| Format | Example | What it does |
+|---|---|---|
+| Smart alias | `smart/balanced` | Routes to the best available model for the task |
+| Provider-scoped | `openai/gpt-4o` | Pins to a specific provider |
+| Bare model name | `gpt-4o` | Routero infers the provider |
+| Provider variant | `bedrock/anthropic.claude-sonnet-4-6` | Fully-qualified AWS Bedrock model |
+
+{: .note }
+Smart aliases (`smart/balanced`, `smart/fast`, `smart/cheap`) are configured in your workspace's routing policy and apply fallback chains automatically. See [Policy Routing]({% link core-gateway/policy-routing.md %}).
+
+---
+
+## What just happened
+
+Every request you sent ran through Routero's four-decision pipeline:
+
+1. **Policy gate** — Routero checked your key's identity, evaluated your workspace's routing policy (content checks, model allowlist, budget state), and decided whether to proceed.
+2. **Provider selection** — The Router scored eligible deployments by current health, latency, cost, and data residency. `smart/balanced` resolved to your configured primary provider.
+3. **Account & audit** — The token count and cost were calculated and debited from your workspace budget atomically. The full decision was written to your immutable audit log within milliseconds.
+4. **Response** — The provider's response was streamed back through the gateway with zero buffering.
+
+The request is now in your [platform dashboard](https://platform.routero.ai) under **Audit Log**.
+
+---
+
+## Activate Advanced Features
+
+Pass any combination of feature IDs on the same request to unlock Routero's production-AI layer. The proxy resolves each config from your workspace, applies it as a hook, and strips the ID before the upstream call — your application code never changes.
+
+```python
+response = client.chat.completions.create(
+    model="smart/balanced",
+    messages=[{"role": "user", "content": "Summarise last quarter's results."}],
+    extra_body={
+        "guardrail_id":        "my-pii-guardrail",      # redact PII before the model sees it
+        "token_saving_plan_id": "my-cache-plan",         # compress + cache the response
+        "prompt_id":           "my-analyst-system-prompt", # inject versioned system prompt
+        "memory_id":           "user-alice-session",    # retrieve Alice's long-term context
+    },
+)
+```
+
+→ [Advanced Features]({% link advanced-features.md %})
+
+---
+
+## What to do next
+
+- **Set up your first routing policy** → [Policy Routing]({% link core-gateway/policy-routing.md %})
+- **Add a spend budget for your team** → [Budgets & Spend Guards]({% link core-gateway/budgets.md %})
+- **Choose your deployment model** → [Deployment Options]({% link deployment.md %})
+- **Enable guardrails for PII** → [Guardrails]({% link advanced-features/guardrails.md %})
+- **Read the full API reference** → [API Reference]({% link api-reference.md %})

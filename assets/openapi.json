@@ -1,0 +1,9 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Routero AI Gateway API",
+    "version": "0.0.0",
+    "description": "Replace this file with the live OpenAPI spec from your Routero instance.\n\nRun: curl https://api.routero.ai/openapi.json > assets/openapi.json\n\nOr automate it in .github/workflows/deploy.yml by adding a step before the Jekyll build:\n  - run: curl -sf https://api.routero.ai/openapi.json > assets/openapi.json"
+  },
+  "paths": {}
+}

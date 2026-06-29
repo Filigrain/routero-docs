@@ -1,0 +1,23 @@
+---
+title: Core Gateway
+nav_order: 4
+has_children: true
+description: "The four building blocks of the Routero AI control plane: Routes, Policies, Budgets, and Audit."
+---
+
+# Core Gateway
+
+The core gateway is Routero AI's unified LLM proxy — an OpenAI-compatible interface in front of 100+ providers, with four composable governance primitives built in.
+
+---
+
+## Pages in this section
+
+- [Unified API]({% link core-gateway/unified-api.md %}) — every supported endpoint and provider
+- [Routing & Load Balancing]({% link core-gateway/routing.md %}) — strategies, model groups, and the Router
+- [Failover & Fallbacks]({% link core-gateway/failover.md %}) — multi-provider failover chains
+- [Policy Routing]({% link core-gateway/policy-routing.md %}) — YAML policy-as-code, 42 routing signals
+- [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) — hard caps, soft alerts, FinOps chargeback
+- [SSO, RBAC & Audit]({% link core-gateway/sso-rbac-audit.md %}) — SAML · SCIM · Cerbos · immutable audit log
+- [Multi-Tenancy]({% link core-gateway/multi-tenancy.md %}) — orgs · teams · users · customers
+- [Cost Tracking & Billing]({% link core-gateway/cost-tracking.md %}) — per-request cost pipeline, wallet, invoices

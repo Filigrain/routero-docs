@@ -1,0 +1,82 @@
+title: Routero AI Docs
+description: Enterprise AI Gateway — the control plane for every AI model.
+
+# Update these when the custom domain (docs.routero.ai) is wired up:
+# baseurl: ""
+# url: "https://docs.routero.ai"
+#
+# Until then, this targets the GitHub Pages project site:
+baseurl: "/routero-docs"
+url: "https://filigrain.github.io"
+
+theme: just-the-docs
+
+color_scheme: dark
+
+# Uncomment once logo SVG is added to assets/images/
+# logo: "/assets/images/routero-logo.svg"
+
+# External nav links (shown in the header)
+nav_external_links:
+  - title: routero.ai ↗
+    url: https://routero.ai
+    hide_icon: true
+  - title: Platform ↗
+    url: https://platform.routero.ai
+    hide_icon: true
+
+# Search
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s/]+/
+
+# Footer
+footer_content: "© 2026 Routero AI &nbsp;·&nbsp;
+  <a href=\"https://routero.ai/legal/privacy.html\">Privacy</a> &nbsp;·&nbsp;
+  <a href=\"https://routero.ai/legal/security.html\">Security</a> &nbsp;·&nbsp;
+  <a href=\"https://status.routero.ai\">Status</a> &nbsp;·&nbsp;
+  <a href=\"https://platform.routero.ai\">Sign in</a>"
+
+# Callout boxes
+callouts_level: quiet
+callouts:
+  enterprise:
+    title: Enterprise
+    color: green
+  beta:
+    title: Beta
+    color: yellow
+  coming-soon:
+    title: Coming Soon
+    color: grey-lt
+  warning:
+    title: Warning
+    color: red
+
+# Apply the Just the Docs sidebar layout to every page
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Don't publish internal docs or build artefacts
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - "*.gemspec"
+  - "*.gem"
+  - LICENSE
+  - "*.sh"

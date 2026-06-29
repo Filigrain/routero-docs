@@ -1,0 +1,54 @@
+// Additional brand overrides beyond what _sass/custom/setup.scss can do.
+
+:root {
+  --routero-green: #33bc95;
+  --routero-blue: #6cc8ff;
+}
+
+// Sidebar nav: soft off-white for inactive links (premium dark aesthetic),
+// brightening on hover, brand green for the active page.
+.nav-list .nav-list-item .nav-list-link {
+  color: #c5c2ca;
+}
+.nav-list .nav-list-item .nav-list-link:hover {
+  color: #f5f6fa;
+}
+.nav-list .nav-list-item .nav-list-link.active {
+  color: var(--routero-green) !important;
+}
+
+// Content links use brand green (overrides the dark scheme's default blue).
+// Scoped to the article body so nav/breadcrumb chrome keeps theme styling.
+.main-content a {
+  color: var(--routero-green);
+}
+
+// Table styling — cleaner enterprise look
+table {
+  display: table;
+  width: 100%;
+}
+
+// Callout label bold
+.callout-title {
+  font-weight: 700;
+}
+
+// Tagline paragraph — large intro pull-quote
+p.tagline,
+.tagline p {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--routero-green);
+  margin-bottom: 1.5rem;
+}
+
+// Endpoint code pill in API pages
+code.endpoint {
+  background: rgba(51, 188, 149, 0.12);
+  color: var(--routero-green);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
