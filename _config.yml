@@ -1,13 +1,9 @@
 title: Routero AI Docs
 description: Enterprise AI Gateway — the control plane for every AI model.
 
-# Update these when the custom domain (docs.routero.ai) is wired up:
-# baseurl: ""
-# url: "https://docs.routero.ai"
-#
-# Until then, this targets the GitHub Pages project site:
-baseurl: "/routero-docs"
-url: "https://filigrain.github.io"
+# Served at the custom domain root (see CNAME file).
+baseurl: ""
+url: "https://docs.routero.ai"
 
 theme: just-the-docs
 
