@@ -43,6 +43,36 @@
 
 .site-header {
   border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Language switcher (EN / 中文) — injected into the sidebar header by head_custom.html.
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lang-switcher a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+}
+.lang-switcher a:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+.lang-switcher a.active {
+  color: #fff;
+}
+.lang-switcher .lang-sep {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 // Header: icon + "Routero" wordmark, left-aligned (mirrors the Admin Portal).

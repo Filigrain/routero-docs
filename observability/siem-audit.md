@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: observability/siem-audit
 title: SIEM & Audit Export
 parent: Observability
 nav_order: 3

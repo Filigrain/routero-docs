@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/failover
 title: Failover & Fallbacks
 parent: Core Gateway
 nav_order: 3

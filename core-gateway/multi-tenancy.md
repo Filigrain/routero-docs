@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/multi-tenancy
 title: Multi-Tenancy
 parent: Core Gateway
 nav_order: 7

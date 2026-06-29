@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: sdks
 title: SDKs
 nav_order: 9
 has_children: true

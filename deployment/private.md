@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/private
 title: Private Deployments
 parent: Deployment Options
 nav_order: 3

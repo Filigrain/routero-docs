@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/failover-chain
 title: 3-Provider Failover Chain
 parent: Guides
 nav_order: 5

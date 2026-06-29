@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/sso-rbac-audit
 title: SSO, RBAC & Audit
 parent: Core Gateway
 nav_order: 6

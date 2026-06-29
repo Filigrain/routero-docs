@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: security-trust/audit-log
 title: Audit Log Reference
 parent: Security & Trust
 nav_order: 4

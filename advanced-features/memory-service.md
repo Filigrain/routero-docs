@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: advanced-features/memory-service
 title: Memory-as-a-Service
 parent: Advanced Features
 nav_order: 4

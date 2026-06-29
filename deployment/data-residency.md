@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/data-residency
 title: Data Residency & Regions
 parent: Deployment Options
 nav_order: 6

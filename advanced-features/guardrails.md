@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: advanced-features/guardrails
 title: Guardrails
 parent: Advanced Features
 nav_order: 2

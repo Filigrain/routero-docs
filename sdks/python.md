@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: sdks/python
 title: Python SDK
 parent: SDKs
 nav_order: 1

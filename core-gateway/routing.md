@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway/routing
 title: Routing & Load Balancing
 parent: Core Gateway
 nav_order: 2

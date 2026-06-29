@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: observability/logging-tracing
 title: Logging & Tracing
 parent: Observability
 nav_order: 1

@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/pii-guardrails
 title: PII Guardrails for Regulated Teams
 parent: Guides
 nav_order: 6

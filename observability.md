@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: observability
 title: Observability
 nav_order: 7
 has_children: true

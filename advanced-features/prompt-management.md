@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: advanced-features/prompt-management
 title: Prompt Management
 parent: Advanced Features
 nav_order: 3

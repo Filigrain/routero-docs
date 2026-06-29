@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: agents/a2a-gateway
 title: A2A Agent Gateway
 parent: Agents & Tools
 nav_order: 1

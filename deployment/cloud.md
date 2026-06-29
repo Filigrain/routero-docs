@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/cloud
 title: Routero Cloud
 parent: Deployment Options
 nav_order: 1

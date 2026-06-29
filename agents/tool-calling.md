@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: agents/tool-calling
 title: Tool & Function Calling
 parent: Agents & Tools
 nav_order: 3

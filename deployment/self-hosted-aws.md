@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: deployment/self-hosted-aws
 title: Self-Hosted on AWS
 parent: Deployment Options
 nav_order: 3

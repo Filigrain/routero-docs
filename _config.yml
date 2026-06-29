@@ -5,6 +5,17 @@ description: Enterprise AI Gateway — the control plane for every AI model.
 baseurl: ""
 url: "https://docs.routero.ai"
 
+# --- Multilingual (jekyll-polyglot) ---
+# English at the root (/), Simplified Chinese under /zh-CN/.
+# Pages are paired across languages by `page_id` (see each page's front matter).
+languages: ["en", "zh-CN"]
+default_lang: "en"
+# Machine files stay root-only. Note: `assets` is intentionally NOT excluded so the
+# per-language search-data.json renders with the active language (correct /zh-CN/ URLs).
+exclude_from_localization: ["CNAME", "robots.txt", ".nojekyll"]
+# Build languages sequentially — avoids parallel-fork races on Ruby 4 / Jekyll 4.
+parallel_localization: false
+
 theme: just-the-docs
 
 color_scheme: routero
@@ -63,6 +74,7 @@ defaults:
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-polyglot
 
 # Don't publish internal docs or build artefacts
 exclude:

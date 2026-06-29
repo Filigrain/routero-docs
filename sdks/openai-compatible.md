@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: sdks/openai-compatible
 title: OpenAI-Compatible Clients
 parent: SDKs
 nav_order: 2

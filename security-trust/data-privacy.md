@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: security-trust/data-privacy
 title: Data Handling & Privacy
 parent: Security & Trust
 nav_order: 3

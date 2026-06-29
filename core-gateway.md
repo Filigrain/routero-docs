@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: core-gateway
 title: Core Gateway
 nav_order: 4
 has_children: true

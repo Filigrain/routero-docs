@@ -1,4 +1,6 @@
 ---
+lang: en
+page_id: guides/token-saving-guide
 title: Cut Costs with Token Saving
 parent: Guides
 nav_order: 7
