@@ -100,7 +100,11 @@
 .site-title:hover {
   color: #fff;
   font-weight: 700;
-  background-color: transparent; // it's a link — no hover background on the logo row
+  // It's a link — kill BOTH the flat background and the theme's gradient hover
+  // image (background-color alone doesn't override background-image, which is
+  // why the wordmark still lit up on hover).
+  background-color: transparent;
+  background-image: none;
   text-decoration: none;
 }
 .site-title::after {
@@ -130,22 +134,29 @@
   padding-right: 0.5rem;
 }
 
-// Nav links: refined spacing, rounded hover/active surfaces, smooth feedback.
+// Nav links: refined spacing, flat translucent hover/active surfaces.
 // Left padding aligns first-level text with the logo (both at the header padding).
+// NOTE: background-image: none is required in every state — Just-the-Docs paints a
+// $feedback-color linear-gradient on :hover/.active, and background-color does NOT
+// override background-image, so without this the gradient bleeds through the flat
+// fill and the row looks like a crude smudge.
 .nav-list .nav-list-item .nav-list-link {
   color: rgba(255, 255, 255, 0.82);
   padding: 0.4rem 0.75rem 0.4rem 0.5rem;
   border-radius: 6px;
+  background-image: none;
   transition:
     background-color 0.14s ease,
     color 0.14s ease;
 }
 .nav-list .nav-list-item .nav-list-link:hover {
-  background-color: rgba(255, 255, 255, 0.14);
+  background-color: rgba(255, 255, 255, 0.1); // subtle, flat — no gradient
+  background-image: none;
   color: #fff;
 }
 .nav-list .nav-list-item .nav-list-link.active {
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.2); // clearly lifted from hover, still flat
+  background-image: none;
   color: #fff !important;
   font-weight: 600;
 }
@@ -154,9 +165,24 @@
   display: none;
 }
 
-// Expander chevrons for nested nav
+// Expander chevrons for nested nav. The chevron is a separate absolutely-positioned
+// element, so Just-the-Docs gives it its OWN hover gradient — which paints an
+// isolated patch on the arrow. Suppress that: the arrow never gets its own hover
+// background; instead hovering it lights up the whole row (see :has rule below).
 .nav-list-expander svg {
   color: rgba(255, 255, 255, 0.7);
+}
+.nav-list .nav-list-item .nav-list-expander:hover {
+  background-image: none;
+  background-color: transparent;
+}
+// Unified row hover: when the cursor is over a parent's chevron, highlight its link
+// too — so moving from the text onto the arrow keeps the row lit instead of
+// flickering off. :has() is a no-op (dropped) in browsers that don't support it.
+.nav-list-item:has(.nav-list-expander:hover) > .nav-list-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  background-image: none;
+  color: #fff;
 }
 
 // Sidebar footer — a deep green reads as a calmer secondary tone on teal than
