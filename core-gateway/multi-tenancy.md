@@ -26,7 +26,7 @@ The top-level isolation boundary. Each organization has:
 - Its own set of models and provider configurations
 - Independent budgets, rate limits, and spend tracking
 - Separate audit logs
-- Own SAML/SSO and SCIM configuration (Enterprise)
+- Admin-managed membership (invitation-based; no self-signup)
 
 In Routero Cloud, an organization maps to your company. In Private Deployments or Single-Tenant Cloud, you can create multiple organizations for different business units, subsidiaries, or customer-tenants.
 
@@ -55,7 +55,7 @@ Internal users (employees) have individual identities with:
 - Personal API keys (optionally) alongside team keys
 - Role assignments (Admin, Developer, Auditor, Finance, or Custom)
 - Per-user spend tracking and daily activity reports
-- Provisioned/deprovisioned via SCIM or manual management
+- Created and managed by admins (invitation-based)
 
 ---
 

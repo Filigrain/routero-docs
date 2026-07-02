@@ -13,7 +13,7 @@ description: "What Routero AI is, why enterprises choose it, and how to navigate
 
 Routero AI is an **enterprise AI control plane** — a unified gateway that sits between your applications and every AI provider. It gives platform, security, and FinOps teams the governance layer they need to ship AI features with confidence, while letting developers use the OpenAI SDK they already know.
 
-Change `base_url` in one line of code. Get 100+ models, built-in failover, declarative policy, spend controls, and an immutable audit trail — with data exactly where your security team requires.
+Change `base_url` in one line of code. Get 100+ models, built-in failover, declarative policy, spend controls, and a complete audit trail — with data exactly where your security team requires.
 
 > *"We replaced four gateways and a 600-line failover hack with one Routero AI config."*
 
@@ -42,7 +42,7 @@ Every request runs a deterministic, auditable pipeline:
 Your app
   → [Policy gate]           identity · content check · model allowlist · budget
   → [Provider selection]    health + latency · price · residency · fallback chain
-  → [Account & audit]       token/$ debited atomically · decision logged immutably
+  → [Account & audit]       token/$ debited atomically · decision logged
   → Provider
 ```
 
@@ -69,10 +69,10 @@ Hard ceilings, soft alerts, and per-team chargeback for every dollar of AI spend
 
 [→ Budgets & Spend Guards]({% link core-gateway/budgets.md %})
 
-### SSO, RBAC & Audit
-SAML 2.0 · SCIM 2.0 auto-provisioning · Cerbos fine-grained authorization · short-lived scoped virtual keys · an immutable, cryptographically signed audit log for every request, policy change, and key rotation.
+### Access Control & Audit
+Admin-invite access · Cerbos fine-grained authorization · short-lived scoped virtual keys · an audit log of every key, user, model, and policy change.
 
-[→ SSO, RBAC & Audit]({% link core-gateway/sso-rbac-audit.md %})
+[→ Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %})
 
 ---
 
@@ -112,7 +112,7 @@ Beyond routing and governance, Routero ships four opt-in capabilities that produ
 Start with [Quickstart]({% link quickstart.md %}) then [Deployment Options]({% link deployment.md %}).
 
 **Security & compliance** — reviewing and approving.
-Start with [SSO, RBAC & Audit]({% link core-gateway/sso-rbac-audit.md %}), [Compliance]({% link security-trust/compliance.md %}), and [Deployment Options]({% link deployment.md %}).
+Start with [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}), [Compliance]({% link security-trust/compliance.md %}), and [Deployment Options]({% link deployment.md %}).
 
 **FinOps & engineering managers** — owning the bill.
 Start with [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) and [Cost Tracking & Billing]({% link core-gateway/cost-tracking.md %}).

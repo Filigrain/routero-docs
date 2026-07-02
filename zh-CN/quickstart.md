@@ -12,17 +12,16 @@ description: "在 5 分钟内通过 Routero AI 发出你的第一个请求。"
 在 5 分钟内让你的第一个请求通过 Routero AI 路由。如果你已经在使用 OpenAI SDK，这只是一行改动。
 
 {: .enterprise }
-> **前提条件：** 一个来自 [platform.routero.ai](https://platform.routero.ai) 的 API 密钥。如果你还没有，[免费注册](https://platform.routero.ai)——无需信用卡。
+> **前提条件：** 一个 Routero 虚拟密钥。工作区采用邀请制——请联系你的工作区管理员，从 [platform.routero.ai](https://platform.routero.ai) 邀请你并发放密钥。
 
 ---
 
-## 三种集成方式
+## 两种集成方式
 
 | 方式 | 最适合 | 改动内容 |
 |---|---|---|
 | **OpenAI SDK（直接替换）** | 现有的 OpenAI 代码库 | 仅 `base_url` |
 | **直接调用 REST API** | 任意语言，无 SDK 依赖 | — |
-| **litellm Python 库** | 进程内路由，无需代理服务器 | `model` 前缀 |
 
 ---
 
@@ -112,10 +111,10 @@ Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）在你工作区
 
 1. **策略闸门** —— Routero 检查你密钥的身份，评估你工作区的路由策略（内容检查、模型允许列表、预算状态），并决定是否继续。
 2. **供应商选择** —— Router 根据当前健康状况、延迟、成本和数据驻留为符合条件的部署打分。`smart/balanced` 解析为你配置的主供应商。
-3. **计费与审计** —— 计算 token 数量和成本，并原子性地从你工作区的预算中扣除。完整的决策在毫秒内写入你的不可篡改审计日志。
+3. **计费** —— 计算 token 数量和成本，并原子性地从你工作区的预算中扣除，用量被记录。
 4. **响应** —— 供应商的响应通过网关零缓冲地流式返回。
 
-该请求现在已出现在你的[平台仪表板](https://platform.routero.ai)的**审计日志**中。
+该请求现在已出现在你的[平台仪表板](https://platform.routero.ai)的用量与支出视图中。
 
 ---
 
@@ -146,4 +145,3 @@ response = client.chat.completions.create(
 - **为你的团队添加支出预算** → [预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})
 - **选择你的部署模型** → [部署选项]({% link zh-CN/deployment.md %})
 - **为 PII 启用护栏** → [护栏]({% link zh-CN/advanced-features/guardrails.md %})
-- **阅读完整的 API 参考** → [API 参考]({% link zh-CN/api-reference.md %})

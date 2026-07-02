@@ -5,125 +5,69 @@ permalink: /security-trust/audit-log.html
 title: 审计日志参考
 parent: 安全与信任
 nav_order: 4
-description: "完整的事件类型目录、审计日志架构、保留与 SIEM 导出参考。"
+description: "Routero 管理员审计日志记录了什么、其 schema，以及如何查询。"
 ---
 
 # 审计日志参考
 
-Routero 审计日志是一份不可篡改、仅追加、以密码学方式链接的记录，涵盖系统中每一项重要事件。每条记录都包含前一条记录的哈希——篡改任何一条记录都会破坏整条链。
+Routero 会记录**管理操作**的审计日志，以便你的安全与合规团队能够回答“谁在何时更改了什么”。启用审计日志后，每一次密钥、用户、模型、团队、组织或预算的创建、更新、删除、封禁和轮换都会被持久化为一条审计记录。
+
+{: .note }
+审计日志记录的是**管理（控制平面）变更**，而非单条 LLM 推理请求。单次请求的用量与支出另行追踪——参见[指标与分析]({% link zh-CN/observability/metrics-analytics.md %})和[成本追踪与计费]({% link zh-CN/core-gateway/cost-tracking.md %})。
 
 ---
 
-## 事件类型目录
+## 审计范围
 
-### 推理事件
-| 事件类型 | 触发时机 |
-|---|---|
-| `request.routed` | 请求已成功路由至某供应商 |
-| `request.blocked` | 请求被拦截（预算、护栏、策略或密钥无效） |
-| `request.failed` | 供应商返回错误且所有回退均已用尽 |
-| `request.guardrail_triggered` | 护栏引擎检测到违规（匿名化或拦截） |
-| `request.cache_hit` | 响应由缓存提供（Token 节省） |
-| `request.compressed` | 提示词被 Token 节省方案压缩 |
-| `request.fallback_triggered` | 路由器回退至备用供应商 |
+每当管理员变更某个受管资源时，都会写入一条审计记录：
 
-### 策略事件
-| 事件类型 | 触发时机 |
+| 资源 | 被审计的操作 |
 |---|---|
-| `policy.evaluated` | 匹配到某条路由策略规则 |
-| `policy.changed` | 发布了某个策略版本（旧 → 新） |
-| `policy.blocked` | 策略规则拦截了某个请求 |
-
-### 身份与访问事件
-| 事件类型 | 触发时机 |
-|---|---|
-| `user.provisioned` | 用户被创建（手动或 SCIM） |
-| `user.deprovisioned` | 用户被停用（SCIM 同步或手动） |
-| `key.created` | 生成了某个虚拟 API 密钥 |
-| `key.rotated` | 重新生成了某个虚拟 API 密钥 |
-| `key.revoked` | 删除了某个虚拟 API 密钥 |
-| `key.budget_exceeded` | 某个密钥达到其预算上限 |
-| `login.success` | 登录成功（SSO 或密码） |
-| `login.failed` | 登录尝试失败 |
-| `mfa.challenged` | 发起 MFA 质询 |
-
-### 预算事件
-| 事件类型 | 触发时机 |
-|---|---|
-| `budget.threshold_reached` | 跨越预算软阈值（警告档） |
-| `budget.exceeded` | 达到预算硬上限（限流或拦截档） |
-| `budget.reset` | 预算周期重置 |
-| `spend.debited` | 从密钥/团队/组织余额中扣除请求成本 |
-
-### 高级功能事件
-| 事件类型 | 触发时机 |
-|---|---|
-| `memory.retrieved` | 记忆事实被注入请求 |
-| `memory.stored` | 对话轮次被存入记忆会话 |
-| `guardrail.configured` | 护栏被创建或更新 |
-| `prompt.version_published` | 创建了提示词模板版本 |
-| `token_saving.plan_updated` | Token 节省方案被创建或修改 |
+| API 密钥 | 创建 · 更新 · 删除 · 封禁 · 轮换 |
+| 用户 | 创建 · 更新 · 删除 |
+| 模型 | 新增 · 更新 · 移除 |
+| 团队 | 创建 · 更新 · 成员变更 |
+| 组织 | 创建 · 更新 · 成员变更 |
+| 预算 | 创建 · 更新 · 删除 |
 
 ---
 
-## 记录架构
+## 记录 schema
 
-```json
-{
-  "event_id": "evt_01jz...",
-  "event_type": "request.routed",
-  "timestamp": "2026-06-29T10:00:00.123456Z",
-  "workspace_id": "ws_abc123",
-  "org_id": "org_xyz",
-  "team_id": "data-science",
-  "user_key_hash": "sha256:deadbeef...",
-  "customer_id": null,
-  "model": "openai/gpt-4o",
-  "provider": "openai",
-  "tokens_input": 512,
-  "tokens_output": 128,
-  "cost_usd": 0.00430,
-  "latency_ms": 1240,
-  "time_to_first_token_ms": 380,
-  "guardrail_id": null,
-  "guardrail_violations": [],
-  "token_saving_plan_id": "support-bot-cache",
-  "cache_hit": false,
-  "prompt_id": null,
-  "memory_id": null,
-  "fallback_count": 0,
-  "policy_version": 18,
-  "request_id": "req_01jz...",
-  "previous_event_hash": "sha256:abc123..."
-}
-```
+每条记录都会存储操作、目标资源、执行者以及前/后状态：
+
+| 字段 | 说明 |
+|---|---|
+| `action` | `created` · `updated` · `deleted` · `blocked` · `rotated` |
+| `table_name` | 受影响的资源类型（如 `LiteLLM_VerificationToken`、`LiteLLM_UserTable`） |
+| `object_id` | 受影响资源的 ID |
+| `changed_by` | 执行该操作的用户 |
+| `changed_by_api_key` | 执行该操作所使用的 API 密钥 |
+| `before_value` | 变更前资源的 JSON 快照 |
+| `updated_values` | 已变更字段的 JSON 快照 |
+| `organization_id` | 该记录所属的组织 |
+| `updated_at` | 变更时间戳 |
+
+敏感值——尤其是 API 密钥内容——在被写入 `before_value` / `updated_values` 之前会被掩码处理。
 
 ---
 
 ## 查询审计日志
 
 ```bash
-# 最近 100 条事件
-GET /audit-log?limit=100
+# 列出最近的审计记录（按组织限定）
+curl https://api.routero.ai/audit?limit=100 \
+  -H "Authorization: Bearer $ADMIN_KEY"
 
-# 特定密钥的事件
-GET /audit-log?key_hash=sha256:...&start_date=2026-06-01
-
-# 仅限护栏违规
-GET /audit-log?event_type=request.guardrail_triggered
-
-# 导出为 CSV
-GET /audit-log?format=csv&start_date=2026-06-01&end_date=2026-06-30
+# 按 id 获取单条记录
+curl https://api.routero.ai/audit/{id} \
+  -H "Authorization: Bearer $ADMIN_KEY"
 ```
+
+两个端点均为**仅管理员**可用，且仅返回调用者所属组织的记录。仪表板在**审计日志**下提供相同数据。
 
 ---
 
-## 保留与导出
+## 保留期
 
-| 方式 | 默认保留期 | 最长保留期 |
-|---|---|---|
-| RDS（主存储） | 365 天 | 7 年（企业版） |
-| S3 冷归档 | 可选 | 无限期 |
-| SIEM 流 | 通过 webhook/Kafka 实时传输 | — |
-
-→ 流式配置请参见 [SIEM 与审计导出]({% link zh-CN/observability/siem-audit.md %})。
+审计记录存储在代理的主数据库（PostgreSQL）中。保留期由你的数据库备份与生命周期策略决定——在 Routero Cloud 中由我们代为管理；在私有部署中由你自己的数据库控制。

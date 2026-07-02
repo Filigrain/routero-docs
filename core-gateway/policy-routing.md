@@ -80,12 +80,6 @@ rules:
 
 ## Policy versioning and audit
 
-Every policy change is an immutable audit event: `policy.changed` (v17 → v18), including who made the change and when. The audit log provides a reproducible record of which policy version was active at any point in time.
+Policy changes are recorded in the audit log — who made the change and when — giving you a reproducible record of your routing configuration over time.
 
-→ [SSO, RBAC & Audit]({% link core-gateway/sso-rbac-audit.md %}) for the full audit log schema.
-
----
-
-## Routing signals reference
-
-For the complete list of 42 routing signals and their syntax, see the [API Reference]({% link api-reference.md %}) under **Policy**.
+→ [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) for the audit log reference.

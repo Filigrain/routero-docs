@@ -13,11 +13,11 @@ This guide walks a platform engineer through the minimum viable production setup
 
 ---
 
-## Step 1 — Create a workspace
+## Step 1 — Get access to a workspace
 
-Sign up at [platform.routero.ai](https://platform.routero.ai). If you're on Single-Tenant Cloud or a Private Deployment, use your instance URL instead.
+Workspaces are invitation-based — there is no public sign-up. Your Routero workspace admin invites you to [platform.routero.ai](https://platform.routero.ai) (or your Single-Tenant / Private Deployment instance URL) and grants you an admin role.
 
-Your first workspace is created automatically. Note your admin key (`sk-admin-...`) from **Settings → API Keys**.
+Note your admin key (`sk-admin-...`) from **Settings → API Keys**.
 
 ---
 
@@ -95,7 +95,7 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-Check the request in **Audit Log** on the dashboard. You should see: model, provider, token counts, cost, and the team attribution.
+Check the request in **Usage** on the dashboard. You should see: model, provider, token counts, cost, and the team attribution.
 
 ---
 
@@ -133,7 +133,7 @@ The model receives: `"What do we know about [PERSON] at [EMAIL_ADDRESS]?"`
 
 ## Next steps
 
-- Set up SSO → [SSO, RBAC & Audit]({% link core-gateway/sso-rbac-audit.md %})
+- Review access & audit → [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %})
 - Add more teams and policies → [Multi-Tenancy]({% link core-gateway/multi-tenancy.md %})
 - Enable Token Saving → [Token Saving]({% link advanced-features/token-saving.md %})
 - Add more providers for failover → [Failover & Fallbacks]({% link core-gateway/failover.md %})

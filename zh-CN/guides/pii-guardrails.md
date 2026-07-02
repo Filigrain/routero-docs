@@ -112,17 +112,6 @@ rules:
 
 ## 会记录哪些内容
 
-护栏触发会记录在审计日志中，位于 `event_type: request.guardrail_triggered` 之下：
+当护栏触发时，违规信息会出现在你的请求日志和控制台中——包括护栏、引擎、所采取的操作（`anonymize` 或 `block`），以及检测到的实体类型或类别（例如 `PERSON`、`US_SSN`）。
 
-```json
-{
-  "event_type": "request.guardrail_triggered",
-  "guardrail_id": "pii-healthcare",
-  "engine": "presidio",
-  "entities_detected": ["PERSON", "US_SSN"],
-  "action": "anonymize",
-  "hook": "pre_call"
-}
-```
-
-**原始内容永不存储** —— 只记录检测到的实体类型。这是有意为之且可审计的设计。
+**原始内容永不存储** —— 只记录检测到的实体类型。这是有意为之的设计。

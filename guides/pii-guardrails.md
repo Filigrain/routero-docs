@@ -111,17 +111,6 @@ Upload the policy via the dashboard or `POST /config/update`. Every request from
 
 ## What gets logged
 
-Guardrail activations are recorded in the audit log under `event_type: request.guardrail_triggered`:
+When a guardrail triggers, the violation is surfaced in your request logs and the dashboard — the guardrail, the engine, the action taken (`anonymize` or `block`), and the entity types or categories detected (for example `PERSON`, `US_SSN`).
 
-```json
-{
-  "event_type": "request.guardrail_triggered",
-  "guardrail_id": "pii-healthcare",
-  "engine": "presidio",
-  "entities_detected": ["PERSON", "US_SSN"],
-  "action": "anonymize",
-  "hook": "pre_call"
-}
-```
-
-The **original content is never stored** — only the entity types detected. This is intentional and auditable.
+The **original content is never stored** — only the detected entity types. This is intentional.

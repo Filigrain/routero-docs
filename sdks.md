@@ -15,5 +15,4 @@ Routero AI is designed to work with the SDKs your team already uses. The gateway
 
 ## Pages in this section
 
-- [Python SDK]({% link sdks/python.md %}) — using the `litellm` library for in-process routing (no proxy required)
 - [OpenAI-Compatible Clients]({% link sdks/openai-compatible.md %}) — using any OpenAI SDK (Python, TypeScript, Go, …) with Routero as the backend

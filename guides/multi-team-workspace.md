@@ -9,7 +9,7 @@ description: "Set up orgs, teams, RBAC roles, per-team budgets, and model access
 
 # Govern a Multi-Team Workspace
 
-This guide is for the platform engineer or AI infrastructure lead setting up Routero for multiple internal teams. Goal: each team has its own key, budget, and model allowlist; the central admin has full visibility; deprovisioning is instant.
+This guide is for the platform engineer or AI infrastructure lead setting up Routero for multiple internal teams. Goal: each team has its own key, budget, and model allowlist; the central admin has full visibility; revoking access is instant.
 
 ---
 
@@ -71,11 +71,11 @@ curl -X POST https://api.routero.ai/organization/member_permission_update \
 
 ---
 
-## Step 4 — Set up SSO
+## Step 4 — Invite team members
 
-In the dashboard under **Settings → SSO**, configure your SAML IdP. Enable SCIM under **Settings → SCIM** to auto-provision/deprovision team membership from Okta or Azure AD.
+Access is invitation-based. From the dashboard under **Members**, invite each teammate by email and assign them to their team with the appropriate role. Members log in directly with the credentials they set up from the invitation — no SSO or IdP configuration required.
 
-Once SCIM is active, removing an employee from the IdP group revokes their Routero access and associated virtual keys automatically.
+To remove someone's access, delete the user (or revoke their keys) from the dashboard; their keys are invalidated immediately.
 
 ---
 

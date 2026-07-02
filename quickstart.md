@@ -11,17 +11,16 @@ description: "Make your first request through Routero AI in under 5 minutes."
 Get your first request routed through Routero AI in under 5 minutes. If you already use the OpenAI SDK, this is a one-line change.
 
 {: .enterprise }
-> **Prerequisites:** An API key from [platform.routero.ai](https://platform.routero.ai). If you don't have one yet, [sign up free](https://platform.routero.ai) — no credit card required.
+> **Prerequisites:** A Routero virtual key. Workspaces are invitation-only — ask your workspace admin to invite you and issue a key from [platform.routero.ai](https://platform.routero.ai).
 
 ---
 
-## Three ways to integrate
+## Two ways to integrate
 
 | Approach | Best for | What changes |
 |---|---|---|
 | **OpenAI SDK (drop-in)** | Existing OpenAI codebases | `base_url` only |
 | **Direct REST API** | Any language, no SDK dependency | — |
-| **litellm Python library** | In-process routing, no proxy server | `model` prefix |
 
 ---
 
@@ -111,10 +110,10 @@ Every request you sent ran through Routero's four-decision pipeline:
 
 1. **Policy gate** — Routero checked your key's identity, evaluated your workspace's routing policy (content checks, model allowlist, budget state), and decided whether to proceed.
 2. **Provider selection** — The Router scored eligible deployments by current health, latency, cost, and data residency. `smart/balanced` resolved to your configured primary provider.
-3. **Account & audit** — The token count and cost were calculated and debited from your workspace budget atomically. The full decision was written to your immutable audit log within milliseconds.
+3. **Accounting** — The token count and cost were calculated and debited from your workspace budget atomically, and the usage was logged.
 4. **Response** — The provider's response was streamed back through the gateway with zero buffering.
 
-The request is now in your [platform dashboard](https://platform.routero.ai) under **Audit Log**.
+The request now appears in your [platform dashboard](https://platform.routero.ai) usage and spend views.
 
 ---
 
@@ -145,4 +144,3 @@ response = client.chat.completions.create(
 - **Add a spend budget for your team** → [Budgets & Spend Guards]({% link core-gateway/budgets.md %})
 - **Choose your deployment model** → [Deployment Options]({% link deployment.md %})
 - **Enable guardrails for PII** → [Guardrails]({% link advanced-features/guardrails.md %})
-- **Read the full API reference** → [API Reference]({% link api-reference.md %})

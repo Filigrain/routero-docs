@@ -4,59 +4,39 @@ page_id: observability/webhooks
 title: Webhooks
 parent: Observability
 nav_order: 4
-description: "Real-time event notifications for routing decisions, budget alerts, and guardrail violations."
+description: "Forward LLM request logs to any HTTP endpoint, plus Slack, email, and custom webhook alerts."
 ---
 
 # Webhooks
 
-Routero can POST event notifications to any HTTPS endpoint. Use webhooks for real-time alerting, custom dashboards, or piping events into internal tooling without polling the API.
+Routero can forward LLM request logs to any HTTPS endpoint, and send operational alerts to Slack, email, or a custom webhook. Use these to land usage data in your own warehouse, feed a custom dashboard, or get notified when something needs attention.
 
 ---
 
-## Event types
+## Forwarding request logs to an HTTP endpoint
 
-| Event | When it fires |
-|---|---|
-| `request.routed` | Every successful routing decision |
-| `request.blocked` | Request rejected by guardrail or budget |
-| `budget.threshold_80` | Workspace/team budget hits 80% |
-| `budget.exceeded` | Budget ceiling reached (block tier active) |
-| `guardrail.violated` | Guardrail engine triggered a violation |
-| `key.rotated` | Virtual key was regenerated |
-| `user.deprovisioned` | User removed via SCIM or manually |
-| `fallback.triggered` | Router fell back to a secondary provider |
+The generic API callback integration sends each completed LLM request (success or failure) to a URL you choose — a lightweight way to pipe every request record into your own datastore without a dedicated integration. Configure the endpoint, optional headers, and payload format (`json_array`, `ndjson`, or `single`) from **Settings → Integrations** in the dashboard.
+
+Each forwarded record carries the request's model, provider, token counts, cost, latency, and key/team/org attribution — the same fields described in [Logging & Tracing]({% link observability/logging-tracing.md %}).
+
+{: .note }
+Prompt and response content is **not** forwarded unless input/output logging is explicitly enabled. → [Data Handling & Privacy]({% link security-trust/data-privacy.md %})
 
 ---
 
-## Configuration
+## Alerting webhooks
+
+For operational alerts — slow requests, deployment failures, budget thresholds — Routero posts to Slack, email, or any custom webhook URL:
 
 ```yaml
 # config.yaml
 litellm_settings:
-  alerting: ["webhook"]
-  alerting_webhook_url: "https://hooks.yourcompany.com/routero"
-
-# Optional: filter to specific event types
-alerting_events:
-  - budget.threshold_80
-  - guardrail.violated
-  - fallback.triggered
+  alerting: ["slack"]
+  alerting_threshold: 30        # alert if a request takes longer than 30s
+  SLACK_WEBHOOK_URL: os.environ/SLACK_WEBHOOK_URL
 ```
 
----
+Use `alerting: ["webhook"]` with `alerting_webhook_url` to send alerts to a custom HTTPS endpoint. Configure recipients and thresholds from the dashboard under **Settings → Alerts**.
 
-## Payload format
-
-```json
-{
-  "event_type": "budget.threshold_80",
-  "timestamp": "2026-06-29T10:00:00Z",
-  "workspace_id": "ws_...",
-  "team_id": "data-science",
-  "budget_used_pct": 82.4,
-  "budget_used_usd": 412.00,
-  "budget_max_usd": 500.00
-}
-```
-
-All webhook payloads include an `X-Routero-Signature` header (HMAC-SHA256 of the raw body, signed with your webhook secret). Verify it before processing.
+{: .note }
+Webhook payloads are **not cryptographically signed**. Restrict your endpoint to Routero's egress and authenticate requests with a secret or token you control.

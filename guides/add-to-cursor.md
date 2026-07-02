@@ -17,7 +17,7 @@ Route AI coding assistants through Routero to bring developer tool usage under t
 
 - **Cost visibility** — who's using what models, at what cost, across which teams
 - **Policy enforcement** — block models or providers that aren't approved for source code
-- **Audit trail** — immutable log of all code-assistant calls (useful for IP and data-handling policies)
+- **Audit trail** — complete log of all code-assistant calls (useful for IP and data-handling policies)
 - **Budget limits** — cap individual developer or team spend on AI tooling
 - **Provider fallback** — coding assistant stays available even if one provider is rate-limited
 

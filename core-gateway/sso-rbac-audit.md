@@ -1,25 +1,28 @@
 ---
 lang: en
 page_id: core-gateway/sso-rbac-audit
-title: SSO, RBAC & Audit
+title: Access Control & Audit
 parent: Core Gateway
 nav_order: 6
-description: "SAML 2.0, SCIM, Cerbos fine-grained authorization, and the immutable audit log."
+description: "Admin-invite access, Cerbos fine-grained authorization, scoped virtual keys, and the admin audit log."
 ---
 
-# SSO, RBAC & Audit
+# Access Control & Audit
 
-Routero answers the questions your security team is already asking: who can call which model, who did, which prompts touched PII, and are deprovisioned employees' keys still active.
-
-> *"Bring your IdP, leave with the audit log."*
+Routero answers the questions your security team is already asking: who can call which model, who changed a key or a budget, and whether revoked keys are still active.
 
 ---
 
-## Identity: SAML 2.0 + SCIM
+## Access & login
 
-**SAML 2.0 SSO** — Supported IdPs: Okta, Microsoft Entra (Azure AD), Google Workspace, Auth0, Ping Identity, and any standard SAML 2.0 IdP. JIT provisioning on first login.
+Access to a Routero workspace is **invitation-based**. There is no public self-signup.
 
-**SCIM 2.0 auto-provisioning** — Sync users and groups from your IdP. Deprovisioning is automatic: when an employee is removed from the IdP group, their Routero access and associated virtual keys are revoked within seconds.
+- An **admin** creates users and teams from the dashboard (or the management API) and issues invitation links.
+- Invitees set up their access from the invitation and **log in directly** with their own credentials.
+- No third-party social or SSO login (Google, Microsoft, SAML, etc.) is wired into the product — identity is managed within Routero by your administrators.
+
+{: .note }
+Creating users and sending invitations requires an **admin** role. See [Authorization](#authorization-cerbos-rbac--pbac) below.
 
 ---
 
@@ -27,32 +30,32 @@ Routero answers the questions your security team is already asking: who can call
 
 Routero uses [Cerbos](https://cerbos.dev) as an externalized policy decision point. Every management and data-plane action is checked against a set of human-readable YAML policies before execution.
 
-**Built-in RBAC roles:**
+**Built-in roles:**
 
 | Role | What they can do |
 |---|---|
-| **Admin** | Full workspace control — models, keys, teams, billing, policies |
-| **Developer** | Create and use API keys; view spend for their own keys |
-| **Auditor** | Read-only access to audit logs, spend reports, and key metadata |
-| **Finance** | Read-only access to billing, spend, invoices, and chargeback reports |
-| **Custom** | Enterprise-plan: define your own role with exact resource permissions |
+| **Proxy Admin** | Full workspace control — models, keys, teams, billing, policies, users |
+| **Org Admin** | Admin over their organization — members, keys, models, and budgets scoped to the org |
+| **Internal User** | Create and use their own API keys; view their own spend |
+| **Internal User (view-only)** | Read-only access to spend and key metadata |
+| **Proxy Admin (view-only)** | Read-only oversight of the entire workspace |
 
-Cerbos policies are version-controlled alongside the application. Policy changes are themselves audit events.
+Roles are enforced both by the route gate and by Cerbos policy checks. Policy changes are themselves recorded as audit events.
 
 ---
 
 ## Virtual API keys
 
 Virtual keys are the primary auth primitive for LLM traffic. Each key:
+
 - Scopes to a workspace, team, or individual user
 - Carries an optional model allowlist (deny access to unapproved models)
 - Has a configurable TTL (expiry)
-- Can be IP-restricted (allowlist of CIDRs)
 - Can be revoked instantly via the dashboard or `DELETE /key/delete`
 - Never exposes the underlying provider API key to the caller
 
 ```bash
-# Generate a scoped key
+# Generate a scoped key (admin operation)
 curl -X POST https://api.routero.ai/key/generate \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -d '{
@@ -63,25 +66,26 @@ curl -X POST https://api.routero.ai/key/generate \
   }'
 ```
 
+{: .note }
+`/key/generate` is an **admin** operation. Regular consumer keys are meant for inference calls only (`/chat/completions`, `/embeddings`, …), not for creating more keys.
+
 ---
 
-## Immutable audit log
+## Audit log
 
-Every significant event in Routero is written to an immutable, append-only, cryptographically signed audit log. Events are chained (each record includes the hash of the previous) so tampering is detectable.
+Routero keeps an audit log of **administrative actions** — who changed what, and when. Every create, update, delete, block, and rotation of a key, user, model, team, or budget is recorded as an audit entry, with the acting user, the acting key, the affected resource, and the before/after values.
 
-**Event types logged:**
+**What's recorded:**
 
-| Category | Events |
+| Category | Examples |
 |---|---|
-| Inference | `request.routed`, `request.blocked`, `request.failed`, `request.guardrail_triggered` |
-| Policy | `policy.evaluated`, `policy.changed` (v17 → v18), `policy.blocked` |
-| Identity | `user.provisioned`, `user.deprovisioned`, `key.created`, `key.rotated`, `key.revoked` |
-| Access | `login.success`, `login.failed`, `mfa.challenged` |
-| Billing | `budget.threshold_reached`, `budget.exceeded`, `spend.debited` |
+| Keys | created · updated · deleted · blocked · rotated |
+| Users | created · updated · deleted |
+| Models | added · updated · removed |
+| Teams & Orgs | created · updated · member changes |
+| Budgets | created · updated · deleted |
 
-**Retention:** 365 days default; configurable to 7 years on Enterprise plans.
-
-**Export:** Stream to your SIEM via webhook, Kafka, or hourly S3 drop. → [SIEM & Audit Export]({% link observability/siem-audit.md %})
+Query the audit log from the dashboard or the management API (`GET /audit`, `GET /audit/{id}`), scoped to your organization. Sensitive values (such as key material) are masked before storage. → [Audit Log Reference]({% link security-trust/audit-log.md %})
 
 ---
 

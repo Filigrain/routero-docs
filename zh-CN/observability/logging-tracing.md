@@ -5,12 +5,12 @@ permalink: /observability/logging-tracing.html
 title: 日志与追踪
 parent: 可观测性
 nav_order: 1
-description: "约 80 个内置日志与追踪集成：OpenTelemetry、Datadog、Langfuse、Prometheus 等。"
+description: "可插拔的日志与追踪集成：OpenTelemetry、Datadog、Langfuse、Prometheus 等。"
 ---
 
 # 日志与追踪
 
-通过 Routero 的每个请求都会向你配置的日志后端触发成功与失败回调。可插拔的集成层提供约 80 个连接器——在你的代理配置或仪表盘中启用它们即可。
+通过 Routero 的每个请求都会向你配置的日志后端触发成功与失败回调。可插拔的集成层可连接你的团队已经在使用的日志、追踪与指标后端——在你的代理配置或仪表盘中启用它们即可。
 
 ---
 
@@ -21,7 +21,7 @@ description: "约 80 个内置日志与追踪集成：OpenTelemetry、Datadog、
 | **APM / 追踪** | OpenTelemetry, Datadog (DDTrace), Prometheus |
 | **LLM 可观测性** | Langfuse, LangSmith, Arize Phoenix, Helicone, Braintrust, MLflow, Galileo, Opik, Lunary, W&B Weave, AgentOps |
 | **日志存储** | S3（任意地域）, GCS Bucket, GCS Pub/Sub, SQS, DynamoDB |
-| **SIEM / 安全** | Azure Sentinel, webhook（自定义 SIEM） |
+| **自定义** | 通用 HTTP Webhook（转发到任意数据存储或 SIEM） |
 | **告警** | Slack, PagerDuty, email |
 | **分析** | PostHog, CloudZero |
 | **Logfire** | Pydantic Logfire |

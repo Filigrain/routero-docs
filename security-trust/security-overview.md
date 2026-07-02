@@ -53,11 +53,9 @@ Provider API keys are **never logged, echoed, or exported**. They cannot be retr
 
 | Control | Implementation |
 |---|---|
-| Authentication | Virtual API key (scoped, TTL, revocable) or SAML SSO |
+| Authentication | Virtual API key (scoped, TTL, revocable); dashboard access via admin-issued invitation |
 | Authorization | Cerbos PBAC/RBAC — every management and data-plane action checked |
-| SCIM deprovisioning | User + keys revoked within seconds of IdP removal |
-| IP restriction | Per-key CIDR allowlists |
-| MFA | Enforced at the IdP layer for SSO users |
+| Provisioning | Admin-invite only — no public self-signup; admins create users and teams |
 | Internal service | Internal loopback key (signed service-account, not a user key) |
 
 ---

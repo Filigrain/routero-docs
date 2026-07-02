@@ -28,9 +28,8 @@ The managed multi-tenant option. Routero operates the infrastructure; you consum
 
 ## Onboarding
 
-1. Sign up at [platform.routero.ai](https://platform.routero.ai).
-2. Create a workspace and generate a virtual API key.
-3. Set `base_url = "https://api.routero.ai/v1"` in your application. Done.
+1. Your workspace admin invites you to [platform.routero.ai](https://platform.routero.ai) and issues you a virtual API key.
+2. Set `base_url = "https://api.routero.ai/v1"` in your application. Done.
 
 First routed request in under 60 seconds.
 

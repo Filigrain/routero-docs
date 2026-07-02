@@ -4,12 +4,12 @@ page_id: observability/logging-tracing
 title: Logging & Tracing
 parent: Observability
 nav_order: 1
-description: "~80 built-in logging and tracing integrations: OpenTelemetry, Datadog, Langfuse, Prometheus, and more."
+description: "Pluggable logging and tracing integrations: OpenTelemetry, Datadog, Langfuse, Prometheus, and more."
 ---
 
 # Logging & Tracing
 
-Every request through Routero fires success and failure callbacks to your configured logging backends. The pluggable integration layer ships ~80 connectors — enable them in your proxy config or dashboard.
+Every request through Routero fires success and failure callbacks to your configured logging backends. The pluggable integration layer connects to the logging, tracing, and metrics backends your team already runs — enable them in your proxy config or dashboard.
 
 ---
 
@@ -20,7 +20,7 @@ Every request through Routero fires success and failure callbacks to your config
 | **APM / Tracing** | OpenTelemetry, Datadog (DDTrace), Prometheus |
 | **LLM Observability** | Langfuse, LangSmith, Arize Phoenix, Helicone, Braintrust, MLflow, Galileo, Opik, Lunary, W&B Weave, AgentOps |
 | **Log storage** | S3 (any region), GCS Bucket, GCS Pub/Sub, SQS, DynamoDB |
-| **SIEM / Security** | Azure Sentinel, webhook (custom SIEM) |
+| **Custom** | Generic HTTP webhook (forward to any datastore or SIEM) |
 | **Alerting** | Slack, PagerDuty, email |
 | **Analytics** | PostHog, CloudZero |
 | **Logfire** | Pydantic Logfire |

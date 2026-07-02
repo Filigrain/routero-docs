@@ -14,11 +14,11 @@ description: "预置工作区、配置路由策略、设置团队预算，并路
 
 ---
 
-## 步骤 1 — 创建工作区
+## 步骤 1 — 获取工作区访问权限
 
-在 [platform.routero.ai](https://platform.routero.ai) 注册。如果你使用的是单租户云或私有部署，请改用你的实例 URL。
+工作区采用邀请制——没有公开注册。你的 Routero 工作区管理员会邀请你加入 [platform.routero.ai](https://platform.routero.ai)（或你的单租户/私有部署实例 URL），并授予你管理员角色。
 
-你的第一个工作区会自动创建。请在 **Settings → API Keys** 中记下你的管理员密钥（`sk-admin-...`）。
+请在 **Settings → API Keys** 中记下你的管理员密钥（`sk-admin-...`）。
 
 ---
 
@@ -96,7 +96,7 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-在控制台的 **Audit Log** 中查看该请求。你应当看到：模型、供应商、token 计数、成本以及团队归属。
+在控制台的 **Usage** 中查看该请求。你应当看到：模型、供应商、token 计数、成本以及团队归属。
 
 ---
 
@@ -134,7 +134,7 @@ response = client.chat.completions.create(
 
 ## 后续步骤
 
-- 设置 SSO → [SSO、RBAC 与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})
+- 查看访问与审计 → [访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})
 - 添加更多团队和策略 → [多租户]({% link zh-CN/core-gateway/multi-tenancy.md %})
 - 启用 Token 节省 → [Token 节省]({% link zh-CN/advanced-features/token-saving.md %})
 - 添加更多供应商以实现故障转移 → [故障转移与回退]({% link zh-CN/core-gateway/failover.md %})

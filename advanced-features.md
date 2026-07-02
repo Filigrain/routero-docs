@@ -117,7 +117,7 @@ Pass `store_memory: false` on any request to skip storage. Use the Management AP
 Each feature is:
 - **Org-scoped** — configurations belong to your workspace and are invisible to other tenants.
 - **IDOR-protected** — the gateway checks that the calling key's organisation owns the referenced ID before applying it.
-- **Audited** — feature activations, cache hits, and guardrail violations appear in your immutable audit log.
+- **Audited** — feature activations, cache hits, and guardrail violations appear in your audit log and usage views.
 - **Dashboard-managed** — non-engineers can create and manage configurations from the Routero admin dashboard without API calls.
 
 ---

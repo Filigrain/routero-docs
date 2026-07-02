@@ -29,7 +29,7 @@ Mem0 requires Postgres with pgvector. For Private Deployments, enable the memory
 
 ## Step 1 — Create a memory session per user
 
-Create sessions at user registration or first login. Store the returned `memory_id` alongside the user record.
+Create sessions at first login (or when the user is provisioned). Store the returned `memory_id` alongside the user record.
 
 ```python
 import requests

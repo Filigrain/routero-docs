@@ -4,12 +4,12 @@ page_id: observability
 title: Observability
 nav_order: 7
 has_children: true
-description: "Logging, tracing, metrics, SIEM export, and webhooks for all LLM traffic through Routero."
+description: "Logging, tracing, metrics, and webhooks for all LLM traffic through Routero."
 ---
 
 # Observability
 
-Every request through Routero is logged, costed, and attributable. The gateway ships ~80 built-in integrations for logging, tracing, and metrics — plus a streaming audit log you can pipe to any SIEM.
+Every request through Routero is logged, costed, and attributable. The gateway integrates with the logging, tracing, and metrics backends your team already runs — OpenTelemetry, Datadog, Langfuse, Prometheus, and more — and can forward every LLM event to any HTTP endpoint or chat channel via webhooks.
 
 ---
 
@@ -17,5 +17,4 @@ Every request through Routero is logged, costed, and attributable. The gateway s
 
 - [Logging & Tracing]({% link observability/logging-tracing.md %}) — OpenTelemetry, Datadog, Langfuse, Langsmith, Prometheus, and more
 - [Metrics & Analytics]({% link observability/metrics-analytics.md %}) — per-key, per-team, per-org usage and spend dashboards
-- [SIEM & Audit Export]({% link observability/siem-audit.md %}) — streaming the immutable audit log to Kafka, S3, or webhooks
-- [Webhooks]({% link observability/webhooks.md %}) — real-time event notifications for routing decisions, budget alerts, and violations
+- [Webhooks]({% link observability/webhooks.md %}) — forward LLM request logs to any HTTP endpoint, plus Slack and email alerts
