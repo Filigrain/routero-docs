@@ -1,8 +1,8 @@
 // Routero brand overrides — light content + teal sidebar (matches Admin Portal).
 
 :root {
-  --routero-teal: #2fb68f;          // --brand-primary
-  --routero-teal-hover: #23866a;    // --brand-primary-emphasis
+  --routero-teal: #2fb68f; // --brand-primary
+  --routero-teal-hover: #23866a; // --brand-primary-emphasis
 }
 
 // ---------------------------------------------------------------------------
@@ -46,33 +46,46 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  // Symmetric horizontal breathing room so the logo (left) and the language
+  // switcher (right) sit at equal distance from the header edges. Kept modest
+  // because the sidebar is only 264px wide — too much padding starves the row.
+  padding: 0.85rem 1rem;
 }
 
 // Language switcher (EN / 中文) — injected into the sidebar header by head_custom.html.
+// Rendered as a segmented control: the active language is a white pill on the
+// teal bar; the inactive one is translucent white. No separator dot needed.
 .lang-switcher {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  margin-left: 0.5rem;
-  font-size: 0.8rem;
+  gap: 0.1rem;
+  padding: 0.15rem;
+  background-color: rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  font-size: 0.74rem;
   font-weight: 600;
   white-space: nowrap;
 }
 .lang-switcher a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.78);
   text-decoration: none;
-  padding: 0.1rem 0.25rem;
-  border-radius: 3px;
+  padding: 0.14rem 0.4rem;
+  border-radius: 4px;
+  line-height: 1.3;
+  transition:
+    color 0.12s ease,
+    background-color 0.12s ease;
 }
 .lang-switcher a:hover {
   color: #fff;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.16);
 }
 .lang-switcher a.active {
-  color: #fff;
+  color: var(--routero-teal);
+  background-color: #fff;
 }
 .lang-switcher .lang-sep {
-  color: rgba(255, 255, 255, 0.4);
+  display: none;
 }
 
 // Header: icon + "Routero" wordmark, left-aligned (mirrors the Admin Portal).
@@ -81,17 +94,20 @@
   align-items: center;
   justify-content: flex-start;
   gap: 0.55rem;
+  padding-left: 0; // override Just-the-Docs' 32px so the logo aligns with the nav below
 }
 .site-title,
 .site-title:hover {
   color: #fff;
   font-weight: 700;
+  background-color: transparent; // it's a link — no hover background on the logo row
+  text-decoration: none;
 }
 .site-title::after {
   content: "Routero";
   color: #fff;
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   letter-spacing: -0.01em;
 }
 
@@ -106,16 +122,30 @@
   filter: brightness(0) invert(1);
 }
 
-// Nav links: soft white inactive, brighter on hover, white pill when active
+// Inset the top-level nav list so hover/active backgrounds render as rounded
+// pills with a margin to the sidebar edges. Without this, each nav-link spans
+// the full 264px width and its hover/active fill reads as a heavy full-bleed bar.
+.site-nav > .nav-list {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+// Nav links: refined spacing, rounded hover/active surfaces, smooth feedback.
+// Left padding aligns first-level text with the logo (both at the header padding).
 .nav-list .nav-list-item .nav-list-link {
   color: rgba(255, 255, 255, 0.82);
+  padding: 0.4rem 0.75rem 0.4rem 0.5rem;
+  border-radius: 6px;
+  transition:
+    background-color 0.14s ease,
+    color 0.14s ease;
 }
 .nav-list .nav-list-item .nav-list-link:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.14);
   color: #fff;
 }
 .nav-list .nav-list-item .nav-list-link.active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.25);
   color: #fff !important;
   font-weight: 600;
 }
@@ -129,10 +159,14 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-// Sidebar footer
+// Sidebar footer — a deep green reads as a calmer secondary tone on teal than
+// translucent white, and stays within the brand colour family.
 .site-footer {
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff6;
   border-top: none;
+}
+.site-footer p {
+  color: inherit; // beat any .text-grey-* utility class on the footer markup
 }
 .site-footer a {
   color: #fff;
