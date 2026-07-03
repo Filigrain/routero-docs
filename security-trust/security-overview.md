@@ -73,7 +73,7 @@ Provider API keys are **never logged, echoed, or exported**. They cannot be retr
 ## Incident response
 
 - SOC 2 Type II audit includes incident response procedures
-- Production alerts in PagerDuty (p1 SLA: 30-minute response)
+- Production alerts in PagerDuty
 - Status page at [status.routero.ai](https://status.routero.ai)
 - Security vulnerability disclosure: security@routero.ai
 

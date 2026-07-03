@@ -5,7 +5,7 @@ permalink: /guides/failover-chain.html
 title: 三供应商故障转移链
 parent: 指南
 nav_order: 5
-description: "配置一条富有弹性的 OpenAI → Anthropic → Bedrock 回退链，实现 99.99%+ 的有效可用性。"
+description: "配置一条富有弹性的 OpenAI → Anthropic → Bedrock 回退链，在单个供应商中断时保持应用正常运行。"
 ---
 
 # 三供应商故障转移链

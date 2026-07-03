@@ -4,7 +4,7 @@ page_id: guides/failover-chain
 title: 3-Provider Failover Chain
 parent: Guides
 nav_order: 5
-description: "Configure a resilient OpenAI → Anthropic → Bedrock fallback for 99.99%+ effective availability."
+description: "Configure a resilient OpenAI → Anthropic → Bedrock fallback that keeps your app running through a single-provider outage."
 ---
 
 # 3-Provider Failover Chain

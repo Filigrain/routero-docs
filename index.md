@@ -55,7 +55,7 @@ Your app
 Routero is composed of four composable primitives. Use one or all — they are independent.
 
 ### Routes & Failover
-Named model groups with ordered provider fallbacks. Automatically retries on 5xx, rate limits, or content-filter trips. Streaming-aware — no dropped chunks. Three providers in a chain is the new 99.99% uptime.
+Named model groups with ordered provider fallbacks. Automatically retries on 5xx, rate limits, or content-filter trips. Streaming-aware — no dropped chunks. Three providers in a chain absorb any single-provider outage.
 
 [→ Routing & Load Balancing]({% link core-gateway/routing.md %}) · [Failover & Fallbacks]({% link core-gateway/failover.md %})
 
