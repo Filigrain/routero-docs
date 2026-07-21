@@ -24,9 +24,8 @@ The Routero Router distributes each request across one or more configured provid
 | `lowest_tpm_rpm` | Deployment furthest from its TPM/RPM limit | Rate-limit avoidance |
 | `usage_based_routing_v2` | Tracks real-time usage against provider limits | High-volume, mixed rate limits |
 | `tag_based_routing` | Matches request tags to deployment tags | Residency, capability routing |
-| `auto_router` | Routero-managed, adapts over time | Hands-off optimisation |
 
-Set the strategy per model group in your router configuration or policy YAML.
+Set the strategy per model group in your router configuration.
 
 ---
 
@@ -77,4 +76,4 @@ The Router tracks each deployment's health in Redis:
 All routing state (cooldowns, usage counters, latency windows) is stored in Redis. In a multi-instance deployment, all proxy replicas share the same routing state — no cross-instance coordination required beyond the shared Redis.
 
 → [Failover & Fallbacks]({% link core-gateway/failover.md %}) for how the Router handles provider errors mid-request.
-→ [Policy Routing]({% link core-gateway/policy-routing.md %}) for declarative YAML rules that influence routing decisions.
+→ [Auto Router]({% link core-gateway/auto-router.md %}) for intent-based model selection that runs before the strategy above.

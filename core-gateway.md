@@ -17,8 +17,9 @@ The core gateway is Routero AI's unified LLM proxy — an OpenAI-compatible inte
 
 - [Unified API]({% link core-gateway/unified-api.md %}) — every supported endpoint and provider
 - [Routing & Load Balancing]({% link core-gateway/routing.md %}) — strategies, model groups, and the Router
+- [Auto Router]({% link core-gateway/auto-router.md %}) — intent-based model selection by message content
 - [Failover & Fallbacks]({% link core-gateway/failover.md %}) — multi-provider failover chains
-- [Policy Routing]({% link core-gateway/policy-routing.md %}) — YAML policy-as-code, 42 routing signals
+- [Policies]({% link core-gateway/policies.md %}) — bundle guardrails, prompts, memory, and token saving into a named policy
 - [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) — hard caps, soft alerts, FinOps chargeback
 - [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) — admin-invite · Cerbos · audit log
 - [Multi-Tenancy]({% link core-gateway/multi-tenancy.md %}) — orgs · teams · users · customers

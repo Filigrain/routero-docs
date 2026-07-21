@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: advanced-features/guardrails
 permalink: /advanced-features/guardrails.html
 title: 护栏
-parent: 高级功能
+parent: AI 能力
 nav_order: 2
 description: "内容过滤、PII 脱敏、密钥检测与工具权限强制执行——集中管理、按组织强制执行。"
 ---

@@ -2,7 +2,7 @@
 lang: en
 page_id: advanced-features/prompt-management
 title: Prompt Management
-parent: Advanced Features
+parent: AI Capabilities
 nav_order: 3
 description: "Central prompt registry with immutable versioning, Jinja2 templates, and instant rollback."
 ---

@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: advanced-features/token-saving
 permalink: /advanced-features/token-saving.html
 title: Token 节省
-parent: 高级功能
+parent: AI 能力
 nav_order: 1
 description: "提示词压缩与精确/语义响应缓存——在不修改应用代码的前提下降低成本。"
 ---

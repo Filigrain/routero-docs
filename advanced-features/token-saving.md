@@ -2,7 +2,7 @@
 lang: en
 page_id: advanced-features/token-saving
 title: Token Saving
-parent: Advanced Features
+parent: AI Capabilities
 nav_order: 1
 description: "Prompt compression and exact/semantic response caching — reduce cost without changing application code."
 ---

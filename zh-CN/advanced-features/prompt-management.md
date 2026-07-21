@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: advanced-features/prompt-management
 permalink: /advanced-features/prompt-management.html
 title: 提示词管理
-parent: 高级功能
+parent: AI 能力
 nav_order: 3
 description: "中央提示词注册表，支持不可篡改的版本管理、Jinja2 模板与即时回滚。"
 ---

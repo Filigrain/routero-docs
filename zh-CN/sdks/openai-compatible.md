@@ -83,9 +83,9 @@ curl https://api.routero.ai/v1/chat/completions \
 
 ---
 
-## 在 OpenAI 客户端中使用高级功能
+## 在 OpenAI 客户端中使用 AI 能力
 
-通过 SDK 的 `extra_body` 参数（Python/TS）或作为请求体中的额外 JSON 字段，传入高级功能 ID：
+通过 SDK 的 `extra_body` 参数（Python/TS）或作为请求体中的额外 JSON 字段，传入 AI 能力 ID：
 
 ```python
 # Python — extra_body 参数

@@ -73,7 +73,7 @@ MASTER_KEY=your-secret-key docker compose up -d
 
 ---
 
-## Enable Advanced Features (memory tier)
+## Enable AI Capabilities (memory tier)
 
 The memory tier (required for [Memory-as-a-Service]({% link advanced-features/memory-service.md %}) and semantic caching in [Token Saving]({% link advanced-features/token-saving.md %})) runs as an optional Compose profile:
 

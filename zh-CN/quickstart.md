@@ -101,7 +101,7 @@ Routero 会将任意模型字符串传递给相应的供应商。你可以使用
 | 供应商变体 | `bedrock/anthropic.claude-sonnet-4-6` | 完全限定的 AWS Bedrock 模型 |
 
 {: .note }
-Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）在你工作区的路由策略中配置，并自动应用回退链。参见[策略路由]({% link zh-CN/core-gateway/policy-routing.md %})。
+Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）是由你的工作区管理员配置的模型组；每个都会自动应用其回退链。参见[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})。
 
 ---
 
@@ -109,8 +109,8 @@ Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）在你工作区
 
 你发送的每个请求都经过了 Routero 的四步决策流水线：
 
-1. **策略闸门** —— Routero 检查你密钥的身份，评估你工作区的路由策略（内容检查、模型允许列表、预算状态），并决定是否继续。
-2. **供应商选择** —— Router 根据当前健康状况、延迟、成本和数据驻留为符合条件的部署打分。`smart/balanced` 解析为你配置的主供应商。
+1. **认证与访问** —— Routero 校验你的虚拟密钥，检查该密钥是否有权调用所请求的模型，并确认你的工作区预算尚有余量。
+2. **供应商选择** —— Router 根据当前健康状况、延迟和成本为符合条件的部署打分，然后选出一个。`smart/balanced` 解析为你配置的主供应商。
 3. **计费** —— 计算 token 数量和成本，并原子性地从你工作区的预算中扣除，用量被记录。
 4. **响应** —— 供应商的响应通过网关零缓冲地流式返回。
 
@@ -118,7 +118,7 @@ Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）在你工作区
 
 ---
 
-## 启用高级功能
+## 启用 AI 能力
 
 在同一个请求上传入任意功能 ID 的组合，即可解锁 Routero 的生产级 AI 层。代理会从你的工作区解析每项配置，将其作为钩子应用，并在向上游发起调用之前剥离 ID——你的应用代码无需改动。
 
@@ -135,13 +135,13 @@ response = client.chat.completions.create(
 )
 ```
 
-→ [高级功能]({% link zh-CN/advanced-features.md %})
+→ [AI 能力]({% link zh-CN/advanced-features.md %})
 
 ---
 
 ## 接下来做什么
 
-- **设置你的第一个路由策略** → [策略路由]({% link zh-CN/core-gateway/policy-routing.md %})
+- **把能力打包为一个策略** → [策略]({% link zh-CN/core-gateway/policies.md %})
 - **为你的团队添加支出预算** → [预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})
 - **选择你的部署模型** → [部署选项]({% link zh-CN/deployment.md %})
 - **为 PII 启用护栏** → [护栏]({% link zh-CN/advanced-features/guardrails.md %})

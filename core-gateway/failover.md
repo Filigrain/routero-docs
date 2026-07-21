@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/failover
 title: Failover & Fallbacks
 parent: Core Gateway
-nav_order: 3
+nav_order: 4
 description: "Multi-provider failover chains, automatic retry behaviour, and streaming-aware fallback."
 ---
 
@@ -18,7 +18,7 @@ Routero AI treats provider outages as routing problems, not application errors. 
 ## Configuring a fallback chain
 
 ```yaml
-# In your router config or policy YAML
+# In your router config
 router_settings:
   fallbacks:
     - openai/gpt-4o:
@@ -60,17 +60,17 @@ If a provider fails mid-stream, Routero replays only the undelivered tail on the
 
 ## Budget-aware fallback
 
-Fallback respects your workspace's spend policies. If the primary deployment would exceed a budget ceiling, the Router selects the next deployment in the chain before making the call — the budget check runs as part of the policy gate, before the provider call.
+Fallback respects your workspace's spend limits. If the primary deployment would exceed a budget ceiling, the Router selects the next deployment in the chain before making the call — the budget check runs before the provider call.
 
 → [Budgets & Spend Guards]({% link core-gateway/budgets.md %})
 
 ---
 
-## Region-pinned fallback
+## Region and fallback chains
 
-Fallback chains can be constrained to a data residency region. If your policy specifies `residency: eu-only`, the Router only considers deployments in EU regions for both primary and fallback selection.
+A fallback chain only ever considers the deployments you list in it. To keep a chain within a single data-residency region, list only deployments hosted in that region — the Router never leaves the chain you defined. For pinning traffic to specific deployments by request tag (for example EU-hosted deployments), use tag-based routing.
 
-→ [Policy Routing]({% link core-gateway/policy-routing.md %}) · [Data Residency & Regions]({% link deployment/data-residency.md %})
+→ [Data Residency & Regions]({% link deployment/data-residency.md %}) · [Routing & Load Balancing]({% link core-gateway/routing.md %})
 
 ---
 

@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/sso-rbac-audit
 title: Access Control & Audit
 parent: Core Gateway
-nav_order: 6
+nav_order: 7
 description: "Admin-invite access, Cerbos fine-grained authorization, scoped virtual keys, and the admin audit log."
 ---
 

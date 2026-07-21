@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/budgets
 title: Budgets & Spend Guards
 parent: Core Gateway
-nav_order: 5
+nav_order: 6
 description: "Hard spend ceilings, soft alerts, and per-team chargeback for every dollar of AI spend."
 ---
 

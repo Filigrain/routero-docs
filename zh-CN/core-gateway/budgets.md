@@ -4,7 +4,7 @@ page_id: core-gateway/budgets
 permalink: /core-gateway/budgets.html
 title: 预算与支出护栏
 parent: 核心网关
-nav_order: 5
+nav_order: 6
 description: "为每一美元 AI 支出提供硬性支出上限、软性告警和按团队的费用分摊。"
 ---
 

@@ -100,7 +100,7 @@ Routero passes any model string to the appropriate provider. You can use:
 | Provider variant | `bedrock/anthropic.claude-sonnet-4-6` | Fully-qualified AWS Bedrock model |
 
 {: .note }
-Smart aliases (`smart/balanced`, `smart/fast`, `smart/cheap`) are configured in your workspace's routing policy and apply fallback chains automatically. See [Policy Routing]({% link core-gateway/policy-routing.md %}).
+Smart aliases (`smart/balanced`, `smart/fast`, `smart/cheap`) are model groups your workspace admin configures; each applies its fallback chain automatically. See [Routing & Load Balancing]({% link core-gateway/routing.md %}).
 
 ---
 
@@ -108,8 +108,8 @@ Smart aliases (`smart/balanced`, `smart/fast`, `smart/cheap`) are configured in 
 
 Every request you sent ran through Routero's four-decision pipeline:
 
-1. **Policy gate** — Routero checked your key's identity, evaluated your workspace's routing policy (content checks, model allowlist, budget state), and decided whether to proceed.
-2. **Provider selection** — The Router scored eligible deployments by current health, latency, cost, and data residency. `smart/balanced` resolved to your configured primary provider.
+1. **Auth & access** — Routero verified your virtual key, checked that the key may call the requested model, and confirmed your workspace budget had room.
+2. **Provider selection** — The Router scored eligible deployments by current health, latency, and cost, then picked one. `smart/balanced` resolved to your configured primary provider.
 3. **Accounting** — The token count and cost were calculated and debited from your workspace budget atomically, and the usage was logged.
 4. **Response** — The provider's response was streamed back through the gateway with zero buffering.
 
@@ -117,7 +117,7 @@ The request now appears in your [platform dashboard](https://platform.routero.ai
 
 ---
 
-## Activate Advanced Features
+## Activate AI Capabilities
 
 Pass any combination of feature IDs on the same request to unlock Routero's production-AI layer. The proxy resolves each config from your workspace, applies it as a hook, and strips the ID before the upstream call — your application code never changes.
 
@@ -134,13 +134,13 @@ response = client.chat.completions.create(
 )
 ```
 
-→ [Advanced Features]({% link advanced-features.md %})
+→ [AI Capabilities]({% link advanced-features.md %})
 
 ---
 
 ## What to do next
 
-- **Set up your first routing policy** → [Policy Routing]({% link core-gateway/policy-routing.md %})
+- **Bundle capabilities into a policy** → [Policies]({% link core-gateway/policies.md %})
 - **Add a spend budget for your team** → [Budgets & Spend Guards]({% link core-gateway/budgets.md %})
 - **Choose your deployment model** → [Deployment Options]({% link deployment.md %})
 - **Enable guardrails for PII** → [Guardrails]({% link advanced-features/guardrails.md %})

@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/cost-tracking
 title: Cost Tracking & Billing
 parent: Core Gateway
-nav_order: 8
+nav_order: 9
 description: "Per-request cost pipeline, the prepaid wallet, invoices, and spend analytics."
 ---
 

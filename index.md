@@ -13,7 +13,7 @@ description: "What Routero AI is, why enterprises choose it, and how to navigate
 
 Routero AI is an **enterprise AI control plane** — a unified gateway that sits between your applications and every AI provider. It gives platform, security, and FinOps teams the governance layer they need to ship AI features with confidence, while letting developers use the OpenAI SDK they already know.
 
-Change `base_url` in one line of code. Get 100+ models, built-in failover, declarative policy, spend controls, and a complete audit trail — with data exactly where your security team requires.
+Change `base_url` in one line of code. Get 100+ models, smart routing, built-in failover, capability policies, spend controls, and a complete audit trail — with data exactly where your security team requires.
 
 > *"We replaced four gateways and a 600-line failover hack with one Routero AI config."*
 
@@ -40,13 +40,14 @@ Every request runs a deterministic, auditable pipeline:
 
 ```
 Your app
-  → [Policy gate]           identity · content check · model allowlist · budget
-  → [Provider selection]    health + latency · price · residency · fallback chain
+  → [Auth & access]         virtual key · model access · budget guard
+  → [Routing]               Auto Router (optional) → strategy picks a healthy deployment
+  → [Capabilities]          policy injects guardrails · prompts · memory · token saving
   → [Account & audit]       token/$ debited atomically · decision logged
   → Provider
 ```
 
-**P50 routing overhead: ~8–12 ms. P99: <50 ms.** Every decision is logged within milliseconds and reproducible months later.
+Every decision is logged and reproducible months later.
 
 ---
 
@@ -54,15 +55,15 @@ Your app
 
 Routero is composed of four composable primitives. Use one or all — they are independent.
 
-### Routes & Failover
-Named model groups with ordered provider fallbacks. Automatically retries on 5xx, rate limits, or content-filter trips. Streaming-aware — no dropped chunks. Three providers in a chain absorb any single-provider outage.
+### Routing & Failover
+Named model groups, pluggable routing strategies, and an optional **Auto Router** that picks the best model for each message by intent. Ordered provider fallbacks automatically retry on 5xx, rate limits, or content-filter trips — streaming-aware, no dropped chunks.
 
-[→ Routing & Load Balancing]({% link core-gateway/routing.md %}) · [Failover & Fallbacks]({% link core-gateway/failover.md %})
+[→ Routing & Load Balancing]({% link core-gateway/routing.md %}) · [Auto Router]({% link core-gateway/auto-router.md %}) · [Failover & Fallbacks]({% link core-gateway/failover.md %})
 
-### Policy Routing
-Declarative YAML rules that decide which model serves which request — evaluated on identity, content classification, region, budget state, schedule, and custom app signals. Version-controlled, human-reviewable, and hot-reloaded in under 5 seconds with no application redeploy.
+### Policies
+Bundle guardrails, prompts, memory, and token-saving plans into a named policy and bind it to a key or model. The capabilities activate automatically on every matching request — no per-request IDs in your application code.
 
-[→ Policy Routing]({% link core-gateway/policy-routing.md %})
+[→ Policies]({% link core-gateway/policies.md %})
 
 ### Budgets & Spend Guards
 Hard ceilings, soft alerts, and per-team chargeback for every dollar of AI spend. Warn at 80 %, auto-throttle at 100 %, block if you mean it. Finance gets one consolidated invoice; each team gets attributed line items.
@@ -91,7 +92,7 @@ The same control plane runs in four configurations. Your security team picks whe
 
 ---
 
-## Advanced Features — the production AI layer
+## AI Capabilities — the production AI layer
 
 Beyond routing and governance, Routero ships four opt-in capabilities that production AI systems typically build themselves. Activate each by passing a single ID on any request — no payload restructuring, no new endpoints.
 
@@ -102,7 +103,7 @@ Beyond routing and governance, Routero ships four opt-in capabilities that produ
 | [**Prompt Management**]({% link advanced-features/prompt-management.md %}) | Central prompt registry with immutable versioning, Jinja2 templates, two-layer caching, and instant rollback |
 | [**Memory-as-a-Service**]({% link advanced-features/memory-service.md %}) | Long-term memory via Mem0 (vector) and Cognee (knowledge graph) — automatically retrieved and injected per request |
 
-[→ Advanced Features]({% link advanced-features.md %})
+[→ AI Capabilities]({% link advanced-features.md %})
 
 ---
 

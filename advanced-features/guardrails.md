@@ -2,7 +2,7 @@
 lang: en
 page_id: advanced-features/guardrails
 title: Guardrails
-parent: Advanced Features
+parent: AI Capabilities
 nav_order: 2
 description: "Content filtering, PII redaction, secret detection, and tool permission enforcement — centrally managed, per-org enforced."
 ---

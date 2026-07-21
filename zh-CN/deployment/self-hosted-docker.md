@@ -74,7 +74,7 @@ MASTER_KEY=your-secret-key docker compose up -d
 
 ---
 
-## 启用高级功能（记忆层）
+## 启用 AI 能力（记忆层）
 
 记忆层（[记忆即服务]({% link zh-CN/advanced-features/memory-service.md %})以及 [Token 节省]({% link zh-CN/advanced-features/token-saving.md %})中的语义缓存所必需）作为一个可选的 Compose profile 运行：
 

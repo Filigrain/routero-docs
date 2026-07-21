@@ -95,9 +95,9 @@ client = instructor.from_openai(
 
 ---
 
-## Adding Advanced Features from frameworks
+## Adding AI Capabilities from frameworks
 
-Frameworks that support `extra_body` / extra kwargs can pass Advanced Feature IDs through to Routero:
+Frameworks that support `extra_body` / extra kwargs can pass AI Capability IDs through to Routero:
 
 ```python
 # LangChain

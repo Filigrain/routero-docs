@@ -4,7 +4,7 @@ page_id: core-gateway/cost-tracking
 permalink: /core-gateway/cost-tracking.html
 title: 成本追踪与计费
 parent: 核心网关
-nav_order: 8
+nav_order: 9
 description: "按请求的成本管线、预付钱包、发票和支出分析。"
 ---
 

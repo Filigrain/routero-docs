@@ -96,9 +96,9 @@ client = instructor.from_openai(
 
 ---
 
-## 从框架添加高级功能
+## 从框架添加 AI 能力
 
-支持 `extra_body` / 额外 kwargs 的框架可以将高级功能 ID 透传给 Routero：
+支持 `extra_body` / 额外 kwargs 的框架可以将 AI 能力 ID 透传给 Routero：
 
 ```python
 # LangChain

@@ -4,7 +4,7 @@ page_id: core-gateway/failover
 permalink: /core-gateway/failover.html
 title: 故障转移与回退
 parent: 核心网关
-nav_order: 3
+nav_order: 4
 description: "多供应商故障转移链、自动重试行为，以及感知流式的回退。"
 ---
 
@@ -19,7 +19,7 @@ Routero AI 将供应商宕机视为路由问题，而非应用错误。配置一
 ## 配置回退链
 
 ```yaml
-# 在路由器配置或策略 YAML 中
+# 在你的路由器配置中
 router_settings:
   fallbacks:
     - openai/gpt-4o:
@@ -61,17 +61,17 @@ Routero 对供应商错误进行分类，并据此选择重试策略：
 
 ## 感知预算的回退
 
-回退会遵循你工作区的支出策略。如果主部署会超出预算上限，Router 会在发起调用前先选择链中的下一个部署 —— 预算检查作为策略门的一部分运行，在供应商调用之前完成。
+回退会遵循你工作区的支出限额。如果主部署会超出预算上限，Router 会在发起调用前先选择链中的下一个部署 —— 预算检查在供应商调用之前完成。
 
 → [预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})
 
 ---
 
-## 地域绑定的回退
+## 地域与回退链
 
-回退链可以被限制在某个数据驻留地域内。如果你的策略指定了 `residency: eu-only`，则 Router 在选择主供应商和回退供应商时都只考虑 EU 地域内的部署。
+回退链只会考虑你在其中列出的部署。要让一条链保持在单个数据驻留地域内，只需只列出部署在该地域的部署——Router 绝不会离开你所定义的链。如需按请求标签把流量锁定到特定部署（例如 EU 地域内的部署），请使用基于标签的路由。
 
-→ [策略路由]({% link zh-CN/core-gateway/policy-routing.md %}) · [数据驻留与地域]({% link zh-CN/deployment/data-residency.md %})
+→ [数据驻留与地域]({% link zh-CN/deployment/data-residency.md %}) · [路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})
 
 ---
 

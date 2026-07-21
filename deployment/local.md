@@ -15,7 +15,7 @@ The fastest way to run Routero AI on your own machine — for evaluating the pla
 
 ## When to choose this
 
-- **Evaluation** — explore Routero's routing, policy, and Advanced Features before committing to a cloud deployment.
+- **Evaluation** — explore Routero's routing, policies, and AI Capabilities before committing to a cloud deployment.
 - **Local development** — run the gateway alongside your application during development so your dev environment matches production.
 - **Air-gapped / offline** — environments with no outbound internet access. Models are served from local endpoints (e.g. Ollama); the gateway enforces the same policies as cloud.
 - **CI/CD integration testing** — spin up the gateway in a pipeline to integration-test your application against a real Routero instance.
@@ -45,7 +45,8 @@ All Routero features work locally with no configuration changes required:
 | Feature | Works locally |
 |---|---|
 | Routing, failover, load balancing | ✓ |
-| Policy routing (YAML rules) | ✓ |
+| Auto Router (intent-based model selection) | ✓ |
+| Policies (capability bundles) | ✓ |
 | Budgets and spend tracking | ✓ |
 | Virtual API keys and orgs | ✓ |
 | Guardrails (including Presidio PII) | ✓ |
@@ -66,4 +67,4 @@ Contact [solutions@routero.ai](mailto:solutions@routero.ai) to receive:
 - `docker-compose.local.yml` quick-start for getting Postgres + Redis + the proxy running in minutes
 - License key for local use
 
-→ [Reference Architecture]({% link deployment/reference-architecture.md %}) for the full component topology · [Advanced Features]({% link advanced-features.md %}) to explore what's available once running
+→ [Reference Architecture]({% link deployment/reference-architecture.md %}) for the full component topology · [AI Capabilities]({% link advanced-features.md %}) to explore what's available once running

@@ -2,7 +2,7 @@
 lang: en
 page_id: advanced-features/memory-service
 title: Memory-as-a-Service
-parent: Advanced Features
+parent: AI Capabilities
 nav_order: 4
 description: "Long-term memory via Mem0 (vector) and Cognee (knowledge graph) — automatically retrieved and injected per request."
 ---

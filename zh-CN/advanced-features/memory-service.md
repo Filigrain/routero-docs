@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: advanced-features/memory-service
 permalink: /advanced-features/memory-service.html
 title: 记忆即服务
-parent: 高级功能
+parent: AI 能力
 nav_order: 4
 description: "通过 Mem0（向量）和 Cognee（知识图谱）实现长期记忆——按请求自动检索并注入。"
 ---

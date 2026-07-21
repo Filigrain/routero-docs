@@ -1,13 +1,13 @@
 ---
 lang: en
 page_id: advanced-features
-title: Advanced Features
+title: AI Capabilities
 nav_order: 5
 has_children: true
 description: "Token Saving, Guardrails, Prompt Management, and Memory-as-a-Service — Routero's production AI layer."
 ---
 
-# Advanced Features
+# AI Capabilities
 
 Routero ships four opt-in capabilities that production AI systems typically build in-house — response caching, content safety, prompt versioning, and long-term memory. They live inside the gateway, so your application code stays clean.
 
@@ -18,7 +18,7 @@ These features are **off by default** and activated per-request. Admins create n
 
 ## Activate with a single ID
 
-Every advanced feature follows the same pattern — the **Feature-as-a-Session** design:
+Every AI capability follows the same pattern — the **Feature-as-a-Session** design:
 
 1. An admin creates a named configuration (guardrail, token-saving plan, prompt, or memory session) in the dashboard or Management API.
 2. The caller passes the configuration's ID in the request body.
@@ -124,7 +124,7 @@ Each feature is:
 
 ## Dependencies and enablement
 
-Advanced Features require optional Python dependencies and infrastructure components not present in a minimal Routero deployment. Each feature page documents its prerequisites.
+AI Capabilities require optional Python dependencies and infrastructure components not present in a minimal Routero deployment. Each feature page documents its prerequisites.
 
 | Feature | Optional deps | Infrastructure |
 |---|---|---|

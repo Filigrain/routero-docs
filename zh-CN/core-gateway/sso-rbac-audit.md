@@ -4,7 +4,7 @@ page_id: core-gateway/sso-rbac-audit
 permalink: /core-gateway/sso-rbac-audit.html
 title: 访问控制与审计
 parent: 核心网关
-nav_order: 6
+nav_order: 7
 description: "管理员邀请访问、Cerbos 细粒度授权、限定范围的虚拟密钥，以及管理员审计日志。"
 ---
 

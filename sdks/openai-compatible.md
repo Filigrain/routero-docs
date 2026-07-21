@@ -82,9 +82,9 @@ curl https://api.routero.ai/v1/chat/completions \
 
 ---
 
-## Advanced Features with OpenAI clients
+## AI Capabilities with OpenAI clients
 
-Pass Advanced Feature IDs via the SDK's `extra_body` parameter (Python/TS) or as additional JSON fields in the request body:
+Pass AI Capability IDs via the SDK's `extra_body` parameter (Python/TS) or as additional JSON fields in the request body:
 
 ```python
 # Python — extra_body
