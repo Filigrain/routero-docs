@@ -20,6 +20,18 @@ theme: just-the-docs
 
 color_scheme: routero
 
+# Silence Sass deprecation warnings that originate in the just-the-docs theme gem.
+# - quiet_deps mutes everything emitted by theme files loaded via the load path
+#   (the darken()/lighten() color-functions warnings in its _sass/*.scss).
+# - import silences the @import-rule deprecations, which all come from the theme's
+#   generated entry stylesheets (just-the-docs-{light,dark,default}.scss); the
+#   whole theme is built on legacy @import syntax.
+# Our own SCSS in _sass/ triggers none of these.
+sass:
+  quiet_deps: true
+  silence_deprecations:
+    - import
+
 logo: "/assets/images/routero-logo.png"
 
 # External nav links (shown in the header)
