@@ -12,7 +12,7 @@ description: "Token Saving, Guardrails, Prompt Management, and Memory-as-a-Servi
 Routero ships four opt-in capabilities that production AI systems typically build in-house — response caching, content safety, prompt versioning, and long-term memory. They live inside the gateway, so your application code stays clean.
 
 {: .note }
-These features are **off by default** and activated per-request. Admins create named configurations in the Routero dashboard or via the Management API; callers reference them by ID. No code changes beyond adding an ID field to your existing requests.
+These features are **off by default** and activated per-request. Admins create named configurations in the Routero dashboard; callers reference them by ID. No code changes beyond adding an ID field to your existing requests.
 
 ---
 
@@ -20,7 +20,7 @@ These features are **off by default** and activated per-request. Admins create n
 
 Every AI capability follows the same pattern — the **Feature-as-a-Session** design:
 
-1. An admin creates a named configuration (guardrail, token-saving plan, prompt, or memory session) in the dashboard or Management API.
+1. An admin creates a named configuration (guardrail, token-saving plan, prompt, or memory session) in the dashboard.
 2. The caller passes the configuration's ID in the request body.
 3. The gateway resolves the config from your workspace (org-scoped, IDOR-checked), applies it as a pre/post hook, and strips the ID before forwarding to the upstream provider.
 
@@ -39,7 +39,7 @@ response = client.chat.completions.create(
 ```
 
 {: .note }
-You can combine any subset of the four IDs on a single request. Each is independent. Hooks run in this order: `PromptHook` → `TokenSavingPlanHook` → `GuardrailHook` → `MemoryHook`.
+You can combine any subset of the four IDs on a single request. Each is independent. Hooks run in this order: `GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook`.
 
 ---
 

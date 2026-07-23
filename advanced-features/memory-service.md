@@ -15,7 +15,10 @@ Memory-as-a-Service (MaaS) turns the gateway into a memory provider. Application
 
 ## How it works
 
-**Pre-call (retrieval):** The gateway takes the latest user message, searches the memory session for the top-3 relevant facts, and injects them into the system message as:
+A memory **session** is a named, engine-backed store of facts tied to one organisation. On each request that references a session, the gateway runs two steps:
+
+**Pre-call (retrieval).** The gateway takes the latest user message, searches the session for the top 3 relevant facts, and appends them to the system message:
+
 ```
 [Past Context for ID: user-alice]
 - Prefers summaries under 200 words
@@ -23,7 +26,15 @@ Memory-as-a-Service (MaaS) turns the gateway into a memory provider. Application
 - Last session: discussed Bedrock pricing
 ```
 
-**Post-call (storage):** After the LLM responds, the gateway asynchronously stores the `(user message, assistant response)` turn in the memory backend. Pass `store_memory: false` to skip storage on a specific request.
+**Post-call (storage).** After the model responds, the gateway asynchronously stores the `(user, assistant)` turn in the session. Pass `store_memory: false` to skip storage on a single request.
+
+The memory hook runs last in the pre-call chain, so injected context follows prompt injection, guardrails, and compression:
+
+```
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+```
+
+The `memory_id` is opaque to the upstream provider — it is stripped before the request is forwarded.
 
 ---
 
@@ -35,82 +46,63 @@ response = client.chat.completions.create(
     messages=[{"role": "user", "content": "Remind me where we left off."}],
     extra_body={
         "memory_id": "user-alice",
-        "store_memory": True,          # default — omit to use default
+        # "store_memory": False,   # omit (default true) to store this turn
     },
 )
 ```
+
+Pass `memory_id` top-level or inside `metadata`. A session can also be [bound through a policy]({% link core-gateway/policies.md %}) so it activates automatically.
 
 ---
 
 ## Memory engines
 
+Choose the engine when creating the session; it cannot be changed afterwards.
+
 | Engine | Backend | Best for |
 |---|---|---|
 | **Mem0** | Postgres + pgvector | User preferences, recent facts, short-to-medium semantic recall |
-| **Cognee** | Neo4j + pgvector + Postgres | Entity/relationship knowledge, long-horizon reasoning, knowledge graph queries |
+| **Cognee** | Postgres + pgvector + Neo4j | Entity and relationship knowledge, long-horizon reasoning |
 
-Choose the engine when creating the memory session. Sessions cannot change engine after creation.
+**Mem0** distinguishes keyword lookups from natural-language questions and deduplicates facts to avoid redundant storage. Vector search defaults to a `0.5` similarity threshold.
 
-**Mem0** queries use keyword vs. question heuristics and fact deduplication to reduce redundant storage.
-
-**Cognee** supports `SearchType.GRAPH_COMPLETION`, `CHUNKS`, and `SUMMARIES` — with graph→vector search fallback for robustness. Deletion cleans up Neo4j, PGVector, and Postgres atomically.
+**Cognee** builds a knowledge graph from stored turns (`remember`) and answers retrieval with Cognee's chunk (vector) search scoped to the session, supplemented by lexical matching and fact dedup. It deliberately does not use graph-completion search (which synthesises new answers rather than returning stored facts).
 
 ---
 
 ## Creating a memory session
 
-```bash
-curl -X POST https://api.routero.ai/memory/session/create \
-  -H "Authorization: Bearer $ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "session_name": "user-alice",
-    "engine_name": "mem0"
-  }'
-```
+Open **Memory** and choose **Create Session**. The form takes a **Name**, an **Engine** (Mem0 or Cognee), an optional **External ID**, and optional **Metadata**. The returned `memory_id` (a UUID) is what callers pass on requests.
 
-The returned `memory_id` is what callers pass on requests.
+![The Memory sessions list, with the Create Session button](/assets/images/memory-service/memory-sessions-list.png)
+
+![The Create Session drawer — name, engine, external ID, and metadata](/assets/images/memory-service/create-memory-session-drawer.png)
 
 ---
 
-## Manual fact management
+## Managing stored facts
 
-You can ingest facts directly (without going through a chat turn) and query the session programmatically:
+Each session's detail page is where you work with the facts the memory holds:
 
-```bash
-# Ingest a fact manually
-curl -X POST https://api.routero.ai/memory/session/add \
-  -d '{"memory_id": "user-alice", "messages": [{"role": "user", "content": "My team is in Singapore."}]}'
+- **Search Memory** — run a natural-language query against the session and see scored matches.
+- **Add Memory** — ingest a fact directly, without going through a chat turn.
+- **All Memory Facts** — browse and delete every stored fact in the session.
 
-# Search the session
-curl -X POST https://api.routero.ai/memory/session/search \
-  -d '{"memory_id": "user-alice", "query": "location preferences"}'
-
-# List all stored facts
-curl "https://api.routero.ai/memory/session/user-alice/facts"
-```
+![A memory session detail view — search, add-fact, and the stored-facts table](/assets/images/memory-service/memory-session-detail.png)
 
 ---
 
-## Org scoping and isolation
+## Organisation isolation and permissions
 
-Memory sessions belong to the organization of the creating key. Sessions are IDOR-protected: a key from org A cannot access or inject a session from org B. The `memory_id` is opaque to the upstream provider — it is stripped before the request is forwarded.
+- **Org-scoped.** Sessions belong to one organisation. The table `LiteLLM_MemorySession` stores an `organization_id` and enforces a unique `(organization_id, name)`.
+- **IDOR-protected.** Operations are authorised per-org via Cerbos (`org:memory:common`); the gateway also checks the session's org at resolve time and rejects mismatches.
+- **Who can manage.** Proxy admins and organisation admins can create, edit, and delete sessions.
 
 ---
 
-## Management API
+## Internal cost accounting
 
-| Endpoint | Description |
-|---|---|
-| `GET /memory/engines` | List available memory engine types |
-| `POST /memory/session/create` | Create a memory session |
-| `GET /memory/sessions` | List all sessions in workspace |
-| `GET /memory/session/{id}` | Get session details |
-| `PATCH /memory/session/{id}` | Update session config |
-| `DELETE /memory/session/{id}` | Delete session and all stored facts |
-| `POST /memory/session/add` | Manually ingest facts |
-| `POST /memory/session/search` | Query the session |
-| `GET /memory/session/{id}/facts` | List all stored facts |
+The embedding and extraction calls the memory subsystem makes for storage and retrieval route back through the gateway under an internal service-account key (model `internal-gpt-4o-mini` with embedder `internal-text-embedding-3-small`; China region uses `internal-qwen-plus` with `internal-text-embedding-v4`). These costs are tracked as **platform spend** — never charged to the calling key.
 
 ---
 
@@ -119,12 +111,16 @@ Memory sessions belong to the organization of the creating key. Sessions are IDO
 | Engine | Required packages | Required infrastructure |
 |---|---|---|
 | Mem0 | `mem0ai` | Postgres + pgvector |
-| Cognee | `cognee` | Neo4j + Postgres + pgvector |
+| Cognee | `cognee` | Postgres + pgvector + Neo4j |
 
-Both are available in Private Deployments — see [Reference Architecture]({% link deployment/reference-architecture.md %}) for infrastructure requirements.
+Both are available in private deployments — see [Reference Architecture]({% link deployment/reference-architecture.md %}) for infrastructure requirements.
 
 ---
 
-## Internal cost accounting
+## Combining with the rest of the gateway
 
-Embedding and extraction calls made by the memory subsystem (for storage and retrieval) route back through the proxy under an internal service-account key. These costs are tracked as **platform spend** — not charged to the calling user's key — and are visible in the billing dashboard under Internal / Platform.
+- **Policies** — bind a session into a [policy]({% link core-gateway/policies.md %}) to activate it automatically on a key or model.
+- **Prompts / guardrails / token saving** — the other [AI Capabilities]({% link advanced-features.md %}) apply to the same request in their normal order.
+- **Playground** — pick a memory session to enable automatic context injection and storage during a chat.
+
+→ [Policies]({% link core-gateway/policies.md %}) for binding sessions to keys and models.

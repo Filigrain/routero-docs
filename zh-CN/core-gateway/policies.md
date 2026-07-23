@@ -119,7 +119,7 @@ PATCH /model/update
 当一个请求到达时，网关解析密钥策略与模型策略（若有），将其合并，并注入能力 ID，就如同调用方手动传入一样。随后既有的逐能力钩子按其正常顺序运行：
 
 ```
-PromptHook → TokenSavingPlanHook → GuardrailHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 ```
 
 ### 优先级（按能力类型）

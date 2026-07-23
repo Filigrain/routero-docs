@@ -118,7 +118,7 @@ A policy can only be bound within its own organisation — the gateway rejects c
 When a request arrives, the gateway resolves any key policy and model policy, merges them, and injects the capability IDs exactly as if the caller had passed them by hand. The existing per-capability hooks then run in their normal order:
 
 ```
-PromptHook → TokenSavingPlanHook → GuardrailHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 ```
 
 ### Precedence (per capability type)
