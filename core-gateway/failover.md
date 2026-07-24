@@ -70,7 +70,7 @@ Fallback respects your workspace's spend limits. If the primary deployment would
 
 A fallback chain only ever considers the deployments you list in it. To keep a chain within a single data-residency region, list only deployments hosted in that region — the Router never leaves the chain you defined. For pinning traffic to specific deployments by request tag (for example EU-hosted deployments), use tag-based routing.
 
-→ [Data Residency & Regions]({% link deployment/data-residency.md %}) · [Routing & Load Balancing]({% link core-gateway/routing.md %})
+→ [Routing & Load Balancing]({% link core-gateway/routing.md %})
 
 ---
 

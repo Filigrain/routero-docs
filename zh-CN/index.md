@@ -78,21 +78,6 @@ Routero 由四个可组合的原语构成。单独使用或全部使用皆可—
 
 ---
 
-## 部署：选择你的信任边界
-
-同一套控制平面可在四种配置下运行。由你的安全团队决定数据存放在哪里。
-
-| 部署方式 | 最适合 | 数据存放位置 |
-|---|---|---|
-| **Routero Cloud** | 最快上手、弹性伸缩 | Routero 的 AWS（新加坡），SOC 2 |
-| **单租户云** | 专属地域、物理隔离、数据驻留 | 你选择的地域，由 Routero 托管 |
-| **私有部署** | VPC 隔离、完全掌控密钥、可离网运行 | 完全在你自己的基础设施中 |
-| **本地部署** | 开发、评估、离网 CI | 你的机器 |
-
-[→ 部署选项]({% link zh-CN/deployment.md %})
-
----
-
 ## AI 能力——生产级 AI 层
 
 在路由与治理之外，Routero 还提供四项可选启用的能力，这些通常是生产级 AI 系统需要自行构建的。只需在任意请求上传入一个 ID 即可启用每一项——无需重构负载，也无需新增端点。
@@ -111,10 +96,10 @@ Routero 由四个可组合的原语构成。单独使用或全部使用皆可—
 ## 本文档面向谁
 
 **平台与基础设施工程师**——搭建 AI 底层管道。
-从[快速开始]({% link zh-CN/quickstart.md %})开始，然后阅读[部署选项]({% link zh-CN/deployment.md %})。
+从[快速开始]({% link zh-CN/quickstart.md %})开始。
 
 **安全与合规人员**——审查与批准。
-从 [访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})、[合规]({% link zh-CN/security-trust/compliance.md %})和[部署选项]({% link zh-CN/deployment.md %})开始。
+从 [访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})开始。
 
 **FinOps 与工程管理者**——为账单负责。
 从[预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})和[成本追踪与计费]({% link zh-CN/core-gateway/cost-tracking.md %})开始。

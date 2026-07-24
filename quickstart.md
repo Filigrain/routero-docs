@@ -39,7 +39,7 @@ client = openai.OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="smart/balanced",              # smart alias, or "openai/gpt-4o", "anthropic/claude-sonnet-4-6", etc.
+    model="openai/gpt-5.5",              # or "anthropic/claude-sonnet-4-6", "openai/gpt-4o", etc.
     messages=[{"role": "user", "content": "Hello!"}],
 )
 print(response.choices[0].message.content)
@@ -56,7 +56,7 @@ const client = new OpenAI({
 });
 
 const response = await client.chat.completions.create({
-  model: "smart/balanced",
+  model: "openai/gpt-5.5",
   messages: [{ role: "user", content: "Hello!" }],
 });
 console.log(response.choices[0].message.content);
@@ -69,7 +69,7 @@ curl https://api.routero.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "smart/balanced",
+    "model": "openai/gpt-5.5",
     "messages": [{"role": "user", "content": "Hello!"}]
   }'
 ```
@@ -94,13 +94,12 @@ Routero passes any model string to the appropriate provider. You can use:
 
 | Format | Example | What it does |
 |---|---|---|
-| Smart alias | `smart/balanced` | Routes to the best available model for the task |
-| Provider-scoped | `openai/gpt-4o` | Pins to a specific provider |
+| Provider-scoped | `openai/gpt-5.5` | A specific provider model |
 | Bare model name | `gpt-4o` | Routero infers the provider |
 | Provider variant | `bedrock/anthropic.claude-sonnet-4-6` | Fully-qualified AWS Bedrock model |
 
 {: .note }
-Smart aliases (`smart/balanced`, `smart/fast`, `smart/cheap`) are model groups your workspace admin configures; each applies its fallback chain automatically. See [Routing & Load Balancing]({% link core-gateway/routing.md %}).
+Your workspace admin can also define **model groups** — a single name that load-balances and fails over across several deployments. See [Routing & Load Balancing]({% link core-gateway/routing.md %}).
 
 ---
 
@@ -109,7 +108,7 @@ Smart aliases (`smart/balanced`, `smart/fast`, `smart/cheap`) are model groups y
 Every request you sent ran through Routero's four-decision pipeline:
 
 1. **Auth & access** — Routero verified your virtual key, checked that the key may call the requested model, and confirmed your workspace budget had room.
-2. **Provider selection** — The Router scored eligible deployments by current health, latency, and cost, then picked one. `smart/balanced` resolved to your configured primary provider.
+2. **Provider selection** — The Router scored eligible deployments by current health, latency, and cost, then picked your configured primary deployment for that model.
 3. **Accounting** — The token count and cost were calculated and debited from your workspace budget atomically, and the usage was logged.
 4. **Response** — The provider's response was streamed back through the gateway with zero buffering.
 
@@ -123,7 +122,7 @@ Pass any combination of feature IDs on the same request to unlock Routero's prod
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "Summarise last quarter's results."}],
     extra_body={
         "guardrail_id":        "my-pii-guardrail",      # redact PII before the model sees it
@@ -142,5 +141,4 @@ response = client.chat.completions.create(
 
 - **Bundle capabilities into a policy** → [Policies]({% link core-gateway/policies.md %})
 - **Add a spend budget for your team** → [Budgets & Spend Guards]({% link core-gateway/budgets.md %})
-- **Choose your deployment model** → [Deployment Options]({% link deployment.md %})
 - **Enable guardrails for PII** → [Guardrails]({% link advanced-features/guardrails.md %})

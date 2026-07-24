@@ -64,4 +64,4 @@ Every success callback receives:
 - Request ID for correlation
 
 {: .note }
-**Prompt and response content is not sent to logging integrations by default.** Input/output logging must be explicitly enabled per workspace and is gated by your data-handling policy. → [Data Handling & Privacy]({% link security-trust/data-privacy.md %})
+**Prompt and response content is not sent to logging integrations by default.** Input/output logging must be explicitly enabled per workspace and is gated by your data-handling policy.

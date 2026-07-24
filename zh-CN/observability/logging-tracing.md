@@ -65,4 +65,4 @@ SLACK_WEBHOOK_URL: os.environ/SLACK_WEBHOOK_URL
 - 用于关联的请求 ID
 
 {: .note }
-**默认情况下，提示词与响应内容不会发送给日志集成。** 输入/输出日志必须按工作区显式启用，并受你的数据处理策略约束。→ [数据处理与隐私]({% link zh-CN/security-trust/data-privacy.md %})
+**默认情况下，提示词与响应内容不会发送给日志集成。** 输入/输出日志必须按工作区显式启用，并受你的数据处理策略约束。

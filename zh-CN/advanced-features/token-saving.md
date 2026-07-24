@@ -40,7 +40,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[...],
     extra_body={"token_saving_plan_id": "my-plan"},
 )

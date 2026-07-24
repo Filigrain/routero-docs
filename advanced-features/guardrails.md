@@ -104,7 +104,7 @@ A caller activates a guardrail by passing its ID on the request (top-level or in
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": user_input}],
     extra_body={"guardrail_id": "pii-redact-prod"},
 )

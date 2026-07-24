@@ -69,7 +69,7 @@ For teams building multi-tenant SaaS products on Routero, the `customer` entity 
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[...],
     extra_body={"user": "customer_alice_123"},  # track spend to this end-user
 )

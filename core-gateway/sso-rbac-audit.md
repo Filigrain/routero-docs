@@ -59,7 +59,7 @@ Virtual keys are the primary auth primitive for LLM traffic. Each key:
 curl -X POST https://api.routero.ai/key/generate \
   -H "Authorization: Bearer $ADMIN_KEY" \
   -d '{
-    "models": ["smart/balanced", "openai/gpt-4o"],
+    "models": ["openai/gpt-5.5", "openai/gpt-4o"],
     "team_id": "engineering",
     "max_budget": 100,
     "duration": "30d"
@@ -85,7 +85,7 @@ Routero keeps an audit log of **administrative actions** — who changed what, a
 | Teams & Orgs | created · updated · member changes |
 | Budgets | created · updated · deleted |
 
-Query the audit log from the dashboard or the management API (`GET /audit`, `GET /audit/{id}`), scoped to your organization. Sensitive values (such as key material) are masked before storage. → [Audit Log Reference]({% link security-trust/audit-log.md %})
+Query the audit log from the dashboard or the management API (`GET /audit`, `GET /audit/{id}`), scoped to your organization. Sensitive values (such as key material) are masked before storage.
 
 ---
 
@@ -97,5 +97,3 @@ Query the audit log from the dashboard or the management API (`GET /audit`, `GET
 | HIPAA BAA | Enterprise plan |
 | ISO 27001 | In progress |
 | GDPR DPA + SCCs | Available for EU customers |
-
-→ [Compliance]({% link security-trust/compliance.md %})

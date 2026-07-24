@@ -21,7 +21,7 @@ Routero 可将 LLM 请求日志转发到任意 HTTPS 端点，并将运维告警
 每条转发记录都包含请求的模型、供应商、Token 计数、成本、延迟，以及密钥/团队/组织归属——与[日志与追踪]({% link zh-CN/observability/logging-tracing.md %})中描述的字段相同。
 
 {: .note }
-除非显式启用输入/输出日志，否则**不会**转发提示词与响应内容。→ [数据处理与隐私]({% link zh-CN/security-trust/data-privacy.md %})
+除非显式启用输入/输出日志，否则**不会**转发提示词与响应内容。
 
 ---
 

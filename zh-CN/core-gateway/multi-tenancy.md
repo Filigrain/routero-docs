@@ -70,7 +70,7 @@ curl -X POST https://api.routero.ai/team/new \
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[...],
     extra_body={"user": "customer_alice_123"},  # 将支出追踪到此最终用户
 )

@@ -71,7 +71,7 @@ Routero 对供应商错误进行分类，并据此选择重试策略：
 
 回退链只会考虑你在其中列出的部署。要让一条链保持在单个数据驻留地域内，只需只列出部署在该地域的部署——Router 绝不会离开你所定义的链。如需按请求标签把流量锁定到特定部署（例如 EU 地域内的部署），请使用基于标签的路由。
 
-→ [数据驻留与地域]({% link zh-CN/deployment/data-residency.md %}) · [路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})
+→ [路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})
 
 ---
 

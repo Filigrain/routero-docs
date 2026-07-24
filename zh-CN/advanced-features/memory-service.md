@@ -43,7 +43,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "Remind me where we left off."}],
     extra_body={
         "memory_id": "user-alice",
@@ -114,7 +114,7 @@ response = client.chat.completions.create(
 | Mem0 | `mem0ai` | Postgres + pgvector |
 | Cognee | `cognee` | Postgres + pgvector + Neo4j |
 
-两者在私有部署中均可用——基础设施要求参见[参考架构]({% link zh-CN/deployment/reference-architecture.md %})。
+两者在私有部署中均可用。
 
 ---
 

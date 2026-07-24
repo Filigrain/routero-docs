@@ -40,7 +40,7 @@ client = openai.OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="smart/balanced",              # smart 别名，或 "openai/gpt-4o"、"anthropic/claude-sonnet-4-6" 等
+    model="openai/gpt-5.5",              # 或 "anthropic/claude-sonnet-4-6"、"openai/gpt-4o" 等
     messages=[{"role": "user", "content": "Hello!"}],
 )
 print(response.choices[0].message.content)
@@ -57,7 +57,7 @@ const client = new OpenAI({
 });
 
 const response = await client.chat.completions.create({
-  model: "smart/balanced",
+  model: "openai/gpt-5.5",
   messages: [{ role: "user", content: "Hello!" }],
 });
 console.log(response.choices[0].message.content);
@@ -70,7 +70,7 @@ curl https://api.routero.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "smart/balanced",
+    "model": "openai/gpt-5.5",
     "messages": [{"role": "user", "content": "Hello!"}]
   }'
 ```
@@ -95,13 +95,12 @@ Routero 会将任意模型字符串传递给相应的供应商。你可以使用
 
 | 格式 | 示例 | 作用 |
 |---|---|---|
-| Smart 别名 | `smart/balanced` | 路由到最适合该任务的可用模型 |
-| 供应商限定 | `openai/gpt-4o` | 锁定到特定供应商 |
+| 供应商限定 | `openai/gpt-5.5` | 指定某个供应商的模型 |
 | 裸模型名 | `gpt-4o` | Routero 自动推断供应商 |
 | 供应商变体 | `bedrock/anthropic.claude-sonnet-4-6` | 完全限定的 AWS Bedrock 模型 |
 
 {: .note }
-Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）是由你的工作区管理员配置的模型组；每个都会自动应用其回退链。参见[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})。
+你的工作区管理员还可以定义**模型组**——一个名字，在多个部署之间做负载均衡与故障转移。参见[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})。
 
 ---
 
@@ -110,7 +109,7 @@ Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）是由你的工
 你发送的每个请求都经过了 Routero 的四步决策流水线：
 
 1. **认证与访问** —— Routero 校验你的虚拟密钥，检查该密钥是否有权调用所请求的模型，并确认你的工作区预算尚有余量。
-2. **供应商选择** —— Router 根据当前健康状况、延迟和成本为符合条件的部署打分，然后选出一个。`smart/balanced` 解析为你配置的主供应商。
+2. **供应商选择** —— Router 根据当前健康状况、延迟和成本为符合条件的部署打分，然后为你挑选该模型配置的主部署。
 3. **计费** —— 计算 token 数量和成本，并原子性地从你工作区的预算中扣除，用量被记录。
 4. **响应** —— 供应商的响应通过网关零缓冲地流式返回。
 
@@ -124,7 +123,7 @@ Smart 别名（`smart/balanced`、`smart/fast`、`smart/cheap`）是由你的工
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "Summarise last quarter's results."}],
     extra_body={
         "guardrail_id":        "my-pii-guardrail",      # 在模型看到之前对 PII 脱敏
@@ -143,5 +142,4 @@ response = client.chat.completions.create(
 
 - **把能力打包为一个策略** → [策略]({% link zh-CN/core-gateway/policies.md %})
 - **为你的团队添加支出预算** → [预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})
-- **选择你的部署模型** → [部署选项]({% link zh-CN/deployment.md %})
 - **为 PII 启用护栏** → [护栏]({% link zh-CN/advanced-features/guardrails.md %})

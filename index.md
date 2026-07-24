@@ -77,21 +77,6 @@ Admin-invite access · Cerbos fine-grained authorization · short-lived scoped v
 
 ---
 
-## Deployment: pick your trust boundary
-
-The same control plane runs in four configurations. Your security team picks where data lives.
-
-| Deployment | Best for | Where data lives |
-|---|---|---|
-| **Routero Cloud** | Fastest onboarding, elastic scale | Routero's AWS (Singapore), SOC 2 |
-| **Single-Tenant Cloud** | Dedicated region, physical isolation, data residency | Your chosen region, Routero-managed |
-| **Private Deployments** | VPC isolation, full key control, air-gap-ready | Entirely your infrastructure |
-| **Local** | Development, evaluation, air-gapped CI | Your machine |
-
-[→ Deployment Options]({% link deployment.md %})
-
----
-
 ## AI Capabilities — the production AI layer
 
 Beyond routing and governance, Routero ships four opt-in capabilities that production AI systems typically build themselves. Activate each by passing a single ID on any request — no payload restructuring, no new endpoints.
@@ -110,10 +95,10 @@ Beyond routing and governance, Routero ships four opt-in capabilities that produ
 ## Who this documentation is for
 
 **Platform & infrastructure engineers** — building the AI plumbing.
-Start with [Quickstart]({% link quickstart.md %}) then [Deployment Options]({% link deployment.md %}).
+Start with [Quickstart]({% link quickstart.md %}).
 
 **Security & compliance** — reviewing and approving.
-Start with [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}), [Compliance]({% link security-trust/compliance.md %}), and [Deployment Options]({% link deployment.md %}).
+Start with [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}).
 
 **FinOps & engineering managers** — owning the bill.
 Start with [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) and [Cost Tracking & Billing]({% link core-gateway/cost-tracking.md %}).

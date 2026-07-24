@@ -35,19 +35,19 @@ A model group maps a named alias to an ordered list of provider deployments. Exa
 
 ```yaml
 model_list:
-  - model_name: smart/balanced
+  - model_name: default
     litellm_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
     model_info:
       mode: chat
 
-  - model_name: smart/balanced
+  - model_name: default
     litellm_params:
       model: anthropic/claude-sonnet-4-6-20250514
       api_key: os.environ/ANTHROPIC_API_KEY
 
-  - model_name: smart/balanced
+  - model_name: default
     litellm_params:
       model: bedrock/anthropic.claude-sonnet-4-6-20250514-v1:0
 
@@ -57,7 +57,7 @@ router_settings:
   timeout: 30
 ```
 
-Requests to `model: "smart/balanced"` are distributed across all three deployments. On failure, the Router automatically retries on the next available deployment.
+Requests to `model: "default"` are distributed across all three deployments. On failure, the Router automatically retries on the next available deployment.
 
 ---
 

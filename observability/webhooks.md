@@ -20,7 +20,7 @@ The generic API callback integration sends each completed LLM request (success o
 Each forwarded record carries the request's model, provider, token counts, cost, latency, and key/team/org attribution — the same fields described in [Logging & Tracing]({% link observability/logging-tracing.md %}).
 
 {: .note }
-Prompt and response content is **not** forwarded unless input/output logging is explicitly enabled. → [Data Handling & Privacy]({% link security-trust/data-privacy.md %})
+Prompt and response content is **not** forwarded unless input/output logging is explicitly enabled.
 
 ---
 

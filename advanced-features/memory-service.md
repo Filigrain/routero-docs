@@ -42,7 +42,7 @@ The `memory_id` is opaque to the upstream provider — it is stripped before the
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "Remind me where we left off."}],
     extra_body={
         "memory_id": "user-alice",
@@ -113,7 +113,7 @@ The embedding and extraction calls the memory subsystem makes for storage and re
 | Mem0 | `mem0ai` | Postgres + pgvector |
 | Cognee | `cognee` | Postgres + pgvector + Neo4j |
 
-Both are available in private deployments — see [Reference Architecture]({% link deployment/reference-architecture.md %}) for infrastructure requirements.
+Both are available in private deployments.
 
 ---
 

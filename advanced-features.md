@@ -27,7 +27,7 @@ Every AI capability follows the same pattern — the **Feature-as-a-Session** de
 ```python
 # All four features in a single request — zero change to the rest of your code
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "..."}],
     extra_body={
         "guardrail_id":         "pii-redact-prod",

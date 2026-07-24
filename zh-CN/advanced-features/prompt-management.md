@@ -33,7 +33,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 
 ```python
 response = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "Summarise Q3 results"}],
     extra_body={
         "prompt_id": "analyst-system",

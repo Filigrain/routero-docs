@@ -78,8 +78,8 @@ See `/models` for the full live list of models configured in your workspace.
 ## Model string formats
 
 ```python
-# Smart alias — resolves to your configured policy
-"smart/balanced"
+# A model your workspace serves
+"openai/gpt-5.5"
 
 # Provider-scoped
 "openai/gpt-4o"
@@ -101,7 +101,7 @@ All streaming endpoints use standard Server-Sent Events (SSE). Routero passes ch
 
 ```python
 stream = client.chat.completions.create(
-    model="smart/balanced",
+    model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "Hello!"}],
     stream=True,
 )

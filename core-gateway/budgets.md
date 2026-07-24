@@ -20,7 +20,7 @@ Routero makes AI spend governable without making it slow. Budgets attach to any 
 | Tier | Trigger | Effect |
 |---|---|---|
 | **Warn** | 80% of ceiling | Slack/email alert to workspace owner; traffic unaffected |
-| **Throttle** | 100% of ceiling | Auto-swap to a cost-optimised route (`smart/cheap`); requests still succeed |
+| **Throttle** | 100% of ceiling | Auto-swap to a cost-optimised route; requests still succeed |
 | **Block** | Hard cap reached | Returns HTTP 429 with structured error and `X-Routero-Budget-Reset-At` header |
 
 All three tiers are configurable — you choose which to enable and at what thresholds.
