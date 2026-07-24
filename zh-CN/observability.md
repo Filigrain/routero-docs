@@ -5,17 +5,16 @@ permalink: /observability.html
 title: 可观测性
 nav_order: 7
 has_children: true
-description: "对经由 Routero 的所有 LLM 流量进行日志、追踪、指标与 Webhook。"
+description: "请求日志、用量分析与预算限额——观测每一个经由 Routero 的请求。"
 ---
 
 # 可观测性
 
-经由 Routero 的每个请求都会被记录、计费并可归因。网关可与你的团队已经在使用的日志、追踪和指标后端集成——OpenTelemetry、Datadog、Langfuse、Prometheus 等——并可通过 Webhook 将每个 LLM 事件转发到任意 HTTP 端点或聊天频道。
+经由 Routero 的每个请求都会被记录、计费，并归属到具体的密钥、团队与组织。三个仪表板页面让你查看发生了什么、分析支出并控制成本：
 
----
+- [日志]({% link zh-CN/observability/logs.md %}) —— 每个请求的状态、token、成本、延迟，以及（可选的）提示词与响应。
+- [用量]({% link zh-CN/observability/usage.md %}) —— 按组织、团队、客户、模型与供应商的支出与请求分析。
+- [预算限额]({% link zh-CN/observability/budget-limits.md %}) —— 为密钥、团队与组织设置支出与速率上限，并查看支出对限额的进度。
 
-## 本章节页面
-
-- [日志与追踪]({% link zh-CN/observability/logging-tracing.md %}) — OpenTelemetry、Datadog、Langfuse、Langsmith、Prometheus 等
-- [指标与分析]({% link zh-CN/observability/metrics-analytics.md %}) — 按密钥、按团队、按组织的用量与支出仪表板
-- [Webhooks]({% link zh-CN/observability/webhooks.md %}) — 将 LLM 请求日志转发到任意 HTTP 端点，并提供 Slack 和邮件告警
+{: .note }
+将日志与指标导出到外部平台（Langfuse、Datadog、OpenTelemetry、Prometheus）属于平台级集成，由你的管理员配置——并非租户可自行设置的仪表板开关。

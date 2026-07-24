@@ -18,13 +18,13 @@ Routero Router 使用可插拔策略，将每个请求分发到一个或多个�
 
 | 策略 | 选择方式 | 适用场景 |
 |---|---|---|
-| `simple_shuffle`（默认） | 按权重随机选择 | 均匀分发、简单部署 |
-| `least_busy` | 在途请求数最少的部署 | 吞吐量受限的供应商 |
-| `lowest_latency` | 近期 p50 延迟最低的部署 | 对延迟敏感的应用 |
-| `lowest_cost` | 每 token 成本最低的部署 | 成本优化 |
-| `lowest_tpm_rpm` | 距离其 TPM/RPM 限制最远的部署 | 规避限流 |
-| `usage_based_routing_v2` | 实时跟踪用量与供应商限制的对比 | 高流量、混合限流 |
-| `tag_based_routing` | 将请求标签与部署标签匹配 | 驻留、能力路由 |
+| `simple-shuffle`（默认） | 按权重随机选择 | 均匀分发、简单部署 |
+| `least-busy` | 在途请求数最少的部署 | 吞吐量受限的供应商 |
+| `latency-based-routing` | 近期平均延迟最低的部署 | 对延迟敏感的应用 |
+| `cost-based-routing` | 每 token 成本最低的部署 | 成本优化 |
+| `usage-based-routing` | 距离其 TPM/RPM 用量最远的部署 | 高流量、混合限流 |
+
+基于标签的路由——按标签把请求锁定到特定部署（例如按地域）——是一个独立过滤器，可通过 `enable_tag_filtering` 与上述任一策略组合启用。
 
 在你的 Router 配置中，为每个模型组设置策略。
 
@@ -68,7 +68,7 @@ Router 在 Redis 中跟踪每个部署的健康状况：
 - **错误率** —— 跟踪 5xx、429 和内容过滤触发率。
 - **冷却** —— 越过错误阈值的部署会被冷却（移出轮换）一段可配置的时间。
 - **延迟百分位** —— p50/p95 滚动窗口，供 `lowest_latency` 策略使用。
-- **TPM/RPM 接近度** —— 跟踪用量与声明的供应商限制的对比，供 `usage_based_routing_v2` 使用。
+- **TPM/RPM 接近度** —— 跟踪用量与声明的供应商限制的对比，供 `usage-based-routing` 使用。
 
 ---
 

@@ -12,8 +12,6 @@ description: "多供应商故障转移链、自动重试行为，以及感知流
 
 Routero AI 将供应商宕机视为路由问题，而非应用错误。配置一条回退链；Router 会透明地处理故障 —— 包括在活跃的流式响应过程中。
 
-**P99 故障转移决策 + 重试：<280 毫秒。**
-
 ---
 
 ## 配置回退链
@@ -26,12 +24,7 @@ router_settings:
         - anthropic/claude-sonnet-4-6-20250514
         - bedrock/meta.llama4-maverick-17b-instruct-v1:0
   num_retries: 3
-  retry_after: 0.08          # 80 ms base backoff
   timeout: 30                # per-attempt timeout (seconds)
-  retry_on:
-    - 5xx
-    - timeout
-    - content_filter
 ```
 
 当 `openai/gpt-4o` 返回 5xx 或超时时，Routero 会先在 `claude-sonnet-4-6` 上重试，再在 `llama-4-maverick` 上重试，然后才向调用方返回错误。
@@ -44,26 +37,18 @@ Routero 对供应商错误进行分类，并据此选择重试策略：
 
 | 错误类型 | 默认行为 |
 |---|---|
-| `5xx`（服务器错误） | 在回退链中的下一个部署上重试 |
-| `429`（限流） | 退避后在**同一个**部署上重试（遵循 `Retry-After` 头） |
-| `content_filter` | 跳转到下一个部署（不同模型可能不会触发过滤器） |
-| `context_window` | 仅当下一个部署具有更大的上下文窗口时才跳转 |
-| `auth_error` | 不重试；立即返回错误 |
+| `5xx`（服务器错误） | 在下一个健康部署上重试 |
+| `429`（限流） | 在另一个部署上重试（遵循 `Retry-After`） |
 | `timeout` | 在下一个部署上重试 |
+| `content_filter` | 回退到 `content_policy_fallbacks` 链中的下一个模型 |
+
+重试与回退会指向组或链中的其他健康部署；哪些错误会重试由 `RetryPolicy` 控制。
 
 ---
 
 ## 感知流式的故障转移
 
-如果某个供应商在流中途失败，Routero 仅在回退供应商上重放尚未发送的尾部内容。客户端会收到一个不间断的 SSE 流 —— 没有断开的连接，没有重复的 token，也无需客户端侧的重试逻辑。
-
----
-
-## 感知预算的回退
-
-回退会遵循你工作区的支出限额。如果主部署会超出预算上限，Router 会在发起调用前先选择链中的下一个部署 —— 预算检查在供应商调用之前完成。
-
-→ [预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})
+如果某个供应商在流中途失败，Routero 可回退到另一个供应商并继续响应，把已输出的部分一并传递，让回退模型从上次中断处接续。客户端会收到一条完整的 SSE 流，无需任何客户端侧的重试逻辑。
 
 ---
 
@@ -75,12 +60,11 @@ Routero 对供应商错误进行分类，并据此选择重试策略：
 
 ---
 
-## 逐请求审计
+## 逐请求可见性
 
-每一次重试和回退决策都会记录在审计轨迹中：
-- 尝试了哪个供应商
-- 错误类型和重试原因
-- 选择的回退供应商
+重试与回退的细节可在每个请求上查看：
+- 尝试过哪些供应商
+- 最终由哪个回退供应商提供了服务
 - 包含重试开销的总延迟
 
-响应会包含相应的头，标明所选供应商和重试次数，便于调试。
+逐请求明细参见[日志]({% link zh-CN/observability/logs.md %})，并查看 `x-routero-attempted-retries` 与 `x-routero-attempted-fallbacks` 响应头。

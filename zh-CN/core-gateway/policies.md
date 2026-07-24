@@ -165,7 +165,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 为避免误解，特此说明：
 
 - **不是路由规则。** 策略不会基于内容、地域、预算或计划选择模型。请使用[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})或[自动路由]({% link zh-CN/core-gateway/auto-router.md %})。
-- **不是预算或访问控制的替代品。** 支出上限在[预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})中；谁能调用什么在[访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})中。
+- **不是预算或访问控制的替代品。** 支出上限在[预算限额]({% link zh-CN/observability/budget-limits.md %})中；谁能调用什么在[访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})中。
 - **没有继承或通配。** 策略是一个最多四项能力绑定的扁平列表——没有基础策略、没有作用域模式、没有增删清单。
 - **没有 YAML 配置文件。** 策略通过仪表板或管理 API 管理，并存储在数据库中；变更会实时传播到所有代理实例。
 

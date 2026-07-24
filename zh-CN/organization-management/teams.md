@@ -80,7 +80,7 @@ description: "将你的组织细分为团队，用于预算、速率限制、模
 
 ## 预算与支出
 
-团队的预算与速率限制在创建或编辑时设定。支出会按预算跟踪，并按你选择的周期（每日、每周、每月）重置。团队支出也会汇入你的组织总额——关于预算与告警在整个平台上的运作方式，参见[预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})。
+团队的预算与速率限制在创建或编辑时设定。支出会按预算跟踪，并按你选择的周期（每日、每周、每月）重置。团队支出也会汇入你的组织总额——参见[预算限额]({% link zh-CN/observability/budget-limits.md %})。
 
 ---
 
@@ -88,4 +88,4 @@ description: "将你的组织细分为团队，用于预算、速率限制、模
 
 → 在把成员加入团队之前先把人员加入组织，参见[成员]({% link zh-CN/organization-management/members.md %})。
 → 切换组织上下文，参见[组织]({% link zh-CN/organization-management/organizations.md %})。
-→ 预算、告警与成本分摊，参见[预算与支出护栏]({% link zh-CN/core-gateway/budgets.md %})。
+→ 参见[预算限额]({% link zh-CN/observability/budget-limits.md %})。

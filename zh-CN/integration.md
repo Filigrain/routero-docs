@@ -31,4 +31,4 @@ description: "接入 Routero——直接调用 API，或连接 Cursor、Claude C
 
 ## 相关内容
 
-→ 关于完整的端点能力与模型路由机制，参见[统一 API]({% link zh-CN/core-gateway/unified-api.md %})。
+→ 关于完整的端点能力，参见[推理 API]({% link zh-CN/inference-apis.md %})。

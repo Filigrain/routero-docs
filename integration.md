@@ -30,4 +30,4 @@ Other OpenAI-compatible agents — Cline, Continue, Aider, GitHub Copilot, Winds
 
 ## Related
 
-→ [Unified API]({% link core-gateway/unified-api.md %}) for the full endpoint surface and how model routing works.
+→ [Inference APIs]({% link inference-apis.md %}) for the full endpoint surface.

@@ -79,5 +79,3 @@ GET /billing/invoices/{month}
 | Dashboard table | Real-time, filterable by date, team, model |
 | CSV | Monthly download from dashboard |
 | REST API | Pull programmatically via `/billing/daily-spend` |
-| Snowflake / BigQuery | Hourly sync (Enterprise) |
-| NetSuite / Coupa | Push integration (Enterprise) |

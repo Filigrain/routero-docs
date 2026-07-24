@@ -54,7 +54,7 @@ curl -X POST https://api.routero.ai/team/new \
 
 内部用户（员工）拥有各自的身份标识，并具备：
 - 个人 API 密钥（可选），可与团队密钥并存
-- 角色分配（Admin、Developer、Auditor、Finance 或 Custom）
+- 角色分配（Org Admin、Internal User 或 Internal User 只读）
 - 按用户的支出追踪和每日活动报告
 - 由管理员创建和管理（邀请制）
 
@@ -64,7 +64,6 @@ curl -X POST https://api.routero.ai/team/new \
 
 对于在 Routero 上构建多租户 SaaS 产品的团队，`customer` 实体代表你的最终用户：
 - 在任意请求上附加 `customer_id`，以追踪按客户的支出
-- 设置按客户的预算和限流
 - 通过 `/customer/daily/activity` 查看按客户的每日活动
 - 适用于在面向消费者的应用中强制执行合理使用限额
 

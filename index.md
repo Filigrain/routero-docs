@@ -1,107 +1,144 @@
 ---
 lang: en
 page_id: index
-title: Introduction
+title: Quickstart
 nav_order: 1
-description: "What Routero AI is, why enterprises choose it, and how to navigate this documentation."
+description: "Make your first request through Routero AI in under 5 minutes."
 ---
 
-# Introduction to Routero AI
+# Quickstart
 
-{: .tagline }
-**Every AI model. One router you can trust.**
+Get your first request routed through Routero AI in under 5 minutes. If you already use the OpenAI SDK, this is a one-line change.
 
-Routero AI is an **enterprise AI control plane** — a unified gateway that sits between your applications and every AI provider. It gives platform, security, and FinOps teams the governance layer they need to ship AI features with confidence, while letting developers use the OpenAI SDK they already know.
-
-Change `base_url` in one line of code. Get 100+ models, smart routing, built-in failover, capability policies, spend controls, and a complete audit trail — with data exactly where your security team requires.
-
-> *"We replaced four gateways and a 600-line failover hack with one Routero AI config."*
+{: .enterprise }
+> **Prerequisites:** A Routero virtual key. Workspaces are invitation-only — ask your workspace admin to invite you and issue a key from [platform.routero.ai](https://platform.routero.ai).
 
 ---
 
-## The enterprise problem
+## Two ways to integrate
 
-Shipping AI in production means clearing three hurdles before a single prompt touches a user:
+| Approach | Best for | What changes |
+|---|---|---|
+| **OpenAI SDK (drop-in)** | Existing OpenAI codebases | `base_url` only |
+| **Direct REST API** | Any language, no SDK dependency | — |
 
-1. **Security & compliance** — Which models can touch sensitive data? Who approved this? What went through the system last Tuesday?
-2. **Cost accountability** — Which team is spending what? Who gets the bill when the model runs overnight by mistake?
-3. **Operational reliability** — What happens when GPT-4o rate-limits at 2 am? Can we swap providers without a deploy?
+---
 
-Routero AI is purpose-built for all three — with a control plane your security team can review, your FinOps team can report on, and your platform team can operate without building it from scratch.
+## Option 1 — OpenAI SDK drop-in (recommended)
+
+Change `base_url` to `https://api.routero.ai/v1`. Everything else — messages, tools, streaming, vision, structured outputs — stays identical.
+
+### Python
+
+```python
+import openai
+
+client = openai.OpenAI(
+    api_key="YOUR_ROUTERO_KEY",          # your Routero virtual key
+    base_url="https://api.routero.ai/v1",
+)
+
+response = client.chat.completions.create(
+    model="openai/gpt-5.5",              # or "anthropic/claude-sonnet-4-6", "openai/gpt-4o", etc.
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+print(response.choices[0].message.content)
+```
+
+### TypeScript / Node
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: "YOUR_ROUTERO_KEY",
+  baseURL: "https://api.routero.ai/v1",
+});
+
+const response = await client.chat.completions.create({
+  model: "openai/gpt-5.5",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+console.log(response.choices[0].message.content);
+```
+
+### curl
+
+```bash
+curl https://api.routero.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-5.5",
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }'
+```
+
+---
+
+## Option 2 — Direct REST API
+
+The gateway exposes a standard OpenAI-compatible REST interface. Use any HTTP client.
+
+**Base URL:** `https://api.routero.ai/v1`
+
+**Authentication:** `Authorization: Bearer YOUR_ROUTERO_KEY`
+
+**Endpoints:** `/chat/completions` · `/embeddings` · `/images/generations` · `/models`. See [Inference APIs]({% link inference-apis.md %}) for the reference.
+
+---
+
+## Model strings
+
+Routero passes any model string to the appropriate provider. You can use:
+
+| Format | Example | What it does |
+|---|---|---|
+| Provider-scoped | `openai/gpt-5.5` | A specific provider model |
+| Bare model name | `gpt-4o` | Routero infers the provider |
+| Provider variant | `bedrock/anthropic.claude-sonnet-4-6` | Fully-qualified AWS Bedrock model |
 
 {: .note }
-Routero charges for the control plane, not for tokens. Provider costs are passed through at list price with zero markup. Every charge is accountable and tied to an operational purpose.
+Your workspace admin can also define **model groups** — a single name that load-balances and fails over across several deployments. See [Routing & Load Balancing]({% link core-gateway/routing.md %}).
 
 ---
 
-## One request, four decisions
+## What just happened
 
-Every request runs a deterministic, auditable pipeline:
+Every request you sent ran through Routero's four-decision pipeline:
 
+1. **Auth & access** — Routero verified your virtual key, checked that the key may call the requested model, and confirmed your workspace budget had room.
+2. **Provider selection** — The Router scored eligible deployments by current health, latency, and cost, then picked your configured primary deployment for that model.
+3. **Accounting** — The token count and cost were calculated and debited from your workspace budget atomically, and the usage was logged.
+4. **Response** — The provider's response was streamed back through the gateway with zero buffering.
+
+The request now appears in your [platform dashboard](https://platform.routero.ai) usage and spend views.
+
+---
+
+## Activate AI Capabilities
+
+Pass any combination of feature IDs on the same request to unlock Routero's production-AI layer. The proxy resolves each config from your workspace, applies it as a hook, and strips the ID before the upstream call — your application code never changes.
+
+```python
+response = client.chat.completions.create(
+    model="openai/gpt-5.5",
+    messages=[{"role": "user", "content": "Summarise last quarter's results."}],
+    extra_body={
+        "guardrail_id":        "my-pii-guardrail",      # redact PII before the model sees it
+        "token_saving_plan_id": "my-cache-plan",         # compress + cache the response
+        "prompt_id":           "my-analyst-system-prompt", # inject versioned system prompt
+        "memory_id":           "user-alice-session",    # retrieve Alice's long-term context
+    },
+)
 ```
-Your app
-  → [Auth & access]         virtual key · model access · budget guard
-  → [Routing]               Auto Router (optional) → strategy picks a healthy deployment
-  → [Capabilities]          policy injects guardrails · prompts · memory · token saving
-  → [Account & audit]       token/$ debited atomically · decision logged
-  → Provider
-```
 
-Every decision is logged and reproducible months later.
+→ [AI Capabilities]({% link advanced-features.md %})
 
 ---
 
-## Four building blocks
+## What to do next
 
-Routero is composed of four composable primitives. Use one or all — they are independent.
-
-### Routing & Failover
-Named model groups, pluggable routing strategies, and an optional **Auto Router** that picks the best model for each message by intent. Ordered provider fallbacks automatically retry on 5xx, rate limits, or content-filter trips — streaming-aware, no dropped chunks.
-
-[→ Routing & Load Balancing]({% link core-gateway/routing.md %}) · [Auto Router]({% link core-gateway/auto-router.md %}) · [Failover & Fallbacks]({% link core-gateway/failover.md %})
-
-### Policies
-Bundle guardrails, prompts, memory, and token-saving plans into a named policy and bind it to a key or model. The capabilities activate automatically on every matching request — no per-request IDs in your application code.
-
-[→ Policies]({% link core-gateway/policies.md %})
-
-### Budgets & Spend Guards
-Hard ceilings, soft alerts, and per-team chargeback for every dollar of AI spend. Warn at 80 %, auto-throttle at 100 %, block if you mean it. Finance gets one consolidated invoice; each team gets attributed line items.
-
-[→ Budgets & Spend Guards]({% link core-gateway/budgets.md %})
-
-### Access Control & Audit
-Admin-invite access · Cerbos fine-grained authorization · short-lived scoped virtual keys · an audit log of every key, user, model, and policy change.
-
-[→ Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %})
-
----
-
-## AI Capabilities — the production AI layer
-
-Beyond routing and governance, Routero ships four opt-in capabilities that production AI systems typically build themselves. Activate each by passing a single ID on any request — no payload restructuring, no new endpoints.
-
-| Feature | What it does |
-|---|---|
-| [**Token Saving**]({% link advanced-features/token-saving.md %}) | Prompt compression + exact & semantic response caching — reduce compute cost without changing application code |
-| [**Guardrails**]({% link advanced-features/guardrails.md %}) | Content filtering · PII redaction (Presidio) · secret detection · tool allow/deny lists — centrally managed, per-org enforced |
-| [**Prompt Management**]({% link advanced-features/prompt-management.md %}) | Central prompt registry with immutable versioning, Jinja2 templates, two-layer caching, and instant rollback |
-| [**Memory-as-a-Service**]({% link advanced-features/memory-service.md %}) | Long-term memory via Mem0 (vector) and Cognee (knowledge graph) — automatically retrieved and injected per request |
-
-[→ AI Capabilities]({% link advanced-features.md %})
-
----
-
-## Who this documentation is for
-
-**Platform & infrastructure engineers** — building the AI plumbing.
-Start with [Quickstart]({% link quickstart.md %}).
-
-**Security & compliance** — reviewing and approving.
-Start with [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}).
-
-**FinOps & engineering managers** — owning the bill.
-Start with [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) and [Cost Tracking & Billing]({% link core-gateway/cost-tracking.md %}).
-
-**Developers** — calling the API.
-Start with [Quickstart]({% link quickstart.md %}) and [Unified API]({% link core-gateway/unified-api.md %}).
+- **Bundle capabilities into a policy** → [Policies]({% link core-gateway/policies.md %})
+- **Add a spend budget for your team** → [Budget Limits]({% link observability/budget-limits.md %})
+- **Enable guardrails for PII** → [Guardrails]({% link advanced-features/guardrails.md %})

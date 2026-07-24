@@ -53,7 +53,7 @@ curl -X POST https://api.routero.ai/team/new \
 
 Internal users (employees) have individual identities with:
 - Personal API keys (optionally) alongside team keys
-- Role assignments (Admin, Developer, Auditor, Finance, or Custom)
+- Role assignments (Org Admin, Internal User, or Internal User view-only)
 - Per-user spend tracking and daily activity reports
 - Created and managed by admins (invitation-based)
 
@@ -63,7 +63,6 @@ Internal users (employees) have individual identities with:
 
 For teams building multi-tenant SaaS products on Routero, the `customer` entity represents your end-users:
 - Attach a `customer_id` to any request to track per-customer spend
-- Set per-customer budgets and rate limits
 - View per-customer daily activity via `/customer/daily/activity`
 - Useful for enforcing fair-use limits in consumer-facing applications
 

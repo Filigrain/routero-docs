@@ -73,7 +73,7 @@ const response = await client.chat.completions.create({
 
 ## 模型
 
-`model` 字段接受 Routero 已配置可提供的任意模型字符串。`openai/gpt-5.5` 是一个路由模型，会为你挑选一个健康的部署；你也可以直接指定某个供应商模型。关于模型列表与路由机制，参见[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})与[统一 API]({% link zh-CN/core-gateway/unified-api.md %})。
+`model` 字段接受 Routero 已配置可提供的任意模型字符串。关于模型列表参见[模型]({% link zh-CN/inference-apis/models.md %})，路由机制参见[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})。
 
 ---
 
@@ -110,4 +110,4 @@ response = client.chat.completions.create(
 ## 下一步
 
 → 将你的编码助手经由 Routero 路由，参见 [Cursor]({% link zh-CN/integration/cursor.md %})与 [Claude Code]({% link zh-CN/integration/claude-code.md %})。
-→ 关于完整的端点能力，参见[统一 API]({% link zh-CN/core-gateway/unified-api.md %})。
+→ 关于完整的端点能力，参见[推理 API]({% link zh-CN/inference-apis.md %})。

@@ -18,8 +18,10 @@ Routero answers the questions your security team is already asking: who can call
 Access to a Routero workspace is **invitation-based**. There is no public self-signup.
 
 - An **admin** creates users and teams from the dashboard (or the management API) and issues invitation links.
-- Invitees set up their access from the invitation and **log in directly** with their own credentials.
-- No third-party social or SSO login (Google, Microsoft, SAML, etc.) is wired into the product — identity is managed within Routero by your administrators.
+- Invitees set up their access from the invitation and log in with their own credentials, or through single sign-on if your workspace has it configured.
+
+{: .note }
+Routero supports single sign-on via **Google**, **Microsoft / Azure AD**, and generic **OIDC**, plus **SCIM** for automated user provisioning. (SAML is not supported.) Your administrator configures these under **Settings → SSO**.
 
 {: .note }
 Creating users and sending invitations requires an **admin** role. See [Authorization](#authorization-cerbos-rbac--pbac) below.
@@ -86,14 +88,3 @@ Routero keeps an audit log of **administrative actions** — who changed what, a
 | Budgets | created · updated · deleted |
 
 Query the audit log from the dashboard or the management API (`GET /audit`, `GET /audit/{id}`), scoped to your organization. Sensitive values (such as key material) are masked before storage.
-
----
-
-## Compliance
-
-| Certification | Status |
-|---|---|
-| SOC 2 Type II | Annual audit — report available on request |
-| HIPAA BAA | Enterprise plan |
-| ISO 27001 | In progress |
-| GDPR DPA + SCCs | Available for EU customers |

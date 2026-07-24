@@ -80,5 +80,3 @@ GET /billing/invoices/{month}
 | 仪表板表格 | 实时，可按日期、团队、模型筛选 |
 | CSV | 从仪表板按月下载 |
 | REST API | 通过 `/billing/daily-spend` 以编程方式拉取 |
-| Snowflake / BigQuery | 每小时同步（企业版） |
-| NetSuite / Coupa | 推送集成（企业版） |

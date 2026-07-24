@@ -72,7 +72,7 @@ const response = await client.chat.completions.create({
 
 ## Models
 
-The `model` field accepts any model string Routero is configured to serve. `openai/gpt-5.5` is a router model that picks a healthy deployment for you; you can also name a specific provider model. See [Routing & Load Balancing]({% link core-gateway/routing.md %}) and [Unified API]({% link core-gateway/unified-api.md %}) for the model list and how routing works.
+The `model` field accepts any model string Routero is configured to serve. See [Models]({% link inference-apis/models.md %}) for the model list and [Routing & Load Balancing]({% link core-gateway/routing.md %}) for how routing works.
 
 ---
 
@@ -109,4 +109,4 @@ response = client.chat.completions.create(
 ## Next
 
 → [Cursor]({% link integration/cursor.md %}) and [Claude Code]({% link integration/claude-code.md %}) to route your coding assistants through Routero.
-→ [Unified API]({% link core-gateway/unified-api.md %}) for the full endpoint surface.
+→ [Inference APIs]({% link inference-apis.md %}) for the full endpoint surface.

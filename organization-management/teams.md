@@ -79,7 +79,7 @@ Creating or deleting a team is an **organization-admin** action. Team administra
 
 ## Budgets and spend
 
-A team's budget and rate limits are set when you create or edit it. Spend is tracked against the budget and resets on the cadence you choose (daily, weekly, monthly). Team spend also rolls up into your organization's totals — see [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) for how budgets and alerts work across the platform.
+A team's budget and rate limits are set when you create or edit it. Spend is tracked against the budget and resets on the cadence you choose (daily, weekly, monthly). Team spend also rolls up into your organization's totals — see [Budget Limits]({% link observability/budget-limits.md %}).
 
 ---
 
@@ -87,4 +87,4 @@ A team's budget and rate limits are set when you create or edit it. Spend is tra
 
 → [Members]({% link organization-management/members.md %}) for adding people to your organization before adding them to teams.
 → [Organizations]({% link organization-management/organizations.md %}) for switching organization context.
-→ [Budgets & Spend Guards]({% link core-gateway/budgets.md %}) for budgets, alerts, and chargeback.
+→ [Budget Limits]({% link observability/budget-limits.md %}).
