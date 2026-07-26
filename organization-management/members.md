@@ -73,4 +73,3 @@ Removing a member from your organization does not delete their account — they 
 
 → [Organizations]({% link organization-management/organizations.md %}) for the quick member tools in the Manage Organization window.
 → [Teams]({% link organization-management/teams.md %}) for team-level membership and team roles.
-→ [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) for the authorization model behind these roles.

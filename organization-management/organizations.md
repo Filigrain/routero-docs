@@ -74,4 +74,3 @@ This is the quick path for membership. For the full member-management workflow �
 
 → [Members]({% link organization-management/members.md %}) for the full member and invitation workflow.
 → [Teams]({% link organization-management/teams.md %}) for subdividing your organization.
-→ [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) for the role and authorization model.

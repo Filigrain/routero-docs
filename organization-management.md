@@ -48,6 +48,4 @@ The dashboard always tracks which organization you are working in — shown in t
 
 ## Related
 
-- For the conceptual tenancy model (organizations → teams → users → customers), see [Multi-Tenancy]({% link core-gateway/multi-tenancy.md %}).
 - For team budgets and spend guards, see [Budget Limits]({% link observability/budget-limits.md %}).
-- For roles and authorization, see [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}).

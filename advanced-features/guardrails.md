@@ -12,7 +12,7 @@ description: "Content filtering, PII redaction, secret detection, and tool-permi
 A **guardrail** is an org-scoped named configuration that applies one or more safety engines to requests and responses. Guardrails run inside the gateway — before the model sees the prompt and after it responds — without changing a line of application code.
 
 {: .note }
-Guardrails answer legal's question: *"What did the model see?"* When an engine blocks or redacts content, the gateway returns a clear violation message and never forwards the offending content to the provider. Guardrail configurations are org-scoped and access-controlled through [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}).
+Guardrails answer legal's question: *"What did the model see?"* When an engine blocks or redacts content, the gateway returns a clear violation message and never forwards the offending content to the provider. Guardrail configurations are org-scoped and access-controlled by your organisation's roles.
 
 ---
 
@@ -165,4 +165,3 @@ Content Filter and Tool Permission work out of the box. The Presidio and Secret 
 - **Playground** — pick a guardrail under Advanced Settings to test it against a live model.
 
 → [Policies]({% link core-gateway/policies.md %}) for binding guardrails to keys and models.
-→ [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) for the org/admin permission model.

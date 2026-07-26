@@ -164,9 +164,8 @@ Deleting a policy itself is safe: the gateway automatically clears the `policy_i
 To set expectations clearly:
 
 - **Not routing rules.** A policy does not select models based on content, region, budget, or schedule. Use [Routing & Load Balancing]({% link core-gateway/routing.md %}) or [Auto Router]({% link core-gateway/auto-router.md %}) for that.
-- **Not a substitute for budgets or access control.** Spend caps live in [Budget Limits]({% link observability/budget-limits.md %}); who can call what lives in [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}).
+- **Not a substitute for budgets or access control.** Spend caps live in [Budget Limits]({% link observability/budget-limits.md %}).
 - **No inheritance or wildcards.** A policy is a flat list of up to four capability bindings — there are no base policies, no scoping patterns, no add/remove lists.
 - **No YAML config file.** Policies are managed through the dashboard or the Management API and stored in the database; changes propagate to all proxy instances in real time.
 
 → [AI Capabilities]({% link advanced-features.md %}) for the four resources a policy can bind.
-→ [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) for the org/admin permission model.

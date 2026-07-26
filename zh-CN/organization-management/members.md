@@ -74,4 +74,3 @@ description: "你组织中的人员——仅限邀请的成员资格、角色与
 
 → 管理组织窗口中的快捷成员工具，参见[组织]({% link zh-CN/organization-management/organizations.md %})。
 → 团队级别的成员资格与团队角色，参见[团队]({% link zh-CN/organization-management/teams.md %})。
-→ 这些角色背后的授权模型，参见[访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})。

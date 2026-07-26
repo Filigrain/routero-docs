@@ -4,94 +4,82 @@ page_id: core-gateway/routing
 title: Routing & Load Balancing
 parent: LLM Gateway
 nav_order: 2
-description: "How the Router picks a healthy deployment for each request — strategies, model groups, and health-aware load balancing."
+description: "How Routero spreads requests across the deployments behind a model, and the per-key load-balancing and retry settings."
 ---
 
 # Routing & Load Balancing
 
-When a request names a model, the **Router** picks one healthy deployment to serve it. You group one or more provider deployments under a **model name**, choose a **strategy** for picking among them, and the Router applies that strategy using real-time health and usage data.
+When a model is backed by more than one deployment — the same model at two providers, or a primary with a backup — Routero sends each request to one of them and spreads the load. It steers around deployments that are erroring and retries elsewhere if a call fails.
 
-```
-request: model = "default"
-   → resolve the model group
-   → pick one deployment by strategy + live health
-   → call it (failover on failure)
-```
+You don't pick a deployment per request. You group deployments under a single **Public Model Name** (the name you call), and configure how Routero chooses among them **on each virtual key**.
 
 {: .note }
-Routing picks a deployment *within a model group*. [Auto Router]({% link core-gateway/auto-router.md %}) runs *before* it and can rewrite the requested model to a different group based on message intent. The two compose.
+This is *load balancing* — choosing a deployment behind one model name. [Auto Router]({% link core-gateway/auto-router.md %}) is different: it picks which model to use based on what the user asked. The two work together.
 
 ---
 
 ## Model groups
 
-A model group maps a name to one or more provider deployments. Requests for that name are load-balanced across the deployments:
+A **model group** is a Public Model Name backed by one or more deployments. To create one, [add models](/) and give them the same Public Model Name — for example two entries both named `openai/gpt-5.5`, one pointing at OpenAI and one at Azure OpenAI. Requests for `openai/gpt-5.5` are then shared across both, and if one provider has trouble, traffic moves to the other.
 
-```yaml
-model_list:
-  - model_name: default              # the name callers use
-    litellm_params:
-      model: openai/gpt-5.5
-      api_key: os.environ/OPENAI_API_KEY
+On the **Models** page, deployments that share a name collapse into a single card. You see the number of **Deployments** and the **providers** behind it, and the toolbar tallies the totals across all your groups.
 
-  - model_name: default
-    litellm_params:
-      model: anthropic/claude-sonnet-4-6-20250514
-      api_key: os.environ/ANTHROPIC_API_KEY
+![The Models page — deployments grouped by Public Model Name, with deployment counts and providers](/assets/images/routing/routing-models-grid.png)
 
-  - model_name: default
-    litellm_params:
-      model: bedrock/anthropic.claude-sonnet-4-6-20250514-v1:0
-```
+Click a card to open the group: it lists every deployment behind the name — its provider, the underlying model, and the cost.
 
-`default` is the **public name** callers send — the alias you set when you [add a model](/) — and the three entries are the deployments the Router chooses between. A single-deployment group just routes every request to that one deployment.
+![A model group opened — the deployments, providers, and costs behind one Public Model Name](/assets/images/routing/routing-model-detail.png)
 
-You can also alias one public name to another with `model_group_alias`, so callers use a stable name while you re-point it underneath.
+A name with a single deployment simply routes every request to that one deployment.
 
 ---
 
-## Routing strategies
+## Load balancing
 
-Set `routing_strategy` to choose how the Router picks among the healthy deployments in a group:
+Load balancing is configured **per virtual key**. Open a key's detail page, go to the **Router Settings** tab, and open the **Loadbalancing** sub-tab. The strategy and retry settings you set there apply to every request made with that key.
 
-| Strategy | How it picks | Best for |
-|---|---|---|
-| `simple-shuffle` (default) | Random weighted selection | Even distribution, simple setups |
-| `least-busy` | Deployment with the fewest in-flight requests | Throughput-limited providers |
-| `latency-based-routing` | Deployment with the lowest average recent latency | Latency-sensitive traffic |
-| `cost-based-routing` | Deployment with the lowest per-token cost | Cost optimisation |
-| `usage-based-routing` | Deployment furthest from its TPM/RPM usage | High volume, mixed rate limits |
+![Key detail → Router Settings → Loadbalancing: routing strategy and reliability & retries](/assets/images/routing/routing-key-router-settings.png)
 
-```yaml
-router_settings:
-  routing_strategy: least-busy
-  num_retries: 3
-  timeout: 30
-```
+### Routing strategy
 
-Tag-based routing — pinning requests to deployments by tag, for example by region — is a separate filter you enable with `enable_tag_filtering` on top of any strategy.
+Choose how Routero picks a deployment from the model group:
 
----
+| Strategy | What it does |
+|---|---|
+| **Simple Shuffle** | Randomly picks a deployment from the list. Simple and fast. |
+| **Least Busy** | Routes to the deployment with the lowest number of ongoing requests. |
+| **Latency Based Routing** | Routes to the deployment with the lowest latency over a sliding window. |
+| **Cost Based Routing** | Routes to the deployment with the lowest cost per token. |
+| **Usage Based Routing** | Routes to the deployment with the lowest TPM/RPM usage across instances. |
 
-## Health and cooldown
+Use **Simple Shuffle** for an even spread; **Least Busy** or **Usage Based** to keep one provider from being overloaded; **Latency Based** for the fastest response; and **Cost Based** to favour the cheapest deployment.
 
-The Router tracks each deployment's health in Redis and steers traffic away from unhealthy ones:
+### Reliability & retries
 
-- **Error rate** — tracks 5xx, 429, and content-filter trips.
-- **Cooldown** — a deployment that crosses the error threshold is cooled down (removed from rotation) for a period, then brought back.
-- **Latency** — a rolling average of recent response latency, used by `latency-based-routing`.
-- **Usage** — TPM/RPM usage against the provider's declared limits, used by `usage-based-routing`.
+The same tab tunes how failures are handled for the key:
+
+- **Allowed Fails** — how many times a deployment can fail before it is cooled down (taken out of rotation).
+- **Cooldown Time** — how long a failed deployment stays out of rotation.
+- **Number of Retries** / **Timeout** / **Retry After** — the retry count, per-request timeout, and minimum wait between retries.
+
+For ordered fallback chains (model A → model B → model C), use the **Fallbacks** sub-tab on the same screen — see [Failover & Fallbacks]({% link core-gateway/failover.md %}).
 
 ---
 
-## Routing state
+## Health and failover
 
-All routing state — cooldowns, usage counters, latency windows — lives in Redis. In a multi-replica deployment, every proxy replica shares that state through Redis, so load-balancing decisions stay consistent across instances.
+Routero tracks each deployment's health. When a deployment crosses your **Allowed Fails** threshold, it is cooled down for the **Cooldown Time** you set, and traffic flows to the healthy deployments automatically.
+
+If the deployment serving a request fails mid-call, Routero retries on another deployment in the same group, or moves to the next model in your fallback chain — see [Failover & Fallbacks]({% link core-gateway/failover.md %}).
+
+You can also run an on-demand **Health Check** from the Models table to confirm each deployment's current status (healthy or unhealthy).
+
+![The on-demand Health Check on the Models table](/assets/images/routing/routing-health-check.png)
 
 ---
 
 ## Combining with the rest of the gateway
 
-- **Auto Router** — runs *before* the strategy; rewrites the requested model to a group by message intent. → [Auto Router]({% link core-gateway/auto-router.md %})
-- **Failover** — if the chosen deployment errors mid-request, the Router retries on another. → [Failover & Fallbacks]({% link core-gateway/failover.md %})
-- **Policies** — a model group can carry a capability policy (guardrails, prompts, memory, token saving). → [Policies]({% link core-gateway/policies.md %})
+- **Auto Router** — choose the model by the user's intent, before load balancing. → [Auto Router]({% link core-gateway/auto-router.md %})
+- **Failover** — retry on another deployment when one fails. → [Failover & Fallbacks]({% link core-gateway/failover.md %})
+- **Policies** — attach guardrails, prompts, memory, or token saving to a model group. → [Policies]({% link core-gateway/policies.md %})

@@ -19,6 +19,4 @@ The LLM Gateway is Routero AI's unified proxy — an OpenAI-compatible interface
 - [Auto Router]({% link core-gateway/auto-router.md %}) — intent-based model selection by message content
 - [Failover & Fallbacks]({% link core-gateway/failover.md %}) — multi-provider failover chains
 - [Policies]({% link core-gateway/policies.md %}) — bundle guardrails, prompts, memory, and token saving into a named policy
-- [Access Control & Audit]({% link core-gateway/sso-rbac-audit.md %}) — admin-invite · Cerbos · audit log
-- [Multi-Tenancy]({% link core-gateway/multi-tenancy.md %}) — orgs · teams · users · customers
-- [Cost Tracking & Billing]({% link core-gateway/cost-tracking.md %}) — per-request cost pipeline, wallet, invoices
+- [Bring Your Own Key (BYOK)]({% link core-gateway/byok.md %}) — use your own provider keys; you pay the provider directly, Routero charges markup only

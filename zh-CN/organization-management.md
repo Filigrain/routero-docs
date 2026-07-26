@@ -49,6 +49,4 @@ Routero 把一切——访问、支出、模型与审计——都组织在你的
 
 ## 相关内容
 
-- 关于租户模型的概念（组织 → 团队 → 用户 → 客户），参见[多租户]({% link zh-CN/core-gateway/multi-tenancy.md %})。
 - 关于团队预算与支出护栏，参见[预算限额]({% link zh-CN/observability/budget-limits.md %})。
-- 关于角色与授权，参见[访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})。

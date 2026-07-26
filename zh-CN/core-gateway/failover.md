@@ -5,66 +5,62 @@ permalink: /core-gateway/failover.html
 title: 故障转移与回退
 parent: LLM 网关
 nav_order: 4
-description: "多供应商故障转移链、自动重试行为，以及感知流式的回退。"
+description: "在密钥上定义一条有序的回退链，让请求在主模型失败时转到下一个模型。"
 ---
 
 # 故障转移与回退
 
-Routero AI 将供应商宕机视为路由问题，而非应用错误。配置一条回退链；Router 会透明地处理故障 —— 包括在活跃的流式响应过程中。
+回退链告诉 Routero 在某个模型失败时接下来试哪个。如果主模型在重试后仍然出错，Routero 会转到链中的下一个模型——这样即便某家供应商出了问题，请求仍然能成功。
+
+回退是**按虚拟密钥**配置的，与负载均衡在同一个界面。
 
 ---
 
-## 配置回退链
+## 设置回退链
 
-```yaml
-# 在你的路由器配置中
-router_settings:
-  fallbacks:
-    - openai/gpt-4o:
-        - anthropic/claude-sonnet-4-6-20250514
-        - bedrock/meta.llama4-maverick-17b-instruct-v1:0
-  num_retries: 3
-  timeout: 30                # per-attempt timeout (seconds)
-```
+打开某个密钥的详情页，进入 **Router Settings** 标签，选择 **Fallbacks** 子标签。
 
-当 `openai/gpt-4o` 返回 5xx 或超时时，Routero 会先在 `claude-sonnet-4-6` 上重试，再在 `llama-4-maverick` 上重试，然后才向调用方返回错误。
+![密钥详情 → Router Settings → Fallbacks：一个主模型与一条有序的回退链](/assets/images/failover/failover-key-fallbacks.png)
 
----
+每一组是一个**主模型（Primary Model）**加上它自己有序的**回退链（Fallback Chain）**：
 
-## 错误分类与重试行为
+1. **Primary Model** —— 请求通常使用的模型。
+2. **Fallback Chain** —— 主模型失败时按顺序尝试的模型。最多 **5** 个，按 1、2、3……编号，并依此顺序尝试。
 
-Routero 对供应商错误进行分类，并据此选择重试策略：
+{: .note }
+回退顺序就是你在下拉里选择模型的顺序。要改顺序，需先移除某模型再重新添加——目前不支持拖拽排序。
 
-| 错误类型 | 默认行为 |
-|---|---|
-| `5xx`（服务器错误） | 在下一个健康部署上重试 |
-| `429`（限流） | 在另一个部署上重试（遵循 `Retry-After`） |
-| `timeout` | 在下一个部署上重试 |
-| `content_filter` | 回退到 `content_policy_fallbacks` 链中的下一个模型 |
-
-重试与回退会指向组或链中的其他健康部署；哪些错误会重试由 `RetryPolicy` 控制。
+你最多可以定义 **5 组**（点击标签栏的 **+** 可再添加一组“主模型 → 回退链”）。大多数密钥只需要一组。
 
 ---
 
-## 感知流式的故障转移
+## 何时触发回退
 
-如果某个供应商在流中途失败，Routero 可回退到另一个供应商并继续响应，把已输出的部分一并传递，让回退模型从上次中断处接续。客户端会收到一条完整的 SSE 流，无需任何客户端侧的重试逻辑。
+当请求失败时，Routero 会先**在模型组内重试**——使用 [Loadbalancing]({% link zh-CN/core-gateway/routing.md %}) 子标签里的 **Number of Retries**、**Timeout** 和 **Retry After**。只有当这些重试都耗尽后，才会转到回退链中的**下一个模型**，该模型再按相同策略重试。
+
+回退在请求级别的失败时触发，例如**超时、服务器错误（5xx）、限流（429）以及内容过滤错误**。链中的每个模型都有一次机会，之后请求才会真正失败。
 
 ---
 
-## 地域与回退链
+## 保存
 
-回退链只会考虑你在其中列出的部署。要让一条链保持在单个数据驻留地域内，只需只列出部署在该地域的部署——Router 绝不会离开你所定义的链。如需按请求标签把流量锁定到特定部署（例如 EU 地域内的部署），请使用基于标签的路由。
-
-→ [路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})
+Loadbalancing 与 Fallbacks 是一起保存的——使用 Router Settings 标签底部的同一个 **Save Router Settings** 按钮即可同时应用两者。
 
 ---
 
 ## 逐请求可见性
 
-重试与回退的细节可在每个请求上查看：
-- 尝试过哪些供应商
-- 最终由哪个回退供应商提供了服务
-- 包含重试开销的总延迟
+对于发生过故障转移的请求，你可以查看：
+
+- 尝试过哪些供应商，最终由哪一个提供了服务。
+- 包含重试开销的总延迟。
 
 逐请求明细参见[日志]({% link zh-CN/observability/logs.md %})，并查看 `x-routero-attempted-retries` 与 `x-routero-attempted-fallbacks` 响应头。
+
+---
+
+## 与网关其余部分的组合
+
+- **负载均衡** —— Routero 如何在模型组内部挑选部署。→ [路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})
+- **自动路由** —— 在负载均衡或回退之前，按意图选择模型。→ [自动路由]({% link zh-CN/core-gateway/auto-router.md %})
+- **策略** —— 附加护栏、提示词、记忆或 Token 节省。→ [策略]({% link zh-CN/core-gateway/policies.md %})

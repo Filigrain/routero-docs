@@ -20,6 +20,4 @@ LLM 网关是 Routero AI 的统一 LLM 代理——一个位于 100+ 供应商�
 - [自动路由]({% link zh-CN/core-gateway/auto-router.md %}) —— 基于消息内容的意图式模型选择
 - [故障转移与回退]({% link zh-CN/core-gateway/failover.md %}) —— 多供应商故障转移链
 - [策略]({% link zh-CN/core-gateway/policies.md %}) —— 将护栏、提示词、记忆与 Token 节省打包为命名策略
-- [访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %}) —— 管理员邀请 · Cerbos · 审计日志
-- [多租户]({% link zh-CN/core-gateway/multi-tenancy.md %}) —— 组织 · 团队 · 用户 · 客户
-- [成本追踪与计费]({% link zh-CN/core-gateway/cost-tracking.md %}) —— 按请求的成本流水线、钱包、发票
+- [自带密钥（BYOK）]({% link zh-CN/core-gateway/byok.md %}) —— 使用你自己的供应商密钥；直接向供应商付费，Routero 仅收加价

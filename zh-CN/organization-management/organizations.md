@@ -75,4 +75,3 @@ description: "切换组织以及管理你自己的组织——从侧边栏底部
 
 → 完整的成员与邀请工作流，参见[成员]({% link zh-CN/organization-management/members.md %})。
 → 细分你的组织，参见[团队]({% link zh-CN/organization-management/teams.md %})。
-→ 这些角色背后的授权模型，参见[访问控制与审计]({% link zh-CN/core-gateway/sso-rbac-audit.md %})。
