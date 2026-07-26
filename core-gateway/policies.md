@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/policies
 title: Policies
 parent: LLM Gateway
-nav_order: 5
+nav_order: 7
 description: "Bundle guardrails, prompts, memory, and token-saving into a named policy and bind it to a key or model for automatic activation."
 ---
 

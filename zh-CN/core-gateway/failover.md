@@ -4,7 +4,7 @@ page_id: core-gateway/failover
 permalink: /core-gateway/failover.html
 title: 故障转移与回退
 parent: LLM 网关
-nav_order: 4
+nav_order: 6
 description: "在密钥上定义一条有序的回退链，让请求在主模型失败时转到下一个模型。"
 ---
 

@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/auto-router
 title: Auto Router
 parent: LLM Gateway
-nav_order: 3
+nav_order: 4
 description: "Intent-based model selection — inspect the user's message and route to the best model group automatically."
 ---
 

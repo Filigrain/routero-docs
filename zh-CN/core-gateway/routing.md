@@ -4,7 +4,7 @@ page_id: core-gateway/routing
 permalink: /core-gateway/routing.html
 title: 路由与负载均衡
 parent: LLM 网关
-nav_order: 2
+nav_order: 5
 description: "Routero 如何在一个模型背后的多个部署之间分发请求，以及按密钥配置的负载均衡与重试设置。"
 ---
 

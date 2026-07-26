@@ -4,7 +4,7 @@ page_id: core-gateway/byok
 permalink: /core-gateway/byok.html
 title: 自带密钥（BYOK）
 parent: LLM 网关
-nav_order: 6
+nav_order: 3
 description: "使用你自己的供应商 API 密钥——你直接向供应商付费，Routero 仅收取加价。"
 ---
 

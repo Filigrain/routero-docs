@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/failover
 title: Failover & Fallbacks
 parent: LLM Gateway
-nav_order: 4
+nav_order: 6
 description: "Define an ordered fallback chain on a key, so a request moves to the next model when the primary fails."
 ---
 

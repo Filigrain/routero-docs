@@ -2,7 +2,7 @@
 lang: en
 page_id: organization-management
 title: Organization Management
-nav_order: 6
+nav_order: 8
 has_children: true
 description: "Managing your organization, teams, and members from the Routero dashboard — the tenant administrator's guide."
 ---

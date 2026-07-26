@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: organization-management
 permalink: /organization-management.html
 title: 组织管理
-nav_order: 6
+nav_order: 8
 has_children: true
 description: "在 Routero 仪表板中管理你的组织、团队与成员——租户管理员指南。"
 ---

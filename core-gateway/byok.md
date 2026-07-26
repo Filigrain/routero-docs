@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/byok
 title: Bring Your Own Key (BYOK)
 parent: LLM Gateway
-nav_order: 6
+nav_order: 3
 description: "Use your own provider API keys — you pay the provider directly, and Routero charges only its markup."
 ---
 

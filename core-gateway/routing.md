@@ -3,7 +3,7 @@ lang: en
 page_id: core-gateway/routing
 title: Routing & Load Balancing
 parent: LLM Gateway
-nav_order: 2
+nav_order: 5
 description: "How Routero spreads requests across the deployments behind a model, and the per-key load-balancing and retry settings."
 ---
 
