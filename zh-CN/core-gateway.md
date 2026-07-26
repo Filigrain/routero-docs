@@ -2,15 +2,15 @@
 lang: zh-CN
 page_id: core-gateway
 permalink: /core-gateway.html
-title: 核心网关
+title: LLM 网关
 nav_order: 4
 has_children: true
 description: "Routero AI 控制平面的四大构建模块：路由、策略、预算和审计。"
 ---
 
-# 核心网关
+# LLM 网关
 
-核心网关是 Routero AI 的统一 LLM 代理——一个位于 100+ 供应商之前的 OpenAI 兼容接口，内置四个可组合的治理原语。
+LLM 网关是 Routero AI 的统一 LLM 代理——一个位于 100+ 供应商之前的 OpenAI 兼容接口，内置四个可组合的治理原语。
 
 ---
 

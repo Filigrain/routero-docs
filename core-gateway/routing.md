@@ -2,45 +2,37 @@
 lang: en
 page_id: core-gateway/routing
 title: Routing & Load Balancing
-parent: Core Gateway
+parent: LLM Gateway
 nav_order: 2
-description: "Routing strategies, model groups, the Router, and how Routero selects providers per request."
+description: "How the Router picks a healthy deployment for each request — strategies, model groups, and health-aware load balancing."
 ---
 
 # Routing & Load Balancing
 
-The Routero Router distributes each request across one or more configured provider deployments using a pluggable strategy. You configure model groups (a named alias → list of provider deployments); the Router picks one based on real-time health and your chosen strategy.
+When a request names a model, the **Router** picks one healthy deployment to serve it. You group one or more provider deployments under a **model name**, choose a **strategy** for picking among them, and the Router applies that strategy using real-time health and usage data.
 
----
+```
+request: model = "default"
+   → resolve the model group
+   → pick one deployment by strategy + live health
+   → call it (failover on failure)
+```
 
-## Routing strategies
-
-| Strategy | How it picks | Best for |
-|---|---|---|
-| `simple-shuffle` (default) | Random weighted selection | Even distribution, simple setups |
-| `least-busy` | Deployment with lowest in-flight request count | Throughput-limited providers |
-| `latency-based-routing` | Deployment with lowest average recent latency | Latency-sensitive applications |
-| `cost-based-routing` | Deployment with lowest per-token cost | Cost optimisation |
-| `usage-based-routing` | Deployment furthest from its TPM/RPM usage | High-volume, mixed rate limits |
-
-Tag-based routing — pinning requests to deployments by tag, for example for region — is a separate filter you enable with `enable_tag_filtering` alongside any of the strategies above.
-
-Set the strategy per model group in your router configuration.
+{: .note }
+Routing picks a deployment *within a model group*. [Auto Router]({% link core-gateway/auto-router.md %}) runs *before* it and can rewrite the requested model to a different group based on message intent. The two compose.
 
 ---
 
 ## Model groups
 
-A model group maps a named alias to an ordered list of provider deployments. Example:
+A model group maps a name to one or more provider deployments. Requests for that name are load-balanced across the deployments:
 
 ```yaml
 model_list:
-  - model_name: default
+  - model_name: default              # the name callers use
     litellm_params:
-      model: openai/gpt-4o
+      model: openai/gpt-5.5
       api_key: os.environ/OPENAI_API_KEY
-    model_info:
-      mode: chat
 
   - model_name: default
     litellm_params:
@@ -50,30 +42,56 @@ model_list:
   - model_name: default
     litellm_params:
       model: bedrock/anthropic.claude-sonnet-4-6-20250514-v1:0
+```
 
+`default` is the **public name** callers send — the alias you set when you [add a model](/) — and the three entries are the deployments the Router chooses between. A single-deployment group just routes every request to that one deployment.
+
+You can also alias one public name to another with `model_group_alias`, so callers use a stable name while you re-point it underneath.
+
+---
+
+## Routing strategies
+
+Set `routing_strategy` to choose how the Router picks among the healthy deployments in a group:
+
+| Strategy | How it picks | Best for |
+|---|---|---|
+| `simple-shuffle` (default) | Random weighted selection | Even distribution, simple setups |
+| `least-busy` | Deployment with the fewest in-flight requests | Throughput-limited providers |
+| `latency-based-routing` | Deployment with the lowest average recent latency | Latency-sensitive traffic |
+| `cost-based-routing` | Deployment with the lowest per-token cost | Cost optimisation |
+| `usage-based-routing` | Deployment furthest from its TPM/RPM usage | High volume, mixed rate limits |
+
+```yaml
 router_settings:
-  routing_strategy: least_busy
+  routing_strategy: least-busy
   num_retries: 3
   timeout: 30
 ```
 
-Requests to `model: "default"` are distributed across all three deployments. On failure, the Router automatically retries on the next available deployment.
+Tag-based routing — pinning requests to deployments by tag, for example by region — is a separate filter you enable with `enable_tag_filtering` on top of any strategy.
 
 ---
 
-## Health monitoring
+## Health and cooldown
 
-The Router tracks each deployment's health in Redis:
-- **Error rate** — tracks 5xx, 429, and content-filter trip rates.
-- **Cooldown** — a deployment that crosses an error threshold is cooled down (removed from rotation) for a configurable period.
-- **Latency percentiles** — p50/p95 rolling window, used by `lowest_latency` strategy.
-- **TPM/RPM proximity** — tracks usage against declared provider limits for `usage-based-routing`.
+The Router tracks each deployment's health in Redis and steers traffic away from unhealthy ones:
+
+- **Error rate** — tracks 5xx, 429, and content-filter trips.
+- **Cooldown** — a deployment that crosses the error threshold is cooled down (removed from rotation) for a period, then brought back.
+- **Latency** — a rolling average of recent response latency, used by `latency-based-routing`.
+- **Usage** — TPM/RPM usage against the provider's declared limits, used by `usage-based-routing`.
 
 ---
 
 ## Routing state
 
-All routing state (cooldowns, usage counters, latency windows) is stored in Redis. In a multi-instance deployment, all proxy replicas share the same routing state — no cross-instance coordination required beyond the shared Redis.
+All routing state — cooldowns, usage counters, latency windows — lives in Redis. In a multi-replica deployment, every proxy replica shares that state through Redis, so load-balancing decisions stay consistent across instances.
 
-→ [Failover & Fallbacks]({% link core-gateway/failover.md %}) for how the Router handles provider errors mid-request.
-→ [Auto Router]({% link core-gateway/auto-router.md %}) for intent-based model selection that runs before the strategy above.
+---
+
+## Combining with the rest of the gateway
+
+- **Auto Router** — runs *before* the strategy; rewrites the requested model to a group by message intent. → [Auto Router]({% link core-gateway/auto-router.md %})
+- **Failover** — if the chosen deployment errors mid-request, the Router retries on another. → [Failover & Fallbacks]({% link core-gateway/failover.md %})
+- **Policies** — a model group can carry a capability policy (guardrails, prompts, memory, token saving). → [Policies]({% link core-gateway/policies.md %})

@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: core-gateway/failover
 permalink: /core-gateway/failover.html
 title: 故障转移与回退
-parent: 核心网关
+parent: LLM 网关
 nav_order: 4
 description: "多供应商故障转移链、自动重试行为，以及感知流式的回退。"
 ---

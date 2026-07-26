@@ -3,70 +3,81 @@ lang: en
 page_id: index
 title: Quickstart
 nav_order: 1
-description: "Make your first request through Routero AI in under 5 minutes."
+description: "Get running in three steps: add a model, create a key, and make your first request."
 ---
 
 # Quickstart
 
-Get your first request routed through Routero AI in under 5 minutes. If you already use the OpenAI SDK, this is a one-line change.
+Get your first request through Routero in three steps: **add a model**, **create a key**, then **use that key** from your application. If you already use the OpenAI SDK, the last step is a one-line `base_url` change.
 
-{: .enterprise }
-> **Prerequisites:** A Routero virtual key. Workspaces are invitation-only — ask your workspace admin to invite you and issue a key from [platform.routero.ai](https://platform.routero.ai).
-
----
-
-## Two ways to integrate
-
-| Approach | Best for | What changes |
-|---|---|---|
-| **OpenAI SDK (drop-in)** | Existing OpenAI codebases | `base_url` only |
-| **Direct REST API** | Any language, no SDK dependency | — |
+{: .note }
+**Prerequisites:** an organisation administrator account, and a provider already assigned to your organisation. Routero is invitation-only, and a model references a provider key your platform admin has assigned — ask them if the provider you need isn't listed.
 
 ---
 
-## Option 1 — OpenAI SDK drop-in (recommended)
+## Step 1 — Add a model
 
-Change `base_url` to `https://api.routero.ai/v1`. Everything else — messages, tools, streaming, vision, structured outputs — stays identical.
+Open **Models** in the sidebar and choose **+ Add Model**.
 
-### Python
+![The Models page, with the + Add Model button](/assets/images/quickstart/quickstart-models-list.png)
+
+In the **Add Model** drawer:
+
+1. **Provider** — pick a provider assigned to your organisation.
+2. **Model Name** — choose a model, or "All {Provider} Models" to expose them all.
+3. **Public Model Name** — the alias your application sends to Routero. This is the `model` value you'll use in Step 3. Keep the default or rename it.
+
+Leave the rest as defaults and click **Add Model** (use **Test Connect** first to verify the provider is reachable).
+
+![Add Model drawer — provider, model name, and the public model name you will call](/assets/images/quickstart/quickstart-add-model.png)
+
+{: .note }
+No providers listed? Your platform admin hasn't assigned a provider key to your organisation yet — ask them to add one.
+
+---
+
+## Step 2 — Create a key
+
+Open **API Keys** and choose **+ Create New Key**.
+
+![The API Keys page, with the + Create New Key button](/assets/images/quickstart/quickstart-api-keys-list.png)
+
+In the **Create New Key** drawer:
+
+1. **Key Name** — a label for the key.
+2. **Models** — which models the key can call. "All Proxy Models" by default, or pick specific ones.
+3. *(Optional)* **Budget & Rate Limits** — cap spend or set TPM/RPM limits.
+
+Click **Create Key**. A **Save your Key** dialog shows your new virtual key (`sk-…`) — **copy it now; it is shown only once.**
+
+![The Create New Key drawer, and the Save-your-Key dialog with the sk-… virtual key](/assets/images/quickstart/quickstart-create-key.png)
+
+![The Save your Key dialog — copy the virtual key, shown only once](/assets/images/quickstart/quickstart-key-created.png)
+
+---
+
+## Step 3 — Use the key
+
+Point any OpenAI SDK — or a plain HTTP client — at Routero with your key, and request the **Public Model Name** you set in Step 1.
 
 ```python
-import openai
+from openai import OpenAI
 
-client = openai.OpenAI(
-    api_key="YOUR_ROUTERO_KEY",          # your Routero virtual key
+client = OpenAI(
+    api_key="sk-...YOUR_KEY...",          # the virtual key from Step 2
     base_url="https://api.routero.ai/v1",
 )
 
 response = client.chat.completions.create(
-    model="openai/gpt-5.5",              # or "anthropic/claude-sonnet-4-6", "openai/gpt-4o", etc.
+    model="openai/gpt-5.5",               # the Public Model Name from Step 1
     messages=[{"role": "user", "content": "Hello!"}],
 )
 print(response.choices[0].message.content)
 ```
 
-### TypeScript / Node
-
-```typescript
-import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: "YOUR_ROUTERO_KEY",
-  baseURL: "https://api.routero.ai/v1",
-});
-
-const response = await client.chat.completions.create({
-  model: "openai/gpt-5.5",
-  messages: [{ role: "user", content: "Hello!" }],
-});
-console.log(response.choices[0].message.content);
-```
-
-### curl
-
 ```bash
 curl https://api.routero.ai/v1/chat/completions \
-  -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
+  -H "Authorization: Bearer sk-...YOUR_KEY..." \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openai/gpt-5.5",
@@ -74,71 +85,12 @@ curl https://api.routero.ai/v1/chat/completions \
   }'
 ```
 
----
-
-## Option 2 — Direct REST API
-
-The gateway exposes a standard OpenAI-compatible REST interface. Use any HTTP client.
-
-**Base URL:** `https://api.routero.ai/v1`
-
-**Authentication:** `Authorization: Bearer YOUR_ROUTERO_KEY`
-
-**Endpoints:** `/chat/completions` · `/embeddings` · `/images/generations` · `/models`. See [Inference APIs]({% link inference-apis.md %}) for the reference.
+The request shows up in your [platform dashboard](https://platform.routero.ai) usage and spend views. See [Inference APIs]({% link inference-apis.md %}) for the other endpoints (embeddings, images, models).
 
 ---
 
-## Model strings
+## Next
 
-Routero passes any model string to the appropriate provider. You can use:
-
-| Format | Example | What it does |
-|---|---|---|
-| Provider-scoped | `openai/gpt-5.5` | A specific provider model |
-| Bare model name | `gpt-4o` | Routero infers the provider |
-| Provider variant | `bedrock/anthropic.claude-sonnet-4-6` | Fully-qualified AWS Bedrock model |
-
-{: .note }
-Your workspace admin can also define **model groups** — a single name that load-balances and fails over across several deployments. See [Routing & Load Balancing]({% link core-gateway/routing.md %}).
-
----
-
-## What just happened
-
-Every request you sent ran through Routero's four-decision pipeline:
-
-1. **Auth & access** — Routero verified your virtual key, checked that the key may call the requested model, and confirmed your workspace budget had room.
-2. **Provider selection** — The Router scored eligible deployments by current health, latency, and cost, then picked your configured primary deployment for that model.
-3. **Accounting** — The token count and cost were calculated and debited from your workspace budget atomically, and the usage was logged.
-4. **Response** — The provider's response was streamed back through the gateway with zero buffering.
-
-The request now appears in your [platform dashboard](https://platform.routero.ai) usage and spend views.
-
----
-
-## Activate AI Capabilities
-
-Pass any combination of feature IDs on the same request to unlock Routero's production-AI layer. The proxy resolves each config from your workspace, applies it as a hook, and strips the ID before the upstream call — your application code never changes.
-
-```python
-response = client.chat.completions.create(
-    model="openai/gpt-5.5",
-    messages=[{"role": "user", "content": "Summarise last quarter's results."}],
-    extra_body={
-        "guardrail_id":        "my-pii-guardrail",      # redact PII before the model sees it
-        "token_saving_plan_id": "my-cache-plan",         # compress + cache the response
-        "prompt_id":           "my-analyst-system-prompt", # inject versioned system prompt
-        "memory_id":           "user-alice-session",    # retrieve Alice's long-term context
-    },
-)
-```
-
-→ [AI Capabilities]({% link advanced-features.md %})
-
----
-
-## What to do next
-
-- **Bundle capabilities into a policy** → [Policies]({% link core-gateway/policies.md %})
-- **Add a spend budget for your team** → [Budget Limits]({% link observability/budget-limits.md %})
-- **Enable guardrails for PII** → [Guardrails]({% link advanced-features/guardrails.md %})
+- **Route your coding assistants** through Routero — [Cursor]({% link integration/cursor.md %}), [Claude Code]({% link integration/claude-code.md %}), [Codex]({% link integration/codex.md %}).
+- **Add AI capabilities** (guardrails, prompts, memory, caching) — [AI Capabilities]({% link advanced-features.md %}).
+- **Set a spend budget** — [Budget Limits]({% link observability/budget-limits.md %}).

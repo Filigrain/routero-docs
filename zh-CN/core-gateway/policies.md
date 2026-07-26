@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: core-gateway/policies
 permalink: /core-gateway/policies.html
 title: 策略
-parent: 核心网关
+parent: LLM 网关
 nav_order: 5
 description: "将护栏、提示词、记忆与 Token 节省打包为命名策略，并绑定到密钥或模型以自动激活。"
 ---

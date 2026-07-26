@@ -2,7 +2,7 @@
 lang: en
 page_id: core-gateway/multi-tenancy
 title: Multi-Tenancy
-parent: Core Gateway
+parent: LLM Gateway
 nav_order: 8
 description: "Orgs, teams, users, and customers — Routero's hierarchical tenancy model."
 ---

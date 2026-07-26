@@ -1,15 +1,15 @@
 ---
 lang: en
 page_id: core-gateway
-title: Core Gateway
+title: LLM Gateway
 nav_order: 4
 has_children: true
 description: "The four building blocks of the Routero AI control plane: Routes, Policies, Budgets, and Audit."
 ---
 
-# Core Gateway
+# LLM Gateway
 
-The core gateway is Routero AI's unified LLM proxy — an OpenAI-compatible interface in front of 100+ providers, with four composable governance primitives built in.
+The LLM Gateway is Routero AI's unified proxy — an OpenAI-compatible interface in front of 100+ providers, with four composable governance primitives built in.
 
 ---
 

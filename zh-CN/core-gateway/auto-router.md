@@ -3,7 +3,7 @@ lang: zh-CN
 page_id: core-gateway/auto-router
 permalink: /core-gateway/auto-router.html
 title: 自动路由
-parent: 核心网关
+parent: LLM 网关
 nav_order: 3
 description: "基于意图的模型选择——检查用户消息，自动路由到最合适的模型组。"
 ---

@@ -4,70 +4,81 @@ page_id: index
 permalink: /
 title: 快速开始
 nav_order: 1
-description: "在 5 分钟内通过 Routero AI 发出你的第一个请求。"
+description: "三步上手：添加模型、创建密钥、发出第一个请求。"
 ---
 
 # 快速开始
 
-在 5 分钟内让你的第一个请求通过 Routero AI 路由。如果你已经在使用 OpenAI SDK，这只是一行改动。
+三步让第一个请求通过 Routero：**添加模型**、**创建密钥**，然后从你的应用里**使用该密钥**。如果你已在用 OpenAI SDK，最后一步只需改一行 `base_url`。
 
-{: .enterprise }
-> **前提条件：** 一个 Routero 虚拟密钥。工作区采用邀请制——请联系你的工作区管理员，从 [platform.routero.ai](https://platform.routero.ai) 邀请你并发放密钥。
-
----
-
-## 两种集成方式
-
-| 方式 | 最适合 | 改动内容 |
-|---|---|---|
-| **OpenAI SDK（直接替换）** | 现有的 OpenAI 代码库 | 仅 `base_url` |
-| **直接调用 REST API** | 任意语言，无 SDK 依赖 | — |
+{: .note }
+**前提条件：** 组织管理员账号，且你的组织已被分配了供应商。Routero 采用邀请制，模型引用的是平台管理员分配给组织的供应商密钥——如果列表里没有你需要的供应商，请联系管理员。
 
 ---
 
-## 方式 1 —— OpenAI SDK 直接替换（推荐）
+## 第 1 步 —— 添加模型
 
-将 `base_url` 改为 `https://api.routero.ai/v1`。其余一切——消息、工具、流式、视觉、结构化输出——保持完全相同。
+在侧边栏打开 **Models**，选择 **+ Add Model**。
 
-### Python
+![Models 页面，带 + Add Model 按钮](/assets/images/quickstart/quickstart-models-list.png)
+
+在 **Add Model** 抽屉中：
+
+1. **Provider** —— 选择一个已分配给你组织的供应商。
+2. **Model Name** —— 选择一个模型，或选 “All {Provider} Models” 一次暴露该供应商的全部模型。
+3. **Public Model Name** —— 你的应用发给 Routero 的别名。这就是第 3 步里 `model` 要用的值。可保留默认或重命名。
+
+其余保持默认，点击 **Add Model**（可先用 **Test Connect** 验证供应商可达）。
+
+![Add Model 抽屉——供应商、模型名，以及你将要调用的公开模型名](/assets/images/quickstart/quickstart-add-model.png)
+
+{: .note }
+供应商列表为空？说明平台管理员尚未给你的组织分配供应商密钥——请联系管理员添加。
+
+---
+
+## 第 2 步 —— 创建密钥
+
+打开 **API Keys**，选择 **+ Create New Key**。
+
+![API Keys 页面，带 + Create New Key 按钮](/assets/images/quickstart/quickstart-api-keys-list.png)
+
+在 **Create New Key** 抽屉中：
+
+1. **Key Name** —— 密钥的名称。
+2. **Models** —— 该密钥可调用哪些模型。默认 “All Proxy Models”，也可选择具体模型。
+3.（可选）**Budget & Rate Limits** —— 设置支出上限或 TPM/RPM 限制。
+
+点击 **Create Key**。会弹出 **Save your Key** 对话框，显示新的虚拟密钥（`sk-…`）——**立即复制，它只显示一次。**
+
+![Create New Key 抽屉，以及显示 sk-… 虚拟密钥的 Save-your-Key 对话框](/assets/images/quickstart/quickstart-create-key.png)
+
+![Save your Key 对话框——复制虚拟密钥，仅显示一次](/assets/images/quickstart/quickstart-key-created.png)
+
+---
+
+## 第 3 步 —— 使用密钥
+
+用你的密钥把任意 OpenAI SDK——或普通 HTTP 客户端——指向 Routero，并请求第 1 步设置的**公开模型名（Public Model Name）**。
 
 ```python
-import openai
+from openai import OpenAI
 
-client = openai.OpenAI(
-    api_key="YOUR_ROUTERO_KEY",          # 你的 Routero 虚拟密钥
+client = OpenAI(
+    api_key="sk-...YOUR_KEY...",          # 第 2 步拿到的虚拟密钥
     base_url="https://api.routero.ai/v1",
 )
 
 response = client.chat.completions.create(
-    model="openai/gpt-5.5",              # 或 "anthropic/claude-sonnet-4-6"、"openai/gpt-4o" 等
+    model="openai/gpt-5.5",               # 第 1 步设置的公开模型名
     messages=[{"role": "user", "content": "Hello!"}],
 )
 print(response.choices[0].message.content)
 ```
 
-### TypeScript / Node
-
-```typescript
-import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: "YOUR_ROUTERO_KEY",
-  baseURL: "https://api.routero.ai/v1",
-});
-
-const response = await client.chat.completions.create({
-  model: "openai/gpt-5.5",
-  messages: [{ role: "user", content: "Hello!" }],
-});
-console.log(response.choices[0].message.content);
-```
-
-### curl
-
 ```bash
 curl https://api.routero.ai/v1/chat/completions \
-  -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
+  -H "Authorization: Bearer sk-...YOUR_KEY..." \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openai/gpt-5.5",
@@ -75,71 +86,12 @@ curl https://api.routero.ai/v1/chat/completions \
   }'
 ```
 
----
-
-## 方式 2 —— 直接调用 REST API
-
-网关提供标准的 OpenAI 兼容 REST 接口。可使用任意 HTTP 客户端。
-
-**基础 URL：** `https://api.routero.ai/v1`
-
-**认证：** `Authorization: Bearer YOUR_ROUTERO_KEY`
-
-**端点：** `/chat/completions` · `/embeddings` · `/images/generations` · `/models`。参见[推理 API]({% link zh-CN/inference-apis.md %})。
+该请求会出现在你的[平台仪表板](https://platform.routero.ai)的用量与支出视图中。其他端点（向量、图像、模型列表）参见[推理 API]({% link zh-CN/inference-apis.md %})。
 
 ---
 
-## 模型字符串
+## 接下来
 
-Routero 会将任意模型字符串传递给相应的供应商。你可以使用：
-
-| 格式 | 示例 | 作用 |
-|---|---|---|
-| 供应商限定 | `openai/gpt-5.5` | 指定某个供应商的模型 |
-| 裸模型名 | `gpt-4o` | Routero 自动推断供应商 |
-| 供应商变体 | `bedrock/anthropic.claude-sonnet-4-6` | 完全限定的 AWS Bedrock 模型 |
-
-{: .note }
-你的工作区管理员还可以定义**模型组**——一个名字，在多个部署之间做负载均衡与故障转移。参见[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})。
-
----
-
-## 刚刚发生了什么
-
-你发送的每个请求都经过了 Routero 的四步决策流水线：
-
-1. **认证与访问** —— Routero 校验你的虚拟密钥，检查该密钥是否有权调用所请求的模型，并确认你的工作区预算尚有余量。
-2. **供应商选择** —— Router 根据当前健康状况、延迟和成本为符合条件的部署打分，然后为你挑选该模型配置的主部署。
-3. **计费** —— 计算 token 数量和成本，并原子性地从你工作区的预算中扣除，用量被记录。
-4. **响应** —— 供应商的响应通过网关零缓冲地流式返回。
-
-该请求现在已出现在你的[平台仪表板](https://platform.routero.ai)的用量与支出视图中。
-
----
-
-## 启用 AI 能力
-
-在同一个请求上传入任意功能 ID 的组合，即可解锁 Routero 的生产级 AI 层。代理会从你的工作区解析每项配置，将其作为钩子应用，并在向上游发起调用之前剥离 ID——你的应用代码无需改动。
-
-```python
-response = client.chat.completions.create(
-    model="openai/gpt-5.5",
-    messages=[{"role": "user", "content": "Summarise last quarter's results."}],
-    extra_body={
-        "guardrail_id":        "my-pii-guardrail",      # 在模型看到之前对 PII 脱敏
-        "token_saving_plan_id": "my-cache-plan",         # 压缩并缓存响应
-        "prompt_id":           "my-analyst-system-prompt", # 注入有版本的系统提示词
-        "memory_id":           "user-alice-session",    # 检索 Alice 的长期上下文
-    },
-)
-```
-
-→ [AI 能力]({% link zh-CN/advanced-features.md %})
-
----
-
-## 接下来做什么
-
-- **把能力打包为一个策略** → [策略]({% link zh-CN/core-gateway/policies.md %})
-- **为你的团队添加支出预算** → [预算限额]({% link zh-CN/observability/budget-limits.md %})
-- **为 PII 启用护栏** → [护栏]({% link zh-CN/advanced-features/guardrails.md %})
+- **让编码助手经由 Routero** —— [Cursor]({% link zh-CN/integration/cursor.md %})、[Claude Code]({% link zh-CN/integration/claude-code.md %})、[Codex]({% link zh-CN/integration/codex.md %})。
+- **添加 AI 能力**（护栏、提示词、记忆、缓存）—— [AI 能力]({% link zh-CN/advanced-features.md %})。
+- **设置支出预算** —— [预算限额]({% link zh-CN/observability/budget-limits.md %})。

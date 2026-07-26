@@ -2,7 +2,7 @@
 lang: en
 page_id: core-gateway/failover
 title: Failover & Fallbacks
-parent: Core Gateway
+parent: LLM Gateway
 nav_order: 4
 description: "Multi-provider failover chains, automatic retry behaviour, and streaming-aware fallback."
 ---
