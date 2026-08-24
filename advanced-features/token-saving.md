@@ -23,7 +23,7 @@ Token Saving reduces compute — it does not buy cheaper tokens. The goal is to 
 When a request carries a `token_saving_plan_id`, the gateway resolves the plan and runs it as a pre-call hook, after prompt injection and before the model is called:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 Within the hook, the two optimizations run in a fixed order:

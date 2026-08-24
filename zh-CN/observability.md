@@ -12,7 +12,7 @@ description: "请求日志、用量分析与预算限额——观测每一个经
 
 经由 Routero 的每个请求都会被记录、计费，并归属到具体的密钥、团队与组织。三个仪表板页面让你查看发生了什么、分析支出并控制成本：
 
-- [日志]({% link zh-CN/observability/logs.md %}) —— 每个请求的状态、token、成本、延迟，以及（可选的）提示词与响应。
+- [日志]({% link zh-CN/observability/logs.md %}) —— 每个请求的状态、token、成本、延迟，以及（可选的）提示词与响应——另有配置变更的审计日志与护栏拦截记录。
 - [用量]({% link zh-CN/observability/usage.md %}) —— 按组织、团队、客户、模型与供应商的支出与请求分析。
 - [预算限额]({% link zh-CN/observability/budget-limits.md %}) —— 为密钥、团队与组织设置支出与速率上限，并查看支出对限额的进度。
 - [计费]({% link zh-CN/observability/billing.md %}) —— 你组织的余额、月度发票与交易流水。

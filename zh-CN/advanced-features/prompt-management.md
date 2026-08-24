@@ -22,7 +22,7 @@ Routero 提示词管理是**一个由你的工作区拥有、基于数据库的�
 当请求携带 `prompt_id` 时，网关获取模板、渲染其 Jinja2 变量，并在调用模型之前将渲染后的消息**前置**到请求中。该钩子在护栏之后、Token 节省与记忆之前运行：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 `prompt_id`、`prompt_variables` 与 `prompt_version` 是代理内部参数——它们不会被转发给上游供应商。

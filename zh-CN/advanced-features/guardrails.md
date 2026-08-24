@@ -24,10 +24,15 @@ description: "内容过滤、PII 脱敏、密钥检测与工具权限强制执�
 - **拦截（Block）** —— 以 HTTP `400` 和一条违规消息拒绝请求，要么
 - **转换（Transform）** —— 脱敏或匿名化违规内容，让请求继续。
 
-护栏在调用前钩子链中**最先**运行，因此安全引擎会在任何提示词模板注入或压缩之前检查调用方的原始输入：
+每个护栏以两种**模式**之一运行：
+
+- **Enforce（强制执行**，默认） —— 按配置拦截或脱敏违规内容。
+- **Monitor（监控）** —— 试运行。不拦截、不改写任何内容；每个"本应违规"的请求都会被[记录](#拦截记录)并打上 *monitor* 标签。可先在真实流量上试运行新护栏、读懂结果后再切换为强制执行。
+
+护栏在调用前钩子链中**最先**运行，因此安全引擎会在任何提示词模板注入或知识上下文加入之前检查调用方的原始输入：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 {: .note }
@@ -66,21 +71,20 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
 
 ---
 
-### PII 检测（Presidio）
-使用 [Microsoft Presidio](https://microsoft.github.io/presidio/) 检测并匿名化个人身份信息。在 `pre_call` 和 `post_call` 均运行。
+### PII 检测与脱敏（Presidio）
+使用 [Microsoft Presidio](https://microsoft.github.io/presidio/) 检测并匿名化个人身份信息。在 `pre_call` 和 `post_call` 均运行——**流式**响应同样覆盖：响应会被缓冲、检查，脱敏后再回放。
 
 | 配置项 | 说明 |
 |---|---|
-| `entities` | 要检测的 Presidio 实体类型——例如 `PERSON`、`EMAIL_ADDRESS`、`PHONE_NUMBER`、`CREDIT_CARD`、`US_SSN`、`IBAN_CODE`、`IP_ADDRESS`。省略（或 `null`）则检测你安装的 `presidio-analyzer` 中**全部**识别器。 |
-| `language` | 文本语言（默认：`en`） |
-| `action` | `anonymize`（默认——将每段 PII 替换为带类型的占位符，如 `<PERSON>`）或 `block`（发现任何 PII 即拒绝） |
-| `score_threshold` | Presidio 最低置信度（默认：`0.5`） |
+| `entities` | 要检测的实体类型，从选择器的内置列表中勾选：`PERSON`、`EMAIL_ADDRESS`、`PHONE_NUMBER`、`CREDIT_CARD`、`IP_ADDRESS`、`LOCATION`、`ORGANIZATION`、`URL`、`DATE_TIME`、`NRP`、`IBAN_CODE`、`MAC_ADDRESS`、`CRYPTO`、`MEDICAL_LICENSE`、`CN_ID_CARD`、`CN_USCC`、`TW_ID_CARD`、`US_SSN`、`US_PASSPORT`、`US_DRIVER_LICENSE`、`US_ITIN`、`US_BANK_NUMBER`、`UK_NHS`。留空则检测**全部**支持的类型。 |
+| `language` | `en`（默认）或 `zh`。选择中文会额外启用中国/台湾识别器——居民身份证（`CN_ID_CARD`）、统一社会信用代码（`CN_USCC`）与台湾身份证（`TW_ID_CARD`），均带校验和验证。 |
+| `action` | `anonymize`（匿名化，默认——将每段 PII 替换为带类型的占位符，如 `<PERSON>`、`<EMAIL_ADDRESS>`）或 `block`（拦截——发现任何 PII 即拒绝） |
+| `score_threshold` | 最低检测置信度（默认：`0.5`）。电话号码通常得分 `0.4`，带校验和的证件为 `1.0`——若有有效匹配被漏检，可调低阈值。 |
 | `violation_message` | 自定义拦截消息（默认：`Request contains PII and was blocked.`） |
 
-**依赖项：** `presidio-analyzer`、`presidio-anonymizer`。Presidio 在网关内本地运行——PII 绝不会离开你的基础设施去往外部审核厂商。
+**扫描范围：** 调用前，检查每条消息的文本——包括多模态内容中的文本块与工具调用参数；调用后，检查模型响应。模型与供应商看到的只会是脱敏后的占位符；原始 PII 绝不会离开你的网关。
 
-{: .note }
-`entities` 是开放的：你传入的任何字符串都会直接转发给 Presidio，因此可用集合取决于你安装的识别器。请勿将上面的示例视为固定列表。
+**依赖项：** `presidio-analyzer`、`presidio-anonymizer`，以及所选语言的 spaCy 模型——平台均已内置。Presidio 在网关内本地运行——PII 绝不会离开你的基础设施去往外部审核厂商。
 
 ---
 
@@ -125,16 +129,32 @@ response = client.chat.completions.create(
 
 ## 创建护栏
 
-在管理导航中打开 **Guardrails**，选择 **Create Guardrail**。为护栏命名，添加一个或多个引擎，并为每个引擎选择其**事件钩子**（`pre_call`、`post_call`）并填写其**配置**。配置表单根据引擎的 schema 动态生成，因此字段与上方各表一致。一个护栏至少需要一个引擎，名称在组织内唯一。
+在管理导航中打开 **Guardrails**，选择 **Create Guardrail**。为护栏命名，选择其**模式**——**Enforce**（强制执行，默认）或 **Monitor**（监控）——然后添加一个或多个引擎。为每个引擎选择其**事件钩子**（`pre_call`、`post_call`）、设置**引擎出错时**的行为（fail open——引擎自身故障时放行请求，默认；或 fail closed——拦截），并填写其**配置**。配置表单根据引擎的 schema 动态生成，因此字段与上方各表一致——PII 引擎对应的是实体多选、语言、动作与置信度阈值。一个护栏至少需要一个引擎，名称在组织内唯一。
 
 ![护栏列表页面，带 Create Guardrail 按钮](/assets/images/guardrails/guardrails-list.png)
 
-![Create Guardrail 抽屉——名称、引擎类型、事件钩子与按引擎的配置表单](/assets/images/guardrails/create-guardrail-drawer.png)
+![Create Guardrail 抽屉——名称、模式、引擎类型、事件钩子与按引擎的配置表单](/assets/images/guardrails/create-guardrail-drawer.png)
 
-{: .note }
-仪表板的引擎选择器列出 **Content Filter**、**Tool Permission** 和 **Secret Detection**。**Presidio** 完全受支持，但目前尚未在选择器中显示。
+![PII 检测与脱敏引擎的配置表单——实体多选、语言、动作与置信度阈值](/assets/images/guardrails/guardrail-presidio-config.png)
 
 ![护栏详情视图——引擎卡片，带事件钩子标签与配置值](/assets/images/guardrails/guardrail-detail.png)
+
+---
+
+## 拦截记录
+
+每个护栏结果都会即时记录——拦截、脱敏与引擎错误，**强制执行**与**监控**模式均会记录。要回答"护栏对我的流量做了什么？"，打开 **Logs → Guardrail Violations**（面向组织管理员；该标签与请求日志、审计日志并列）。
+
+- **列表** —— 每条违规一行：时间、处理结果（已拦截 / 已改写 / 引擎失败）、触发的护栏与引擎、发生在请求前还是响应后、模型以及调用密钥。来自监控模式护栏的记录带蓝色 *monitor* 标签。默认筛选只显示**已拦截**的请求；切换处理结果筛选为"已改写"可查看被脱敏的流量。时间范围与引擎筛选可进一步收窄。
+- **汇总卡片** —— 所选范围内的违规总数、已执行与监控计数，另有按日趋势图（区分强制执行与监控）。
+- **详情抽屉** —— 完整记录：护栏、引擎、钩子、模型、调用方、请求 ID、返回给调用方的消息，以及引擎命中的内容。
+
+{: .note }
+**违规原文绝不会被存储。** 记录只保留命中的内容——PII 引擎记录实体类型及数量（如 `CN_ID_CARD: 1`）；内容过滤记录命中的关键词或模式；密钥检测记录密钥类型。原始提示词或响应文本不会保留在拦截记录的任何位置。
+
+![Logs 中的 Guardrail Violations 标签——处理结果与引擎筛选、汇总卡片与违规表格](/assets/images/guardrails/guardrail-violations-tab.png)
+
+![拦截详情抽屉——护栏、引擎、调用方、返回给调用方的消息与命中的实体数量](/assets/images/guardrails/violation-detail-drawer.png)
 
 ---
 
@@ -153,16 +173,17 @@ response = client.chat.completions.create(
 | Content Filter | — | pre & post |
 | Tool Permission | — | pre |
 | Secret Detection | `detect-secrets` | pre |
-| Presidio PII | `presidio-analyzer`、`presidio-anonymizer` | pre & post |
+| Presidio PII | `presidio-analyzer`、`presidio-anonymizer` + spaCy 语言模型（`en`/`zh`） | pre & post（含流式） |
 
-Content Filter 与 Tool Permission 开箱即用。Presidio 与 Secret Detection 引擎需要各自的 Python 包；若请求命中某个依赖缺失的引擎，网关会给出明确的安装提示。
+Content Filter 与 Tool Permission 开箱即用。Presidio 与 Secret Detection 引擎需要各自的 Python 包——在托管平台上均已预装，包括 PII 检测的两种语言模型。创建 PII 引擎时，网关会校验其语言，若缺少所需模型会以明确消息拒绝该配置。
 
 ---
 
 ## 与网关其余部分的组合
 
 - **策略** —— 将护栏绑定到[策略]({% link zh-CN/core-gateway/policies.md %})中，使其在密钥或模型上自动激活。
-- **提示词 / 记忆 / Token 节省** —— 其余 [AI 能力]({% link zh-CN/advanced-features.md %})在护栏运行之后按各自正常顺序作用于同一请求。
+- **提示词 / 记忆 / 知识库 / Token 节省** —— 其余 [AI 能力]({% link zh-CN/advanced-features.md %})在护栏运行之后按各自正常顺序作用于同一请求。
+- **日志** —— 每次拦截与脱敏都会进入 Logs 下的[拦截记录](#拦截记录)视图。
 - **Playground** —— 在 Advanced Settings 下选择护栏，针对在线模型进行测试。
 
 → 关于将护栏绑定到密钥与模型，参见 [策略]({% link zh-CN/core-gateway/policies.md %})。

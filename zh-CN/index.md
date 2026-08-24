@@ -93,5 +93,5 @@ curl https://api.routero.ai/v1/chat/completions \
 ## 接下来
 
 - **让编码助手经由 Routero** —— [Cursor]({% link zh-CN/integration/cursor.md %})、[Claude Code]({% link zh-CN/integration/claude-code.md %})、[Codex]({% link zh-CN/integration/codex.md %})。
-- **添加 AI 能力**（护栏、提示词、记忆、缓存）—— [AI 能力]({% link zh-CN/advanced-features.md %})。
+- **添加 AI 能力**（护栏、提示词、记忆、缓存、知识库）—— [AI 能力]({% link zh-CN/advanced-features.md %})。
 - **设置支出预算** —— [预算限额]({% link zh-CN/observability/budget-limits.md %})。

@@ -21,7 +21,7 @@ Routero Prompt Management is a **database-backed registry owned by your workspac
 When a request carries a `prompt_id`, the gateway fetches the template, renders its Jinja2 variables, and **prepends** the rendered messages to the request before the model is called. The hook runs after guardrails and before token saving and memory:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 `prompt_id`, `prompt_variables`, and `prompt_version` are proxy-internal parameters — they are not forwarded to the upstream provider.

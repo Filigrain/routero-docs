@@ -24,7 +24,7 @@ Token 节省减少的是计算量——而非购买更便宜的 token。其核�
 当请求携带 `token_saving_plan_id` 时，网关解析该套餐并将其作为调用前钩子运行，时机在提示词注入之后、调用模型之前：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 在该钩子内部，两项优化按固定顺序运行：

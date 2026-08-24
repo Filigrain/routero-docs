@@ -23,10 +23,15 @@ A guardrail holds an ordered list of **engines**. On a chat request, the gateway
 - **Blocks** — rejects the request with HTTP `400` and a violation message, or
 - **Transforms** — redacts or anonymises the offending content and lets the request continue.
 
-Guardrails run **first** in the pre-call hook chain, so safety engines inspect the caller's raw input before any prompt template is injected or compression is applied:
+Every guardrail runs in one of two **modes**:
+
+- **Enforce** (default) — violations are blocked or masked as configured.
+- **Monitor** — a dry run. Nothing is blocked or rewritten; every would-be violation is [recorded](#interception-records) and tagged as *monitor* instead. Use it to trial a new guardrail on live traffic and read the results before switching to enforce.
+
+Guardrails run **first** in the pre-call hook chain, so safety engines inspect the caller's raw input before any prompt template is injected or knowledge context is added:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 {: .note }
@@ -65,21 +70,20 @@ No extra dependencies.
 
 ---
 
-### PII Detection (Presidio)
-Detects and anonymises personally identifiable information using [Microsoft Presidio](https://microsoft.github.io/presidio/). Runs on both `pre_call` and `post_call`.
+### PII Detection & Masking (Presidio)
+Detects and anonymises personally identifiable information using [Microsoft Presidio](https://microsoft.github.io/presidio/). Runs on both `pre_call` and `post_call` — including **streaming** responses, which are buffered, checked, and replayed with the masking applied.
 
 | Config | Description |
 |---|---|
-| `entities` | Presidio entity types to detect — e.g. `PERSON`, `EMAIL_ADDRESS`, `PHONE_NUMBER`, `CREDIT_CARD`, `US_SSN`, `IBAN_CODE`, `IP_ADDRESS`. Omit (or `null`) to detect **all** recognizers installed in your `presidio-analyzer`. |
-| `language` | Text language (default: `en`) |
-| `action` | `anonymize` (default — replace each PII span with a typed placeholder such as `<PERSON>`) or `block` (reject if any PII is found) |
-| `score_threshold` | Minimum Presidio confidence (default: `0.5`) |
+| `entities` | Entity types to detect, chosen from the picker's built-in list: `PERSON`, `EMAIL_ADDRESS`, `PHONE_NUMBER`, `CREDIT_CARD`, `IP_ADDRESS`, `LOCATION`, `ORGANIZATION`, `URL`, `DATE_TIME`, `NRP`, `IBAN_CODE`, `MAC_ADDRESS`, `CRYPTO`, `MEDICAL_LICENSE`, `CN_ID_CARD`, `CN_USCC`, `TW_ID_CARD`, `US_SSN`, `US_PASSPORT`, `US_DRIVER_LICENSE`, `US_ITIN`, `US_BANK_NUMBER`, `UK_NHS`. Leave empty to detect **all** supported types. |
+| `language` | `en` (default) or `zh`. Chinese additionally enables the China/Taiwan recognizers — resident ID cards (`CN_ID_CARD`), unified social credit codes (`CN_USCC`), and Taiwan ID cards (`TW_ID_CARD`), all checksum-validated. |
+| `action` | `anonymize` (default — replace each PII span with a typed placeholder such as `<PERSON>`, `<EMAIL_ADDRESS>`) or `block` (reject if any PII is found) |
+| `score_threshold` | Minimum detection confidence (default: `0.5`). Phone numbers typically score `0.4`; checksum-validated IDs score `1.0` — lower the threshold if valid matches are being missed. |
 | `violation_message` | Custom block message (default: `Request contains PII and was blocked.`) |
 
-**Dependencies:** `presidio-analyzer`, `presidio-anonymizer`. Presidio runs locally inside the gateway — PII never leaves your infrastructure to reach an external moderation vendor.
+**What it scans:** pre-call, every message's text — including text blocks inside multimodal content and tool-call arguments; post-call, the model's response. Masked placeholders are what the model and the provider ever see; the original PII never leaves your gateway.
 
-{: .note }
-`entities` is open-ended: any string you pass is forwarded to Presidio, so the valid set depends on your installed recognizers. Don't treat the examples above as a fixed list.
+**Dependencies:** `presidio-analyzer`, `presidio-anonymizer`, plus the spaCy language model for the chosen language — all included in the platform. Presidio runs locally inside the gateway — PII never reaches an external moderation vendor.
 
 ---
 
@@ -124,16 +128,32 @@ When an engine configured to block fires, the gateway returns HTTP `400` with th
 
 ## Creating a guardrail
 
-Open **Guardrails** in the admin navigation and choose **Create Guardrail**. Give the guardrail a name, add one or more engines, and for each engine pick its **event hooks** (`pre_call`, `post_call`) and fill in its **config**. The config form is generated dynamically from the engine's schema, so the fields match the tables above. A guardrail needs at least one engine, and names are unique within an organisation.
+Open **Guardrails** in the admin navigation and choose **Create Guardrail**. Give the guardrail a name, pick its **mode** — **Enforce** (default) or **Monitor** — and add one or more engines. For each engine pick its **event hooks** (`pre_call`, `post_call`), choose its behaviour **on errors** (fail open — let the request through if the engine itself fails, the default; or fail closed — block it), and fill in its **config**. The config form is generated dynamically from the engine's schema, so the fields match the tables above — for the PII engine that means an entity multi-select, the language, the action, and the confidence threshold. A guardrail needs at least one engine, and names are unique within an organisation.
 
 ![The Guardrails list page, with the Create Guardrail button](/assets/images/guardrails/guardrails-list.png)
 
-![The Create Guardrail drawer — name, engine type, event hooks, and a per-engine config form](/assets/images/guardrails/create-guardrail-drawer.png)
+![The Create Guardrail drawer — name, mode, engine type, event hooks, and a per-engine config form](/assets/images/guardrails/create-guardrail-drawer.png)
 
-{: .note }
-The dashboard engine picker lists **Content Filter**, **Tool Permission**, and **Secret Detection**. **Presidio** is fully supported but is not yet shown in the picker.
+![The PII Detection & Masking engine's config form — entity multi-select, language, action, and score threshold](/assets/images/guardrails/guardrail-presidio-config.png)
 
 ![A guardrail detail view — engine cards with event-hook tags and config values](/assets/images/guardrails/guardrail-detail.png)
+
+---
+
+## Interception records
+
+Every guardrail outcome is recorded as it happens — blocks, masks, and engine errors, in both **enforce** and **monitor** mode. To answer "what did the guardrail do to my traffic?", open **Logs → Guardrail Violations** (organisation administrators; the tab sits next to Request Logs and Audit Logs).
+
+- **The list** — one row per violation with its timestamp, outcome (blocked / masked / engine error), the guardrail and engine that fired, whether it ran pre-call or post-call, the model, and the calling key. Rows from a guardrail in monitor mode carry a blue *monitor* tag. The default filter shows **blocked** requests; switch the outcome filter to *masked* to review anonymised traffic. Time range and engine filters narrow it further.
+- **Summary cards** — total violations, enforced, and monitor counts over the selected range, with a daily trend chart split enforced vs monitor.
+- **The detail drawer** — the full record: guardrail, engine, hook, model, caller, request ID, the message that was returned to the caller, and what the engine matched.
+
+{: .note }
+**The offending content is never stored.** Records keep only what was matched — for the PII engine, the entity types and their counts (e.g. `CN_ID_CARD: 1`); for the content filter, the matched keyword or pattern; for secret detection, the secret types. The original prompt or response text is not retained anywhere in the violation log.
+
+![The Guardrail Violations tab in Logs — outcome and engine filters, summary cards, and the violations table](/assets/images/guardrails/guardrail-violations-tab.png)
+
+![A violation detail drawer — guardrail, engine, caller, the message returned to the caller, and the matched entity counts](/assets/images/guardrails/violation-detail-drawer.png)
 
 ---
 
@@ -152,16 +172,17 @@ The dashboard engine picker lists **Content Filter**, **Tool Permission**, and *
 | Content Filter | — | pre & post |
 | Tool Permission | — | pre |
 | Secret Detection | `detect-secrets` | pre |
-| Presidio PII | `presidio-analyzer`, `presidio-anonymizer` | pre & post |
+| Presidio PII | `presidio-analyzer`, `presidio-anonymizer` + spaCy model (`en`/`zh`) | pre & post (incl. streaming) |
 
-Content Filter and Tool Permission work out of the box. The Presidio and Secret Detection engines require their Python packages; the gateway raises a clear install instruction if a request hits an engine whose dependency is missing.
+Content Filter and Tool Permission work out of the box. The Presidio and Secret Detection engines require their Python packages — on the hosted platform they are pre-installed, including both language models for PII detection. The gateway validates a PII engine's language at creation time and rejects the configuration with a clear message if the required model is missing.
 
 ---
 
 ## Combining with the rest of the gateway
 
 - **Policies** — bind a guardrail into a [policy]({% link core-gateway/policies.md %}) to activate it automatically on a key or model.
-- **Prompts / memory / token saving** — the other [AI Capabilities]({% link advanced-features.md %}) apply to the same request in their normal order after the guardrail runs.
+- **Prompts / memory / knowledge / token saving** — the other [AI Capabilities]({% link advanced-features.md %}) apply to the same request in their normal order after the guardrail runs.
+- **Logs** — every block and mask lands in the [interception records](#interception-records) view under Logs.
 - **Playground** — pick a guardrail under Advanced Settings to test it against a live model.
 
 → [Policies]({% link core-gateway/policies.md %}) for binding guardrails to keys and models.

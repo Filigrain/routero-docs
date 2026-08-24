@@ -28,10 +28,10 @@ A memory **session** is a named, engine-backed store of facts tied to one organi
 
 **Post-call (storage).** After the model responds, the gateway asynchronously stores the `(user, assistant)` turn in the session. Pass `store_memory: false` to skip storage on a single request.
 
-The memory hook runs last in the pre-call chain, so injected context follows prompt injection, guardrails, and compression:
+The memory hook runs after guardrails, prompt injection, and compression — knowledge retrieval follows it:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
 ```
 
 The `memory_id` is opaque to the upstream provider — it is stripped before the request is forwarded.

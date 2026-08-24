@@ -4,12 +4,12 @@ page_id: advanced-features
 title: AI Capabilities
 nav_order: 5
 has_children: true
-description: "Token Saving, Guardrails, Prompt Management, and Memory-as-a-Service — Routero's production AI layer."
+description: "Token Saving, Guardrails, Prompt Management, Memory-as-a-Service, and Knowledge Base — Routero's production AI layer."
 ---
 
 # AI Capabilities
 
-Routero ships four opt-in capabilities that production AI systems typically build in-house — response caching, content safety, prompt versioning, and long-term memory. They live inside the gateway, so your application code stays clean.
+Routero ships five opt-in capabilities that production AI systems typically build in-house — response caching, content safety, prompt versioning, long-term memory, and document retrieval. They live inside the gateway, so your application code stays clean.
 
 {: .note }
 These features are **off by default** and activated per-request. Admins create named configurations in the Routero dashboard; callers reference them by ID. No code changes beyond adding an ID field to your existing requests.
@@ -20,12 +20,12 @@ These features are **off by default** and activated per-request. Admins create n
 
 Every AI capability follows the same pattern — the **Feature-as-a-Session** design:
 
-1. An admin creates a named configuration (guardrail, token-saving plan, prompt, or memory session) in the dashboard.
+1. An admin creates a named configuration (guardrail, token-saving plan, prompt, memory session, or knowledge base) in the dashboard.
 2. The caller passes the configuration's ID in the request body.
 3. The gateway resolves the config from your workspace (org-scoped, IDOR-checked), applies it as a pre/post hook, and strips the ID before forwarding to the upstream provider.
 
 ```python
-# All four features in a single request — zero change to the rest of your code
+# All five features in a single request — zero change to the rest of your code
 response = client.chat.completions.create(
     model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "..."}],
@@ -34,16 +34,17 @@ response = client.chat.completions.create(
         "token_saving_plan_id": "semantic-cache-v2",
         "prompt_id":            "analyst-system-v4",
         "memory_id":            "user-alice",
+        "knowledge_base_id":    "product-handbook",
     },
 )
 ```
 
 {: .note }
-You can combine any subset of the four IDs on a single request. Each is independent. Hooks run in this order: `GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook`.
+You can combine any subset of the five IDs on a single request. Each is independent. Hooks run in this order: `GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook` → `KnowledgeHook`.
 
 ---
 
-## The four features
+## The five features
 
 ### Token Saving
 Reduces the cost of every request without touching application code. Bundles two independent optimizations:
@@ -101,9 +102,20 @@ Two backend engines, selectable per memory session:
 1. **Pre-call (retrieval)** — searches the memory session for the top-3 relevant facts, injects them into the system message as `[Past Context for ID: ...]`.
 2. **Post-call (storage)** — asynchronously stores the new (user, assistant) turn in the memory backend.
 
-Pass `store_memory: false` on any request to skip storage. Use the Management API to manually ingest facts or query the session.
+Pass `store_memory: false` on any request to skip storage. Use the session's dashboard page to manually ingest facts or query the session.
 
 → [Memory-as-a-Service]({% link advanced-features/memory-service.md %})
+
+---
+
+### Knowledge Base
+Retrieval-augmented answers from your own documents, without operating a vector store or building a RAG pipeline.
+
+- **Upload once** — Markdown, plain text, CSV, JSON, text-layer PDFs, and Office documents are parsed, chunked along headings, embedded, and indexed by the platform.
+- **Automatic retrieval** — on every request that references the knowledge base, the most similar passages are injected into the prompt as reference material (with an anti-prompt-injection header). Below-threshold queries skip silently.
+- **Testable** — a built-in retrieval test runs the exact search the gateway performs, showing each chunk with its score and source.
+
+→ [Knowledge Base]({% link advanced-features/knowledge-base.md %})
 
 ---
 
@@ -134,5 +146,6 @@ AI Capabilities require optional Python dependencies and infrastructure componen
 | Guardrails (secret detection) | `detect-secrets` | — |
 | Memory (Mem0) | `mem0ai` | Postgres + pgvector |
 | Memory (Cognee) | `cognee` | Neo4j + Postgres + pgvector |
+| Knowledge Base | — (platform-managed) | Platform-provided vector index and embeddings |
 
-The exact-cache, content-filter, tool-permission, and keyword-guardrail engines have **no extra dependencies** — they work out of the box.
+The exact-cache, content-filter, tool-permission, and keyword-guardrail engines have **no extra dependencies** — they work out of the box. The Knowledge Base is fully hosted: parsing, embedding, and indexing all run on the platform side.

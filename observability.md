@@ -11,7 +11,7 @@ description: "Request logs, usage analytics, and budget limits — observe every
 
 Every request through Routero is logged, costed, and attributable to a key, team, and organisation. Three dashboard pages let you inspect what happened, analyse spend, and cap costs:
 
-- [Logs]({% link observability/logs.md %}) — every request, with status, tokens, cost, latency, and (optionally) the prompt and response.
+- [Logs]({% link observability/logs.md %}) — every request, with status, tokens, cost, latency, and (optionally) the prompt and response — plus audit logs of configuration changes and guardrail interception records.
 - [Usage]({% link observability/usage.md %}) — spend and request analytics by organisation, team, customer, model, and provider.
 - [Budget Limits]({% link observability/budget-limits.md %}) — set spend and rate caps on keys, teams, and organisations, and watch spend against them.
 - [Billing]({% link observability/billing.md %}) — your organisation's balance, invoices, and transaction ledger.
