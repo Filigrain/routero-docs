@@ -53,11 +53,11 @@ search:
   tokenizer_separator: /[\s/]+/
 
 # Footer
-footer_content: "© 2026 Routero AI &nbsp;·&nbsp;
-  <a href=\"https://routero.ai/legal/privacy.html\">Privacy</a> &nbsp;·&nbsp;
-  <a href=\"https://routero.ai/legal/security.html\">Security</a> &nbsp;·&nbsp;
-  <a href=\"https://status.routero.ai\">Status</a> &nbsp;·&nbsp;
-  <a href=\"https://platform.routero.ai\">Sign in</a>"
+footer_content: '© 2026 Routero AI &nbsp;·&nbsp;
+  <a href="https://routero.ai/legal/privacy.html">Privacy</a> &nbsp;·&nbsp;
+  <a href="https://routero.ai/legal/security.html">Security</a> &nbsp;·&nbsp;
+  <a href="https://status.routero.ai">Status</a> &nbsp;·&nbsp;
+  <a href="https://platform.routero.ai">Sign in</a>'
 
 # Callout boxes
 callouts_level: quiet
