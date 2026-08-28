@@ -92,5 +92,5 @@ The request shows up in your [platform dashboard]({{ site.platform_url }}) usage
 ## Next
 
 - **Route your coding assistants** through Routero — [Cursor]({% link integration/cursor.md %}), [Claude Code]({% link integration/claude-code.md %}), [Codex]({% link integration/codex.md %}).
-- **Add AI capabilities** (guardrails, prompts, memory, caching, knowledge bases) — [AI Capabilities]({% link advanced-features.md %}).
+- **Add AI capabilities** (guardrails, prompts, memory, caching, knowledge bases, web search) — [AI Capabilities]({% link advanced-features.md %}).
 - **Set a spend budget** — [Budget Limits]({% link observability/budget-limits.md %}).

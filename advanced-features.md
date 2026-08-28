@@ -4,12 +4,12 @@ page_id: advanced-features
 title: AI Capabilities
 nav_order: 5
 has_children: true
-description: "Token Saving, Guardrails, Prompt Management, Memory-as-a-Service, and Knowledge Base — Routero's production AI layer."
+description: "Token Saving, Guardrails, Prompt Management, Memory-as-a-Service, Knowledge Base, and Web Search — Routero's production AI layer."
 ---
 
 # AI Capabilities
 
-Routero ships five opt-in capabilities that production AI systems typically build in-house — response caching, content safety, prompt versioning, long-term memory, and document retrieval. They live inside the gateway, so your application code stays clean.
+Routero ships six opt-in capabilities that production AI systems typically build in-house — response caching, content safety, prompt versioning, long-term memory, document retrieval, and web search. They live inside the gateway, so your application code stays clean.
 
 {: .note }
 These features are **off by default** and activated per-request. Admins create named configurations in the Routero dashboard; callers reference them by ID. No code changes beyond adding an ID field to your existing requests.
@@ -20,12 +20,12 @@ These features are **off by default** and activated per-request. Admins create n
 
 Every AI capability follows the same pattern — the **Feature-as-a-Session** design:
 
-1. An admin creates a named configuration (guardrail, token-saving plan, prompt, memory session, or knowledge base) in the dashboard.
+1. An admin creates a named configuration (guardrail, token-saving plan, prompt, memory session, knowledge base, or web search tool) in the dashboard.
 2. The caller passes the configuration's ID in the request body.
 3. The gateway resolves the config from your workspace (org-scoped, IDOR-checked), applies it as a pre/post hook, and strips the ID before forwarding to the upstream provider.
 
 ```python
-# All five features in a single request — zero change to the rest of your code
+# All six features in a single request — zero change to the rest of your code
 response = client.chat.completions.create(
     model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "..."}],
@@ -35,16 +35,17 @@ response = client.chat.completions.create(
         "prompt_id":            "analyst-system-v4",
         "memory_id":            "user-alice",
         "knowledge_base_id":    "product-handbook",
+        "web_search_id":        "web-current-events",
     },
 )
 ```
 
 {: .note }
-You can combine any subset of the five IDs on a single request. Each is independent. Hooks run in this order: `GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook` → `KnowledgeHook`.
+You can combine any subset of the six IDs on a single request. Each is independent. Hooks run in this order: `GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook` → `KnowledgeHook` → `WebSearchHook`.
 
 ---
 
-## The five features
+## The six features
 
 ### Token Saving
 Reduces the cost of every request without touching application code. Bundles two independent optimizations:
@@ -119,6 +120,17 @@ Retrieval-augmented answers from your own documents, without operating a vector 
 
 ---
 
+### Web Search
+Grounds answers in fresh web results on **any model** — no function calling, no client changes. A plain chat request searches the web first; the gateway injects the results as reference material and the model answers with current information.
+
+- **Three search modes** — the provider's built-in search where the model has one, the Routero search engine otherwise, or the Routero engine always.
+- **Works everywhere** — models without native search still get searched answers; nothing to configure per model.
+- **Org-governed** — whether and how widely to search is set on the tool, not switched on per request.
+
+→ [Web Search]({% link advanced-features/web-search.md %})
+
+---
+
 ## Enterprise framing
 
 {: .enterprise }
@@ -147,5 +159,6 @@ AI Capabilities require optional Python dependencies and infrastructure componen
 | Memory (Mem0) | `mem0ai` | Postgres + pgvector |
 | Memory (Cognee) | `cognee` | Neo4j + Postgres + pgvector |
 | Knowledge Base | — (platform-managed) | Platform-provided vector index and embeddings |
+| Web Search | — (platform-managed) | Platform-provided search engine; provider-side search billed by the provider |
 
-The exact-cache, content-filter, tool-permission, and keyword-guardrail engines have **no extra dependencies** — they work out of the box. The Knowledge Base is fully hosted: parsing, embedding, and indexing all run on the platform side.
+The exact-cache, content-filter, tool-permission, and keyword-guardrail engines have **no extra dependencies** — they work out of the box. The Knowledge Base and Web Search are fully hosted: indexing and searching run on the platform side.

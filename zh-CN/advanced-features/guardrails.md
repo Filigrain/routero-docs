@@ -29,10 +29,10 @@ description: "内容过滤、PII 脱敏、密钥检测与工具权限强制执�
 - **Enforce（强制执行**，默认） —— 按配置拦截或脱敏违规内容。
 - **Monitor（监控）** —— 试运行。不拦截、不改写任何内容；每个"本应违规"的请求都会被[记录](#拦截记录)并打上 *monitor* 标签。可先在真实流量上试运行新护栏、读懂结果后再切换为强制执行。
 
-护栏在调用前钩子链中**最先**运行，因此安全引擎会在任何提示词模板注入或知识上下文加入之前检查调用方的原始输入：
+护栏在调用前钩子链中**最先**运行，因此安全引擎会在任何提示词模板注入或知识/搜索上下文加入之前检查调用方的原始输入：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 {: .note }

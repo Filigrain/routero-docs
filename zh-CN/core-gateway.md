@@ -22,4 +22,5 @@ LLM 网关是 Routero AI 的统一 LLM 代理——一个位于 100+ 供应商�
 - [自动路由]({% link zh-CN/core-gateway/auto-router.md %}) —— 基于消息内容的意图式模型选择
 - [路由与负载均衡]({% link zh-CN/core-gateway/routing.md %}) —— 策略、模型组与 Router
 - [故障转移与回退]({% link zh-CN/core-gateway/failover.md %}) —— 多供应商故障转移链
-- [策略]({% link zh-CN/core-gateway/policies.md %}) —— 将护栏、提示词、记忆与 Token 节省打包为命名策略
+- [策略]({% link zh-CN/core-gateway/policies.md %}) —— 将护栏、提示词、记忆、知识库、联网搜索与 Token 节省打包为命名策略
+- [MCP 网关]({% link zh-CN/core-gateway/mcp.md %}) —— MCP 工具服务器只需注册一次；智能体、脚本与标准 MCP 客户端通过 Routero 调用

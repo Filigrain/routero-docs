@@ -5,12 +5,12 @@ permalink: /advanced-features.html
 title: AI 能力
 nav_order: 5
 has_children: true
-description: "Token 节省、护栏、提示词管理、记忆即服务与知识库——Routero 的生产级 AI 层。"
+description: "Token 节省、护栏、提示词管理、记忆即服务、知识库与联网搜索——Routero 的生产级 AI 层。"
 ---
 
 # AI 能力
 
-Routero 提供五项可选启用的能力，这些通常是生产级 AI 系统会自行构建的——响应缓存、内容安全、提示词版本管理、长期记忆与文档检索。它们位于网关内部，因此你的应用代码保持整洁。
+Routero 提供六项可选启用的能力，这些通常是生产级 AI 系统会自行构建的——响应缓存、内容安全、提示词版本管理、长期记忆、文档检索与联网搜索。它们位于网关内部，因此你的应用代码保持整洁。
 
 {: .note }
 这些功能**默认关闭**，并按请求激活。管理员在 Routero 仪表板中创建命名配置；调用方通过 ID 引用它们。除了在现有请求中添加一个 ID 字段外，无需任何代码改动。
@@ -21,12 +21,12 @@ Routero 提供五项可选启用的能力，这些通常是生产级 AI 系统�
 
 每项AI 能力都遵循相同的模式——**功能即会话（Feature-as-a-Session）**设计：
 
-1. 管理员在仪表板中创建一个命名配置（护栏、Token 节省方案、提示词、记忆会话或知识库）。
+1. 管理员在仪表板中创建一个命名配置（护栏、Token 节省方案、提示词、记忆会话、知识库或联网搜索工具）。
 2. 调用方在请求体中传入该配置的 ID。
 3. 网关从你的工作区解析该配置（按组织作用域限定、经过 IDOR 校验），将其作为前置/后置钩子应用，并在转发给上游供应商之前剥离 ID。
 
 ```python
-# 在单个请求中使用全部五项功能——代码其余部分零改动
+# 在单个请求中使用全部六项功能——代码其余部分零改动
 response = client.chat.completions.create(
     model="openai/gpt-5.5",
     messages=[{"role": "user", "content": "..."}],
@@ -36,16 +36,17 @@ response = client.chat.completions.create(
         "prompt_id":            "analyst-system-v4",
         "memory_id":            "user-alice",
         "knowledge_base_id":    "product-handbook",
+        "web_search_id":        "web-current-events",
     },
 )
 ```
 
 {: .note }
-你可以在单个请求上组合这五个 ID 的任意子集。每一项都是独立的。钩子按以下顺序运行：`GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook` → `KnowledgeHook`。
+你可以在单个请求上组合这六个 ID 的任意子集。每一项都是独立的。钩子按以下顺序运行：`GuardrailHook` → `PromptHook` → `TokenSavingPlanHook` → `MemoryHook` → `KnowledgeHook` → `WebSearchHook`。
 
 ---
 
-## 五项功能
+## 六项功能
 
 ### Token 节省
 在不触碰应用代码的情况下降低每个请求的成本。它捆绑了两项独立的优化：
@@ -120,6 +121,17 @@ response = client.chat.completions.create(
 
 ---
 
+### 联网搜索
+在**任何模型**上让回答基于最新的网络结果——无需函数调用，客户端零改动。普通的对话请求会先搜索网络；网关把结果作为参考资料注入，模型据此给出有时效性的回答。
+
+- **三种搜索模式** —— 模型自带厂商搜索时用厂商搜索，否则用 Routero 搜索引擎；或一律使用 Routero 引擎。
+- **处处可用** —— 不带原生搜索的模型同样能得到带搜索的回答；无需按模型配置。
+- **组织治理** —— 是否搜索、搜多广由工具配置决定，不能按请求临时开启。
+
+→ [联网搜索]({% link zh-CN/advanced-features/web-search.md %})
+
+---
+
 ## 企业级视角
 
 {: .enterprise }
@@ -148,5 +160,6 @@ AI 能力需要可选的 Python 依赖和基础设施组件，这些在最小化
 | 记忆（Mem0） | `mem0ai` | Postgres + pgvector |
 | 记忆（Cognee） | `cognee` | Neo4j + Postgres + pgvector |
 | 知识库 | —（平台托管） | 平台提供的向量索引与嵌入服务 |
+| 联网搜索 | —（平台托管） | 平台提供的搜索引擎；厂商侧搜索由厂商计费 |
 
-精确缓存、内容过滤、工具权限和关键词护栏引擎**无需额外依赖**——它们开箱即用。知识库为全托管：解析、向量化与索引均在平台侧完成。
+精确缓存、内容过滤、工具权限和关键词护栏引擎**无需额外依赖**——它们开箱即用。知识库与联网搜索为全托管：索引与搜索均在平台侧完成。

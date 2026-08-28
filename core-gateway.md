@@ -21,4 +21,5 @@ The LLM Gateway is Routero AI's unified proxy — an OpenAI-compatible interface
 - [Auto Router]({% link core-gateway/auto-router.md %}) — intent-based model selection by message content
 - [Routing & Load Balancing]({% link core-gateway/routing.md %}) — strategies, model groups, and the Router
 - [Failover & Fallbacks]({% link core-gateway/failover.md %}) — multi-provider failover chains
-- [Policies]({% link core-gateway/policies.md %}) — bundle guardrails, prompts, memory, and token saving into a named policy
+- [Policies]({% link core-gateway/policies.md %}) — bundle guardrails, prompts, memory, knowledge, web search, and token saving into a named policy
+- [MCP Gateway]({% link core-gateway/mcp.md %}) — register MCP tool servers once; agents, scripts, and standard MCP clients call them through Routero

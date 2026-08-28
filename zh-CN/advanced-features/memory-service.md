@@ -29,10 +29,10 @@ description: "通过 Mem0（向量）和 Cognee（知识图谱）实现长期记
 
 **调用后（存储）。** 模型响应之后，网关异步地将 `(user, assistant)` 这一轮对话存入会话。传入 `store_memory: false` 可在单个请求上跳过存储。
 
-记忆钩子在护栏、提示词注入与压缩之后运行——知识库检索紧随其后：
+记忆钩子在护栏、提示词注入与压缩之后运行——知识库检索与联网搜索紧随其后：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 `memory_id` 对上游供应商是不透明的——它会在请求转发之前被剥离。

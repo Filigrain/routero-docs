@@ -4,19 +4,19 @@ page_id: core-gateway/policies
 title: Policies
 parent: LLM Gateway
 nav_order: 7
-description: "Bundle guardrails, prompts, memory, knowledge, and token-saving into a named policy and bind it to a key or model for automatic activation."
+description: "Bundle guardrails, prompts, memory, knowledge, token-saving, and web search into a named policy and bind it to a key or model for automatic activation."
 ---
 
 # Policies
 
-A **policy** is a named, org-scoped bundle of AI capabilities. Instead of passing `guardrail_id`, `prompt_id`, `memory_id`, `knowledge_base_id`, and `token_saving_plan_id` on every request, you group them into a policy once and bind that policy to a **key** or a **model**. The gateway then activates the capabilities automatically on every matching request.
+A **policy** is a named, org-scoped bundle of AI capabilities. Instead of passing `guardrail_id`, `prompt_id`, `memory_id`, `knowledge_base_id`, `token_saving_plan_id`, and `web_search_id` on every request, you group them into a policy once and bind that policy to a **key** or a **model**. The gateway then activates the capabilities automatically on every matching request.
 
 {: .note }
 A policy is a **governance** primitive, not a routing rule. It does not choose which model serves a request — that is [routing]({% link core-gateway/routing.md %}) and [Auto Router]({% link core-gateway/auto-router.md %}). A policy bundles the capabilities that get applied to a request *once the model is chosen*.
 
 ---
 
-## The five capability types
+## The six capability types
 
 A policy binds one resource of each type. Each type maps to a request field that the [AI Capabilities]({% link advanced-features.md %}) hooks already understand:
 
@@ -27,8 +27,9 @@ A policy binds one resource of each type. Each type maps to a request field that
 | `knowledge` | `knowledge_base_id` | An indexed document collection for retrieval ([Knowledge Base]({% link advanced-features/knowledge-base.md %})) |
 | `token_saving` | `token_saving_plan_id` | A compression + caching plan ([Token Saving]({% link advanced-features/token-saving.md %})) |
 | `guardrail` | `guardrail_id` | A content-safety configuration ([Guardrails]({% link advanced-features/guardrails.md %})) |
+| `web_search` | `web_search_id` | A web search tool ([Web Search]({% link advanced-features/web-search.md %})) |
 
-A policy can bind **at most one resource per type** (so up to five bindings total), and must bind at least one. Most policies bundle several — for example a customer-facing agent policy might combine a system prompt, a PII guardrail, a memory session, and a token-saving plan.
+A policy can bind **at most one resource per type** (so up to six bindings total), and must bind at least one. Most policies bundle several — for example a customer-facing agent policy might combine a system prompt, a PII guardrail, a memory session, and a token-saving plan.
 
 ---
 
@@ -45,7 +46,7 @@ There is no team-level or org-level binding, and a key or model carries at most 
 
 ## Creating a policy
 
-Open **Policies** in the admin navigation and choose **Create Policy**. The form asks for a name, an optional description, and one capability selector per type (each filtered to your organisation's existing prompts, memory sessions, knowledge bases, token-saving plans, and guardrails). Pick at least one capability and save. Policy names are unique within an organisation.
+Open **Policies** in the admin navigation and choose **Create Policy**. The form asks for a name, an optional description, and one capability selector per type (each filtered to your organisation's existing prompts, memory sessions, knowledge bases, token-saving plans, guardrails, and web search tools). Pick at least one capability and save. Policy names are unique within an organisation.
 
 ![The Policies list page, with the Create Policy button](/assets/images/policies/policies-list.png)
 
@@ -76,7 +77,7 @@ A policy can only be bound within its own organisation — the gateway rejects c
 When a request arrives, the gateway resolves any key policy and model policy, merges them, and injects the capability IDs exactly as if the caller had passed them by hand. The existing per-capability hooks then run in their normal order:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 ### Precedence (per capability type)
@@ -123,7 +124,7 @@ To set expectations clearly:
 
 - **Not routing rules.** A policy does not select models based on content, region, budget, or schedule. Use [Routing & Load Balancing]({% link core-gateway/routing.md %}) or [Auto Router]({% link core-gateway/auto-router.md %}) for that.
 - **Not a substitute for budgets or access control.** Spend caps live in [Budget Limits]({% link observability/budget-limits.md %}).
-- **No inheritance or wildcards.** A policy is a flat list of up to five capability bindings — there are no base policies, no scoping patterns, no add/remove lists.
+- **No inheritance or wildcards.** A policy is a flat list of up to six capability bindings — there are no base policies, no scoping patterns, no add/remove lists.
 - **No YAML config file.** Policies are managed through the dashboard and stored in the database; changes propagate to all proxy instances in real time.
 
-→ [AI Capabilities]({% link advanced-features.md %}) for the five resources a policy can bind.
+→ [AI Capabilities]({% link advanced-features.md %}) for the six resources a policy can bind.

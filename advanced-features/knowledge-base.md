@@ -38,10 +38,10 @@ Uploading the same file twice is a no-op — documents are deduplicated by conte
 
 Retrieval is **fail-open**: if anything goes wrong, the request still goes through without knowledge context. Only one knowledge base can be referenced per request.
 
-The knowledge hook runs last among the AI-capability hooks, after memory context is injected:
+The knowledge hook runs late among the AI-capability hooks, after memory context is injected and before web search:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 ---

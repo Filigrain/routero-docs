@@ -5,19 +5,19 @@ permalink: /core-gateway/policies.html
 title: 策略
 parent: LLM 网关
 nav_order: 7
-description: "将护栏、提示词、记忆、知识库与 Token 节省打包为命名策略，并绑定到密钥或模型以自动激活。"
+description: "将护栏、提示词、记忆、知识库、Token 节省与联网搜索打包为命名策略，并绑定到密钥或模型以自动激活。"
 ---
 
 # 策略
 
-**策略**是一个命名的、按组织作用域限定的 AI 能力束。你无需在每个请求上传入 `guardrail_id`、`prompt_id`、`memory_id`、`knowledge_base_id` 和 `token_saving_plan_id`，而是把它们一次性组合成一个策略，再将该策略绑定到某个**密钥**或**模型**。随后网关会在每个匹配的请求上自动激活这些能力。
+**策略**是一个命名的、按组织作用域限定的 AI 能力束。你无需在每个请求上传入 `guardrail_id`、`prompt_id`、`memory_id`、`knowledge_base_id`、`token_saving_plan_id` 和 `web_search_id`，而是把它们一次性组合成一个策略，再将该策略绑定到某个**密钥**或**模型**。随后网关会在每个匹配的请求上自动激活这些能力。
 
 {: .note }
 策略是一个**治理**原语，而非路由规则。它不决定由哪个模型服务请求——那是[路由]({% link zh-CN/core-gateway/routing.md %})与[自动路由]({% link zh-CN/core-gateway/auto-router.md %})的职责。策略负责打包的是*在模型确定之后*作用于请求的那些能力。
 
 ---
 
-## 五种能力类型
+## 六种能力类型
 
 一个策略对每种类型绑定一个资源。每种类型都映射到一个 [AI 能力]({% link zh-CN/advanced-features.md %})钩子已经识别的请求字段：
 
@@ -28,8 +28,9 @@ description: "将护栏、提示词、记忆、知识库与 Token 节省打包�
 | `knowledge` | `knowledge_base_id` | 一个用于检索的已索引文档集合（[知识库]({% link zh-CN/advanced-features/knowledge-base.md %})） |
 | `token_saving` | `token_saving_plan_id` | 一个压缩 + 缓存方案（[Token 节省]({% link zh-CN/advanced-features/token-saving.md %})） |
 | `guardrail` | `guardrail_id` | 一个内容安全配置（[护栏]({% link zh-CN/advanced-features/guardrails.md %})） |
+| `web_search` | `web_search_id` | 一个联网搜索工具（[联网搜索]({% link zh-CN/advanced-features/web-search.md %})） |
 
-一个策略对**每种类型最多绑定一个资源**（因此最多五个绑定），且至少要绑定一个。大多数策略会捆绑多项——例如一个面向客户的智能体策略可能同时包含系统提示词、PII 护栏、记忆会话与 Token 节省方案。
+一个策略对**每种类型最多绑定一个资源**（因此最多六个绑定），且至少要绑定一个。大多数策略会捆绑多项——例如一个面向客户的智能体策略可能同时包含系统提示词、PII 护栏、记忆会话与 Token 节省方案。
 
 ---
 
@@ -46,7 +47,7 @@ description: "将护栏、提示词、记忆、知识库与 Token 节省打包�
 
 ## 创建策略
 
-在管理导航中打开 **Policies**，选择 **Create Policy**。表单要求填写名称、可选的描述，以及每种类型各一个能力选择器（每个都按你组织现有的提示词、记忆会话、知识库、Token 节省方案和护栏过滤）。至少选择一项能力后保存。策略名称在组织内唯一。
+在管理导航中打开 **Policies**，选择 **Create Policy**。表单要求填写名称、可选的描述，以及每种类型各一个能力选择器（每个都按你组织现有的提示词、记忆会话、知识库、Token 节省方案、护栏和联网搜索工具过滤）。至少选择一项能力后保存。策略名称在组织内唯一。
 
 ![Policies 列表页面，带 Create Policy 按钮](/assets/images/policies/policies-list.png)
 
@@ -77,7 +78,7 @@ description: "将护栏、提示词、记忆、知识库与 Token 节省打包�
 当一个请求到达时，网关解析密钥策略与模型策略（若有），将其合并，并注入能力 ID，就如同调用方手动传入一样。随后既有的逐能力钩子按其正常顺序运行：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 ### 优先级（按能力类型）
@@ -124,7 +125,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → Knowledg
 
 - **不是路由规则。** 策略不会基于内容、地域、预算或计划选择模型。请使用[路由与负载均衡]({% link zh-CN/core-gateway/routing.md %})或[自动路由]({% link zh-CN/core-gateway/auto-router.md %})。
 - **不是预算或访问控制的替代品。** 支出上限在[预算限额]({% link zh-CN/observability/budget-limits.md %})中。
-- **没有继承或通配。** 策略是一个最多五项能力绑定的扁平列表——没有基础策略、没有作用域模式、没有增删清单。
+- **没有继承或通配。** 策略是一个最多六项能力绑定的扁平列表——没有基础策略、没有作用域模式、没有增删清单。
 - **没有 YAML 配置文件。** 策略通过仪表板管理，并存储在数据库中；变更会实时传播到所有代理实例。
 
-→ 策略可绑定的五类资源，参见 [AI 能力]({% link zh-CN/advanced-features.md %})。
+→ 策略可绑定的六类资源，参见 [AI 能力]({% link zh-CN/advanced-features.md %})。

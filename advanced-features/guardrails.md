@@ -28,10 +28,10 @@ Every guardrail runs in one of two **modes**:
 - **Enforce** (default) — violations are blocked or masked as configured.
 - **Monitor** — a dry run. Nothing is blocked or rewritten; every would-be violation is [recorded](#interception-records) and tagged as *monitor* instead. Use it to trial a new guardrail on live traffic and read the results before switching to enforce.
 
-Guardrails run **first** in the pre-call hook chain, so safety engines inspect the caller's raw input before any prompt template is injected or knowledge context is added:
+Guardrails run **first** in the pre-call hook chain, so safety engines inspect the caller's raw input before any prompt template is injected or knowledge/search context is added:
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 {: .note }

@@ -39,10 +39,10 @@ description: "上传一次你的文档——Routero 自动解析、分块、向�
 
 检索**失败开放（fail-open）**：出现任何问题，请求仍会正常通过，只是不带知识上下文。每个请求只能引用一个知识库。
 
-知识库钩子在 AI 能力钩子中最后运行，位于记忆上下文注入之后：
+知识库钩子在 AI 能力钩子中靠后运行，位于记忆上下文注入之后、联网搜索之前：
 
 ```
-GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook
+GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → KnowledgeHook → WebSearchHook
 ```
 
 ---
