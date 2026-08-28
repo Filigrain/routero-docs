@@ -1,34 +1,111 @@
 <link rel="icon" type="image/x-icon" href="{{ '/assets/images/favicon.ico' | relative_url }}">
 
 {%- comment -%}
-  Language switcher (EN / 中文). Injected client-side into the sidebar header.
-  Pairs pages by URL suffix: English at /<path>, Simplified Chinese at /zh-CN/<path>.
-  Done in JS to sidestep jekyll-polyglot's automatic URL relativization, which would
-  otherwise rewrite a hard-coded English link to the active language.
+  Language switcher (EN / 中文) + preference-based routing.
+
+  Preference key `routero.lang` mirrors the main site's convention
+  (routero.dcsmartvision.com i18n.js). NOTE: localStorage is origin-scoped, so
+  the docs origin cannot read a value written by the main site — as a
+  cross-subdomain fallback we also accept a `routero.lang` cookie on the parent
+  domain (if the main site ever starts writing one, subdomains sync for free).
+  The main site stores 'zh'; we accept 'zh' / 'zh-CN' and write 'zh-CN'.
+
+  Resolution order on every page:
+    1. localStorage routero.lang → 2. parent-domain cookie routero.lang →
+    3. browser language (navigator.languages), persisted on first resolve.
+  If the resolved language does not match the page being viewed, redirect to
+  the same page in the other language (location.replace — no history entry).
+  Manual switcher clicks persist the choice and win from then on.
+
+  Switcher pairs pages by URL suffix: English at /<path>, Chinese at
+  /zh-CN/<path>. Done in JS to sidestep jekyll-polyglot's automatic URL
+  relativization, which would otherwise rewrite a hard-coded English link to
+  the active language.
 {%- endcomment -%}
 <script>
 (function () {
-  function injectSwitcher() {
-    if (document.querySelector('.lang-switcher')) return;
+  var KEY = 'routero.lang';
+  var ZH = /^zh($|[-_])/i; // 'zh', 'zh-CN', 'zh-cn', 'zh_Hans', …
+
+  function asLang(v) { return v && ZH.test(v) ? 'zh-CN' : 'en'; }
+
+  function storedLang() {
+    try {
+      var v = localStorage.getItem(KEY);
+      if (v) return asLang(v);
+    } catch (e) { /* storage unavailable */ }
+    var m = document.cookie.match(/(?:^|;\s*)routero\.lang=([^;]+)/);
+    return m ? asLang(decodeURIComponent(m[1])) : null;
+  }
+
+  function persist(lang) {
+    try { localStorage.setItem(KEY, lang); } catch (e) { /* ignore */ }
+  }
+
+  function browserLang() {
+    var langs = (navigator.languages && navigator.languages.length)
+      ? navigator.languages
+      : [navigator.language || ''];
+    for (var i = 0; i < langs.length; i++) {
+      if (ZH.test(langs[i])) return 'zh-CN';
+    }
+    return 'en';
+  }
+
+  // Counterpart URLs for the current page (root-prefixed; site is served at
+  // the domain root on both GitHub Pages and the China CloudFront mirror).
+  function page() {
     var path = location.pathname;
     var m = path.match(/^\/zh-CN(\/.*)?$/);
     var isZh = !!m;
     var suffix = isZh ? (m[1] || '/') : path;
-    var enHref = suffix;
-    var zhHref = '/zh-CN' + (suffix === '/' ? '/' : suffix);
+    return {
+      isZh: isZh,
+      en: suffix,
+      zh: '/zh-CN' + (suffix === '/' ? '/' : suffix)
+    };
+  }
+
+  // Returns the page pairing, or null when the visitor is being redirected to
+  // the other language (skip injecting the switcher — page is on its way out).
+  function resolve() {
+    var p = page();
+    var pref = storedLang();
+    if (!pref) { pref = browserLang(); persist(pref); }
+    if (pref === 'zh-CN' && !p.isZh) { location.replace(p.zh); return null; }
+    if (pref === 'en' && p.isZh) { location.replace(p.en); return null; }
+    return p;
+  }
+
+  function injectSwitcher(p) {
+    if (document.querySelector('.lang-switcher')) return;
     var wrap = document.createElement('div');
     wrap.className = 'lang-switcher';
     wrap.innerHTML =
-      '<a href="' + enHref + '"' + (isZh ? '' : ' class="active"') + ' aria-label="English">EN</a>' +
+      '<a href="' + p.en + '" data-lang="en" aria-label="English">EN</a>' +
       '<span class="lang-sep">·</span>' +
-      '<a href="' + zhHref + '"' + (isZh ? ' class="active"' : '') + ' aria-label="简体中文" lang="zh-CN">中文</a>';
+      '<a href="' + p.zh + '" data-lang="zh-CN" aria-label="简体中文" lang="zh-CN">中文</a>';
+    wrap.querySelectorAll('a[data-lang]').forEach(function (a) {
+      if (a.getAttribute('data-lang') === (p.isZh ? 'zh-CN' : 'en')) {
+        a.className = 'active';
+      }
+      // A manual click is the strongest signal — record it so auto-routing
+      // never overrides the user's explicit choice afterwards.
+      a.addEventListener('click', function () {
+        persist(a.getAttribute('data-lang'));
+      });
+    });
     var header = document.querySelector('.site-header');
     if (header) { header.appendChild(wrap); }
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectSwitcher);
-  } else {
-    injectSwitcher();
+
+  var p = resolve();
+  if (p) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { injectSwitcher(p); });
+    } else {
+      injectSwitcher(p);
+    }
   }
 })();
 </script>
