@@ -22,8 +22,10 @@ nav_external_links:
     url: https://platform.routero.dcsmartvision.com
     hide_icon: true
 
+# Legal links point at the CN site's own /legal/ pages (same paths as
+# routero.ai, translated content); Status has no CN equivalent yet.
 footer_content: '© 2026 Routero AI &nbsp;·&nbsp;
-  <a href="https://routero.ai/legal/privacy.html">Privacy</a> &nbsp;·&nbsp;
-  <a href="https://routero.ai/legal/security.html">Security</a> &nbsp;·&nbsp;
+  <a href="https://routero.dcsmartvision.com/legal/privacy.html">Privacy</a> &nbsp;·&nbsp;
+  <a href="https://routero.dcsmartvision.com/legal/security.html">Security</a> &nbsp;·&nbsp;
   <a href="https://status.routero.ai">Status</a> &nbsp;·&nbsp;
   <a href="https://platform.routero.dcsmartvision.com">Sign in</a>'
