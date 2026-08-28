@@ -1,0 +1,127 @@
+name: Cert renewal — docs China
+
+# Auto-renews the Let's Encrypt viewer certificate for the docs China
+# CloudFront distribution (docs.routero.dcsmartvision.com). China CloudFront
+# cannot use ACM — only IAM server certificates, which cannot be re-imported
+# in place — so this workflow owns the whole lifecycle: DNS-01 issuance
+# (Route53), IAM upload, repointing the distribution, verification, pruning.
+#
+# Schedule: Mondays 03:10 UTC (11:10 Beijing — business hours if it alerts),
+# deliberately offset from the platform stack's cert-renewal-cn-bj (02:30 UTC)
+# so the two don't contend for Let's Encrypt rate limits.
+#
+# The job no-ops while >30 days remain, so a 90-day cert gets ~4 attempts per
+# renewal window; any failure opens/comments a deduplicated issue while the
+# old certificate keeps serving.
+#
+# No repository secrets: the role ARN is public config, auth is OIDC.
+
+on:
+  schedule:
+    - cron: "10 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Renew even if more than 30 days remain"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Inspect/report only — no changes"
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write # OIDC token for AWS role assumption
+  contents: read
+  issues: write # failure alerts
+
+concurrency:
+  group: cert-renewal-cn
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: cn-north-1
+  AWS_ROLE_ARN: arn:aws-cn:iam::138720667650:role/llmrouter-production-cn-bj-docs-cert-renewal
+
+jobs:
+  renew:
+    name: Renew viewer certificate (docs cn)
+    runs-on: ubuntu-latest
+    environment: cert-renewal-cn
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com.cn # AWS China OIDC audience (not commercial)
+
+      - name: Renew viewer certificate
+        run: |
+          set -- scripts/cn-bj-docs-cert-renewal.sh
+          if [ "${{ inputs.dry_run }}" = "true" ]; then set -- "$@" --dry-run; fi
+          if [ "${{ inputs.force }}" = "true" ]; then set -- "$@" --force; fi
+          "$@"
+
+  alert:
+    name: Open failure issue
+    needs: renew
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'cert-renewal';
+            const title = 'China viewer-cert renewal failed (docs.routero.dcsmartvision.com)';
+            const body = [
+              'The scheduled renewal workflow failed.',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'The previously-installed certificate keeps serving until it expires —',
+              'check the remaining days in the failed run log and re-run (workflow_dispatch',
+              'with `force` if needed) once the cause is fixed.',
+            ].join('\n');
+            const open = await github.rest.issues.listForRepo({
+              ...context.repo, state: 'open', labels: label,
+            });
+            const existing = open.data.find((i) => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                ...context.repo, issue_number: existing.number, body,
+              });
+            } else {
+              await github.rest.issues.create({
+                ...context.repo, title, body, labels: [label],
+              });
+            }
+
+  # Completes the alert loop: a failure opens/comments an issue (above); the
+  # next successful run resolves it, so a fixed renewal never leaves a stale
+  # open issue behind.
+  close-alert:
+    name: Resolve failure issue
+    needs: renew
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const open = await github.rest.issues.listForRepo({
+              ...context.repo, state: 'open', labels: 'cert-renewal',
+            });
+            for (const i of open.data) {
+              await github.rest.issues.update({
+                ...context.repo, issue_number: i.number, state: 'closed',
+              });
+            }

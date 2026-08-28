@@ -1,0 +1,29 @@
+# China build overlay — applied ONLY by .github/workflows/deploy-cn.yml via
+#   jekyll build --config _config.yml,_config.cn.yml
+# (the GitHub Pages / overseas deploy never sees this file).
+#
+# Everything here overrides the same top-level key from _config.yml (Jekyll
+# config files later in the list win wholesale — no deep merge).
+#
+# No ICP footer: the display obligation (《非经营性互联网信息服务备案管理办法》
+# 第十二条) attaches to the homepage of the ICP-filed site (routero.dcsmartvision.com,
+# which shows 京ICP备15035203号-43); docs.<that domain> is a sub-page site, not
+# the filed homepage. Add a line to footer_content below if that ever changes.
+
+url: "https://docs.routero.dcsmartvision.com"
+
+# Point outbound nav at China-reachable hosts (the .ai marketing/dashboard are
+# served from overseas and are unreliable from mainland China).
+nav_external_links:
+  - title: routero.dcsmartvision.com ↗
+    url: https://routero.dcsmartvision.com
+    hide_icon: true
+  - title: Platform ↗
+    url: https://platform.routero.dcsmartvision.com
+    hide_icon: true
+
+footer_content: '© 2026 Routero AI &nbsp;·&nbsp;
+  <a href="https://routero.ai/legal/privacy.html">Privacy</a> &nbsp;·&nbsp;
+  <a href="https://routero.ai/legal/security.html">Security</a> &nbsp;·&nbsp;
+  <a href="https://status.routero.ai">Status</a> &nbsp;·&nbsp;
+  <a href="https://platform.routero.dcsmartvision.com">Sign in</a>'

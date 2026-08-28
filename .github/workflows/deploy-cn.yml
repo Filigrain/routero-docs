@@ -1,0 +1,89 @@
+name: Deploy docs to China (CloudFront)
+
+# China mirror of the docs site: https://docs.routero.dcsmartvision.com
+#
+# Independent of the GitHub Pages deploy (deploy.yml → docs.routero.ai) — same
+# source, built with the China overlay (_config.cn.yml: canonical URL + CN
+# outbound links), published to the PRIVATE S3 bucket behind the China
+# CloudFront distribution (OAI origin; the bucket is never publicly readable).
+# Viewer cert lifecycle for that distribution is owned by
+# cert-renewal-cn.yml (China CloudFront cannot use ACM).
+#
+# Infra (bucket / OAI / distribution / DNS / IAM role) was created once via
+# CLI — this workflow only builds, syncs and invalidates.
+#
+# Auth: GitHub OIDC → llmrouter-production-cn-bj-docs-deploy role in the AWS
+# China account (China-partition audience sts.amazonaws.com.cn — no static
+# keys anywhere).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for the AWS role assumption
+
+concurrency:
+  group: deploy-cn
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: cn-north-1
+  AWS_ROLE_ARN: arn:aws-cn:iam::138720667650:role/llmrouter-production-cn-bj-docs-deploy
+  S3_BUCKET: llmrouter-production-cn-bj-docs
+  DISTRIBUTION_ID: E5NQRPCHWTRGH
+
+jobs:
+  deploy:
+    name: Build & publish (China)
+    runs-on: ubuntu-latest
+    environment: production-cn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Build with Jekyll (China overlay)
+        run: bundle exec jekyll build --config _config.yml,_config.cn.yml
+        env:
+          JEKYLL_ENV: production
+
+      - name: Configure AWS credentials (China partition)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com.cn
+
+      # Two complementary passes so each content type gets its own
+      # Cache-Control (s3 sync applies one metadata value per pass):
+      #   pass 1 — assets (css/js/images/fonts): browser-cached 1 day
+      #   pass 2 — HTML + search-data JSON: always revalidate
+      # The --delete filters are complementary too, so files removed from the
+      # repo are pruned from the bucket exactly once across the two passes.
+      # CNAME is a GitHub Pages routing hint — never publish it to S3.
+      - name: Sync _site to S3
+        run: |
+          set -euo pipefail
+          aws s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
+            --exclude "CNAME" --exclude "*.html" --exclude "*.json" \
+            --cache-control "public, max-age=86400"
+          aws s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
+            --exclude "*" --include "*.html" --include "*.json" \
+            --cache-control "no-cache, must-revalidate"
+
+      # Fire-and-forget: China edge invalidations of "/*" typically complete in
+      # a few minutes; waiting here would add minutes to every docs deploy.
+      - name: Invalidate CloudFront edge cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${DISTRIBUTION_ID}" \
+            --paths "/*" \
+            --query "Invalidation.Status" --output text
