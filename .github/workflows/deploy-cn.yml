@@ -79,6 +79,24 @@ jobs:
             --exclude "*" --include "*.html" --include "*.json" \
             --cache-control "no-cache, must-revalidate"
 
+      # Directory-index aliases. S3 (unlike GitHub Pages) serves no directory
+      # indexes and CloudFront's DefaultRootObject only covers "/", while the
+      # site links to the Chinese home as BOTH /zh-CN and /zh-CN/. China
+      # CloudFront has no Functions to rewrite URIs either — so publish the zh
+      # index under those two exact keys as well. Must run AFTER the sync passes
+      # (sync's --delete would otherwise remove them as non-local keys).
+      - name: Publish directory-index aliases (zh-CN)
+        run: |
+          set -euo pipefail
+          for KEY in "zh-CN" "zh-CN/"; do
+            aws s3api put-object \
+              --bucket "${S3_BUCKET}" --key "${KEY}" \
+              --body _site/zh-CN/index.html \
+              --content-type "text/html" \
+              --cache-control "no-cache, must-revalidate" > /dev/null
+          done
+          echo "published /zh-CN and /zh-CN/ alias keys"
+
       # Fire-and-forget: China edge invalidations of "/*" typically complete in
       # a few minutes; waiting here would add minutes to every docs deploy.
       - name: Invalidate CloudFront edge cache
