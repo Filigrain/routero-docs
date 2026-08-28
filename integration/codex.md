@@ -26,7 +26,7 @@ preferred_auth_method = "apikey"
 
 [model_providers.routero]
 name = "routero"
-base_url = "https://api.routero.ai/v1"
+base_url = "{{ site.api_base_url }}/v1"
 wire_api = "responses"
 ```
 
@@ -41,7 +41,7 @@ export OPENAI_API_KEY="YOUR_ROUTERO_KEY"
 | `model_provider` | the name of the `[model_providers.*]` block below (`routero`) |
 | `model` | any model Routero serves (e.g. `openai/gpt-5.5`) |
 | `preferred_auth_method` | `apikey` — authenticate with an API key, not ChatGPT login |
-| `base_url` | `https://api.routero.ai/v1` |
+| `base_url` | `{{ site.api_base_url }}/v1` |
 | `wire_api` | `responses` (recommended) or `chat` |
 | `OPENAI_API_KEY` | your Routero virtual key (sent as `Authorization: Bearer`) |
 

@@ -66,7 +66,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-...YOUR_KEY...",          # 第 2 步拿到的虚拟密钥
-    base_url="https://api.routero.ai/v1",
+    base_url="{{ site.api_base_url }}/v1",
 )
 
 response = client.chat.completions.create(
@@ -77,7 +77,7 @@ print(response.choices[0].message.content)
 ```
 
 ```bash
-curl https://api.routero.ai/v1/chat/completions \
+curl {{ site.api_base_url }}/v1/chat/completions \
   -H "Authorization: Bearer sk-...YOUR_KEY..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -86,7 +86,7 @@ curl https://api.routero.ai/v1/chat/completions \
   }'
 ```
 
-该请求会出现在你的[平台仪表板](https://platform.routero.ai)的用量与支出视图中。其他端点（向量、图像、模型列表）参见[推理 API]({% link zh-CN/inference-apis.md %})。
+该请求会出现在你的[平台仪表板]({{ site.platform_url }})的用量与支出视图中。其他端点（向量、图像、模型列表）参见[推理 API]({% link zh-CN/inference-apis.md %})。
 
 ---
 

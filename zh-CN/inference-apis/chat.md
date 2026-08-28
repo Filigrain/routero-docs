@@ -12,14 +12,14 @@ description: "通过 POST /v1/chat/completions 生成文本与对话——OpenAI
 
 通过 chat-completions 端点生成文本与多轮对话。完全 OpenAI 兼容——messages、tools、流式、视觉与结构化输出都原样可用。
 
-**端点：** `POST https://api.routero.ai/v1/chat/completions`
+**端点：** `POST {{ site.api_base_url }}/v1/chat/completions`
 
 ---
 
 ## 请求
 
 ```bash
-curl https://api.routero.ai/v1/chat/completions \
+curl {{ site.api_base_url }}/v1/chat/completions \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -85,7 +85,7 @@ print(response.choices[0].message.content)
 如果你的客户端使用 Anthropic 的 Messages API，可直接调用 Anthropic 原生端点，无需转换：
 
 ```
-POST https://api.routero.ai/anthropic/v1/messages
+POST {{ site.api_base_url }}/anthropic/v1/messages
 ```
 
 模型字符串相同，虚拟密钥相同（以 `x-api-key` 或 `Authorization: Bearer` 发送）。

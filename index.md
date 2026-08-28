@@ -65,7 +65,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-...YOUR_KEY...",          # the virtual key from Step 2
-    base_url="https://api.routero.ai/v1",
+    base_url="{{ site.api_base_url }}/v1",
 )
 
 response = client.chat.completions.create(
@@ -76,7 +76,7 @@ print(response.choices[0].message.content)
 ```
 
 ```bash
-curl https://api.routero.ai/v1/chat/completions \
+curl {{ site.api_base_url }}/v1/chat/completions \
   -H "Authorization: Bearer sk-...YOUR_KEY..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -85,7 +85,7 @@ curl https://api.routero.ai/v1/chat/completions \
   }'
 ```
 
-The request shows up in your [platform dashboard](https://platform.routero.ai) usage and spend views. See [Inference APIs]({% link inference-apis.md %}) for the other endpoints (embeddings, images, models).
+The request shows up in your [platform dashboard]({{ site.platform_url }}) usage and spend views. See [Inference APIs]({% link inference-apis.md %}) for the other endpoints (embeddings, images, models).
 
 ---
 

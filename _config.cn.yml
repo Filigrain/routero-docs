@@ -12,6 +12,11 @@
 
 url: "https://docs.routero.dcsmartvision.com"
 
+# CN tenants' keys exist only on the CN deployment — every API example and
+# dashboard link in content must point at the dcsmartvision hosts here.
+api_base_url: "https://api.routero.dcsmartvision.com"
+platform_url: "https://platform.routero.dcsmartvision.com"
+
 # Point outbound nav at China-reachable hosts (the .ai marketing/dashboard are
 # served from overseas and are unreliable from mainland China).
 nav_external_links:

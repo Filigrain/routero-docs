@@ -12,14 +12,14 @@ description: "通过 POST /v1/embeddings 生成向量嵌入——OpenAI 兼容�
 
 从文本生成向量嵌入，用于语义搜索、相似度匹配、聚类与检索增强生成（RAG）。
 
-**端点：** `POST https://api.routero.ai/v1/embeddings`
+**端点：** `POST {{ site.api_base_url }}/v1/embeddings`
 
 ---
 
 ## 请求
 
 ```bash
-curl https://api.routero.ai/v1/embeddings \
+curl {{ site.api_base_url }}/v1/embeddings \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{

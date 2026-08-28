@@ -11,8 +11,8 @@ description: "Get connected to Routero — call the API directly, or connect Cur
 
 Get connected to Routero. The gateway is fully **OpenAI-compatible** (and also speaks the Anthropic Messages API), so connecting is mostly a matter of pointing your tools at the right base URL with a virtual key.
 
-- **OpenAI base URL:** `https://api.routero.ai/v1`
-- **Anthropic base URL:** `https://api.routero.ai`
+- **OpenAI base URL:** `{{ site.api_base_url }}/v1`
+- **Anthropic base URL:** `{{ site.api_base_url }}`
 
 ---
 

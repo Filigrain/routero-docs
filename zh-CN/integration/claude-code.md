@@ -23,7 +23,7 @@ Claude Code 使用 **Anthropic Messages API**，并内置三个模型槽位（ha
 
 | 设置项 | 值 |
 |---|---|
-| `ANTHROPIC_BASE_URL` | `https://api.routero.ai` |
+| `ANTHROPIC_BASE_URL` | `{{ site.api_base_url }}` |
 | `ANTHROPIC_AUTH_TOKEN` | 一个 Routero 虚拟密钥（以 `Authorization: Bearer` 发送） |
 | `ANTHROPIC_DEFAULT_HAIKU_MODEL` | 用于轻量 / 后台任务的 Routero 模型 |
 | `ANTHROPIC_DEFAULT_SONNET_MODEL` | 用于主会话的 Routero 模型 |
@@ -40,7 +40,7 @@ Claude Code 使用 **Anthropic Messages API**，并内置三个模型槽位（ha
 ```json
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://api.routero.ai",
+    "ANTHROPIC_BASE_URL": "{{ site.api_base_url }}",
     "ANTHROPIC_AUTH_TOKEN": "YOUR_ROUTERO_KEY",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "openai/gpt-5.5",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "openai/gpt-5.5",
@@ -54,7 +54,7 @@ Claude Code 使用 **Anthropic Messages API**，并内置三个模型槽位（ha
 在 shell（`~/.zshrc`、`~/.bashrc`）中 export 同样的值，然后运行 `claude`：
 
 ```bash
-export ANTHROPIC_BASE_URL="https://api.routero.ai"
+export ANTHROPIC_BASE_URL="{{ site.api_base_url }}"
 export ANTHROPIC_AUTH_TOKEN="YOUR_ROUTERO_KEY"
 export ANTHROPIC_DEFAULT_HAIKU_MODEL="openai/gpt-5.5"
 export ANTHROPIC_DEFAULT_SONNET_MODEL="openai/gpt-5.5"

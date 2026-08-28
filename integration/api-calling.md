@@ -11,7 +11,7 @@ description: "Routero is OpenAI-compatible — change base_url, use your virtual
 
 Routero exposes a fully **OpenAI-compatible** API. Point any OpenAI SDK — or a plain HTTP client — at Routero with two values, and everything else (messages, tools, streaming, vision, structured outputs) works unchanged.
 
-- **Base URL:** `https://api.routero.ai/v1`
+- **Base URL:** `{{ site.api_base_url }}/v1`
 - **Authentication:** `Authorization: Bearer YOUR_ROUTERO_KEY` (a Routero virtual key)
 
 {: .note }
@@ -22,7 +22,7 @@ Create a virtual key in the dashboard under **API Keys**. You can scope a key to
 ## Your first request (curl)
 
 ```bash
-curl https://api.routero.ai/v1/chat/completions \
+curl {{ site.api_base_url }}/v1/chat/completions \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -40,7 +40,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="YOUR_ROUTERO_KEY",
-    base_url="https://api.routero.ai/v1",
+    base_url="{{ site.api_base_url }}/v1",
 )
 
 response = client.chat.completions.create(
@@ -59,7 +59,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI({
   apiKey: "YOUR_ROUTERO_KEY",
-  baseURL: "https://api.routero.ai/v1",
+  baseURL: "{{ site.api_base_url }}/v1",
 });
 
 const response = await client.chat.completions.create({

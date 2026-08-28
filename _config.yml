@@ -43,6 +43,13 @@ nav_external_links:
     url: https://platform.routero.ai
     hide_icon: true
 
+# Cross-deployment endpoints. Content links to these via {{ site.api_base_url }}
+# / {{ site.platform_url }} so each build target emits its own hosts — the
+# China mirror overrides both in _config.cn.yml (docs.routero.dcsmartvision.com
+# serves CN tenants whose keys only exist on the CN deployment).
+api_base_url: "https://api.routero.ai"
+platform_url: "https://platform.routero.ai"
+
 # Search
 search_enabled: true
 search:

@@ -12,7 +12,7 @@ description: "Routero 兼容 OpenAI——改 base_url、用你的虚拟密钥，
 
 Routero 暴露一个完全**兼容 OpenAI** 的 API。把任意 OpenAI SDK——或普通 HTTP 客户端——指向 Routero，只需两个值，其余一切（消息、工具、流式、视觉、结构化输出）都原样可用。
 
-- **Base URL：** `https://api.routero.ai/v1`
+- **Base URL：** `{{ site.api_base_url }}/v1`
 - **鉴权：** `Authorization: Bearer YOUR_ROUTERO_KEY`（一个 Routero 虚拟密钥）
 
 {: .note }
@@ -23,7 +23,7 @@ Routero 暴露一个完全**兼容 OpenAI** 的 API。把任意 OpenAI SDK——
 ## 你的第一个请求（curl）
 
 ```bash
-curl https://api.routero.ai/v1/chat/completions \
+curl {{ site.api_base_url }}/v1/chat/completions \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -41,7 +41,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="YOUR_ROUTERO_KEY",
-    base_url="https://api.routero.ai/v1",
+    base_url="{{ site.api_base_url }}/v1",
 )
 
 response = client.chat.completions.create(
@@ -60,7 +60,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI({
   apiKey: "YOUR_ROUTERO_KEY",
-  baseURL: "https://api.routero.ai/v1",
+  baseURL: "{{ site.api_base_url }}/v1",
 });
 
 const response = await client.chat.completions.create({

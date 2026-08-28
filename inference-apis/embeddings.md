@@ -11,14 +11,14 @@ description: "Create vector embeddings with POST /v1/embeddings — OpenAI-compa
 
 Generate vector embeddings from text for semantic search, similarity matching, clustering, and retrieval-augmented generation.
 
-**Endpoint:** `POST https://api.routero.ai/v1/embeddings`
+**Endpoint:** `POST {{ site.api_base_url }}/v1/embeddings`
 
 ---
 
 ## Request
 
 ```bash
-curl https://api.routero.ai/v1/embeddings \
+curl {{ site.api_base_url }}/v1/embeddings \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{

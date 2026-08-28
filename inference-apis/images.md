@@ -13,15 +13,15 @@ Generate images from a text prompt, or edit an existing image. OpenAI-compatible
 
 **Endpoints:**
 
-- `POST https://api.routero.ai/v1/images/generations` — generate from a prompt
-- `POST https://api.routero.ai/v1/images/edits` — edit an uploaded image
+- `POST {{ site.api_base_url }}/v1/images/generations` — generate from a prompt
+- `POST {{ site.api_base_url }}/v1/images/edits` — edit an uploaded image
 
 ---
 
 ## Generate
 
 ```bash
-curl https://api.routero.ai/v1/images/generations \
+curl {{ site.api_base_url }}/v1/images/generations \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{

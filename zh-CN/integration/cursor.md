@@ -32,7 +32,7 @@ description: "将 Cursor 经由 Routero 路由，为你的 AI 编码助手实现
 
 1. 打开 **Cursor Settings** → **Models** → **OpenAI API Key**。
 2. 将你的 Routero 虚拟密钥粘贴为 API 密钥。
-3. 将 **Base URL** 设置为 `https://api.routero.ai/v1`。
+3. 将 **Base URL** 设置为 `{{ site.api_base_url }}/v1`。
 4. 选择你的模型——任何 Routero 支持的模型字符串均可使用，包括 `openai/gpt-5.5`。
 
 从此刻起，Cursor 将经由 Routero 路由其所有的 LLM 调用。

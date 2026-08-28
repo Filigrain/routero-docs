@@ -11,14 +11,14 @@ description: "List the models your workspace can serve with GET /v1/models."
 
 List the models your workspace is configured to serve. The response follows the OpenAI shape, so OpenAI-compatible tools and coding agents work out of the box.
 
-**Endpoint:** `GET https://api.routero.ai/v1/models`
+**Endpoint:** `GET {{ site.api_base_url }}/v1/models`
 
 ---
 
 ## Request
 
 ```bash
-curl https://api.routero.ai/v1/models \
+curl {{ site.api_base_url }}/v1/models \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY"
 ```
 

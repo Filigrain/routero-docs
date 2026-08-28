@@ -14,15 +14,15 @@ description: "通过 POST /v1/images/generations 与 /v1/images/edits 生成和�
 
 **端点：**
 
-- `POST https://api.routero.ai/v1/images/generations` —— 根据提示词生成
-- `POST https://api.routero.ai/v1/images/edits` —— 编辑已上传的图像
+- `POST {{ site.api_base_url }}/v1/images/generations` —— 根据提示词生成
+- `POST {{ site.api_base_url }}/v1/images/edits` —— 编辑已上传的图像
 
 ---
 
 ## 生成
 
 ```bash
-curl https://api.routero.ai/v1/images/generations \
+curl {{ site.api_base_url }}/v1/images/generations \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{

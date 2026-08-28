@@ -11,7 +11,7 @@ description: "The inference endpoints Routero exposes — chat, embeddings, imag
 
 Routero normalizes the request and response schema across every provider behind a single OpenAI-compatible API. Point any OpenAI SDK — or a plain HTTP client — at one base URL, and use the model string to choose what runs.
 
-- **Base URL:** `https://api.routero.ai/v1`
+- **Base URL:** `{{ site.api_base_url }}/v1`
 - **Authentication:** `Authorization: Bearer YOUR_ROUTERO_KEY`
 
 Every endpoint accepts the standard OpenAI request shape and returns the standard OpenAI response shape; Routero translates to and from each upstream provider.
@@ -28,7 +28,7 @@ Every endpoint accepts the standard OpenAI request shape and returns the standar
 | [`/models`]({% link inference-apis/models.md %}) | GET | List available models |
 
 {: .note }
-For chat, Routero also speaks the Anthropic-native Messages API at `https://api.routero.ai/anthropic/v1/messages`. See [Chat]({% link inference-apis/chat.md %}).
+For chat, Routero also speaks the Anthropic-native Messages API at `{{ site.api_base_url }}/anthropic/v1/messages`. See [Chat]({% link inference-apis/chat.md %}).
 
 ---
 

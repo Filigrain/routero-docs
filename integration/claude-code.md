@@ -22,7 +22,7 @@ Why map the slots? Claude Code assumes Anthropic model names (`claude-sonnet-*`,
 
 | Setting | Value |
 |---|---|
-| `ANTHROPIC_BASE_URL` | `https://api.routero.ai` |
+| `ANTHROPIC_BASE_URL` | `{{ site.api_base_url }}` |
 | `ANTHROPIC_AUTH_TOKEN` | a Routero virtual key (sent as `Authorization: Bearer`) |
 | `ANTHROPIC_DEFAULT_HAIKU_MODEL` | a Routero model for light / background tasks |
 | `ANTHROPIC_DEFAULT_SONNET_MODEL` | a Routero model for the main session |
@@ -39,7 +39,7 @@ Edit `~/.claude/settings.json` and put the values in the `env` block. The config
 ```json
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://api.routero.ai",
+    "ANTHROPIC_BASE_URL": "{{ site.api_base_url }}",
     "ANTHROPIC_AUTH_TOKEN": "YOUR_ROUTERO_KEY",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "openai/gpt-5.5",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "openai/gpt-5.5",
@@ -53,7 +53,7 @@ Edit `~/.claude/settings.json` and put the values in the `env` block. The config
 Export the same values in your shell (`~/.zshrc`, `~/.bashrc`), then run `claude`:
 
 ```bash
-export ANTHROPIC_BASE_URL="https://api.routero.ai"
+export ANTHROPIC_BASE_URL="{{ site.api_base_url }}"
 export ANTHROPIC_AUTH_TOKEN="YOUR_ROUTERO_KEY"
 export ANTHROPIC_DEFAULT_HAIKU_MODEL="openai/gpt-5.5"
 export ANTHROPIC_DEFAULT_SONNET_MODEL="openai/gpt-5.5"

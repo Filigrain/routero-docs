@@ -12,7 +12,7 @@ description: "Routero 暴露的推理端点——聊天、向量、图像与模�
 
 Routero 在单一 OpenAI 兼容 API 之后，对所有供应商的请求与响应 schema 进行归一化。把任意 OpenAI SDK——或普通 HTTP 客户端——指向同一个 base URL，用模型字符串选择运行什么即可。
 
-- **Base URL：** `https://api.routero.ai/v1`
+- **Base URL：** `{{ site.api_base_url }}/v1`
 - **鉴权：** `Authorization: Bearer YOUR_ROUTERO_KEY`
 
 每个端点都接受标准 OpenAI 请求结构并返回标准 OpenAI 响应结构；Routero 负责与各上游供应商之间的双向转换。
@@ -29,7 +29,7 @@ Routero 在单一 OpenAI 兼容 API 之后，对所有供应商的请求与响�
 | [`/models`]({% link zh-CN/inference-apis/models.md %}) | GET | 列出可用模型 |
 
 {: .note }
-对于聊天，Routero 还支持 Anthropic 原生 Messages API，地址为 `https://api.routero.ai/anthropic/v1/messages`。参见[聊天]({% link zh-CN/inference-apis/chat.md %})。
+对于聊天，Routero 还支持 Anthropic 原生 Messages API，地址为 `{{ site.api_base_url }}/anthropic/v1/messages`。参见[聊天]({% link zh-CN/inference-apis/chat.md %})。
 
 ---
 

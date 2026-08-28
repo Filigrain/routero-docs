@@ -12,8 +12,8 @@ description: "接入 Routero——直接调用 API，或连接 Cursor、Claude C
 
 接入 Routero。网关完全**兼容 OpenAI**（同时支持 Anthropic Messages API），因此接入主要是把工具指向正确的 base URL，并附带一个虚拟密钥。
 
-- **OpenAI base URL：** `https://api.routero.ai/v1`
-- **Anthropic base URL：** `https://api.routero.ai`
+- **OpenAI base URL：** `{{ site.api_base_url }}/v1`
+- **Anthropic base URL：** `{{ site.api_base_url }}`
 
 ---
 

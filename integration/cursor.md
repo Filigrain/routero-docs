@@ -31,7 +31,7 @@ In the dashboard, open **API Keys** and create a virtual key to use as Cursor's 
 
 1. Open **Cursor Settings** → **Models** → **OpenAI API Key**.
 2. Paste your Routero virtual key as the API key.
-3. Set the **Base URL** to `https://api.routero.ai/v1`.
+3. Set the **Base URL** to `{{ site.api_base_url }}/v1`.
 4. Choose your models — any model string Routero supports works, including `openai/gpt-5.5`.
 
 Cursor now routes all of its LLM calls through Routero.

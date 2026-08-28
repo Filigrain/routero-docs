@@ -12,14 +12,14 @@ description: "通过 GET /v1/models 列出你的工作区可提供的模型。"
 
 列出你的工作区已配置可提供的模型。响应遵循 OpenAI 结构，因此兼容 OpenAI 的工具与编码 agent 可开箱即用。
 
-**端点：** `GET https://api.routero.ai/v1/models`
+**端点：** `GET {{ site.api_base_url }}/v1/models`
 
 ---
 
 ## 请求
 
 ```bash
-curl https://api.routero.ai/v1/models \
+curl {{ site.api_base_url }}/v1/models \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY"
 ```
 

@@ -11,14 +11,14 @@ description: "Generate text and conversations with POST /v1/chat/completions —
 
 Generate text and multi-turn conversations with the chat-completions endpoint. It is fully OpenAI-compatible — messages, tools, streaming, vision, and structured outputs all work unchanged.
 
-**Endpoint:** `POST https://api.routero.ai/v1/chat/completions`
+**Endpoint:** `POST {{ site.api_base_url }}/v1/chat/completions`
 
 ---
 
 ## Request
 
 ```bash
-curl https://api.routero.ai/v1/chat/completions \
+curl {{ site.api_base_url }}/v1/chat/completions \
   -H "Authorization: Bearer YOUR_ROUTERO_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -84,7 +84,7 @@ Set `stream: true` to receive `chat.completion.chunk` SSE events as tokens gener
 If your client speaks Anthropic's Messages API, call the Anthropic-native endpoint instead of translating:
 
 ```
-POST https://api.routero.ai/anthropic/v1/messages
+POST {{ site.api_base_url }}/anthropic/v1/messages
 ```
 
 Same model strings, same virtual key (send it as `x-api-key` or `Authorization: Bearer`).
