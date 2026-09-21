@@ -75,9 +75,10 @@ jobs:
           aws configure set default.s3.max_concurrent_requests 4
 
       # Retry helper: re-run a command up to 5 times with linear backoff.
-      # Every S3 write below is idempotent (sync skips keys already uploaded;
-      # put-object overwrites the same key), so a retry only sends what a
-      # failed attempt left behind.
+      # Every S3 write below is idempotent, so a retry only sends what a
+      # failed attempt left behind (put-object overwrites the same key; sync
+      # skips keys already uploaded).
+      #
       # Two complementary sync passes so each content type gets its own
       # Cache-Control (s3 sync applies one metadata value per pass):
       #   pass 1 — assets (css/js/images/fonts): browser-cached 1 day
@@ -85,6 +86,15 @@ jobs:
       # The --delete filters are complementary too, so files removed from the
       # repo are pruned from the bucket exactly once across the two passes.
       # CNAME is a GitHub Pages routing hint — never publish it to S3.
+      #
+      # --size-only on the assets pass: every CI run rebuilds _site from
+      # scratch, so ALL local mtimes are newer than the bucket's objects and
+      # sync's default mtime rule would re-upload the full ~15 MiB of assets
+      # on every deploy. Size-only makes each run (and every retry of a failed
+      # run) an incremental delta — decisive when the cross-border route is
+      # degraded to KiB/s. Safe here: binary assets change size whenever their
+      # content changes. The HTML pass keeps the default comparison so an edit
+      # that leaves a page byte-count-identical is still picked up.
       - name: Sync _site to S3
         run: |
           set -euo pipefail
@@ -105,10 +115,10 @@ jobs:
             echo "${desc}: giving up after 5 attempts" >&2
             return 1
           }
-          retry "assets pass" s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
+          retry "assets pass" s3 sync _site/ "s3://${S3_BUCKET}/" --delete --size-only \
             --exclude "CNAME" --exclude "*.html" --exclude "*.json" \
             --cache-control "public, max-age=86400"
-          retry "html pass" s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
+          retry "html pass" s3 sync _site/ "s3/${S3_BUCKET}/" --delete \
             --exclude "*" --include "*.html" --include "*.json" \
             --cache-control "no-cache, must-revalidate"
 
