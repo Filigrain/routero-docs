@@ -22,11 +22,11 @@ Organisation administrators see every request in the organisation; a regular mem
 
 ## Request logs
 
-The list shows one row per request, with **Live Tail** on by default (it refreshes every 15 seconds). Columns cover the time, success/failure status, request and session IDs, model, token count, cost, duration, and the team, internal user, and end user behind the call.
+The list shows one row per request. Columns cover the time, success/failure status, request and session IDs, model, token count, cost, duration, and the team, internal user, and end user behind the call.
 
-![The Logs request list — live-tail table with time, status, model, tokens, cost, and a filter toolbar](/assets/images/logs/logs-request-list.png)
+![The Logs request list — time, status, model, tokens, cost, and a filter toolbar](/assets/images/logs/logs-request-list.png)
 
-Filter the list by **time range** (last 15 minutes to last 7 days, or a custom range), **team**, **status** (success or failure), **model**, **key alias**, **end user**, **error code**, or **request ID**. Toggle **Live Tail** to stream new entries as they arrive.
+Filter the list by **time range** (last 15 minutes to last 7 days, or a custom range), **team**, **status** (success or failure), **model**, **key alias**, **end user**, **error code**, or **request ID**. The list does not refresh on its own — click **Refresh** to load the newest entries.
 
 ![Logs filters — team, status, model, key, end user, error code, and a custom date range](/assets/images/logs/logs-filters.png)
 

@@ -18,7 +18,7 @@ Auto Router is **not** a routing strategy. It runs *before* the strategy you con
 
 ## How it works
 
-Each Auto Router holds a set of **routes**. A route is a target model group plus a description of the kinds of requests it should serve, expressed as a handful of example **utterances**. On every request:
+Each Auto Router holds a set of **routes**. A route is a target model group plus a description of the kinds of requests it should serve, expressed as a handful of example phrases. On every request:
 
 1. Auto Router extracts the text from the request messages.
 2. It matches the text against the routes and selects the best fit.
@@ -26,100 +26,76 @@ Each Auto Router holds a set of **routes**. A route is a target model group plus
 4. The Router proceeds with its normal strategy (least-busy, lowest-cost, …) and [failover]({% link core-gateway/failover.md %}) behaviour.
 5. If no route matches — or anything goes wrong — the request falls back to the router's configured **default model**. Auto Router never blocks a request.
 
-Two matching engines are available, selected per router:
+Two matching modes are available, chosen per router in the dashboard:
 
 | Mode | How it matches | Best for |
 |---|---|---|
-| **Embedding** (default) | Embeds the message and each route's utterances; picks the route with the highest cosine similarity above its threshold | High volume, low overhead, deterministic |
-| **Classifier** | Asks a small LLM to classify the message into one of the routes | Subtle intent where keyword/embedding similarity is ambiguous |
+| **Performance** *(default)* | Compares the message against each route's phrases semantically and picks the best fit above its threshold. Adds roughly 10 ms per request. | High volume, low overhead, deterministic |
+| **Advanced** | Asks a small LLM to classify the message into one of the routes. Handles subtler intent, at the cost of ~200–500 ms per request. | Keyword or similarity matching is ambiguous |
 
-Both engines run entirely inside your Routero deployment using an **internal service account** — the embedding and classification calls loop back through the gateway's own `/embeddings` and `/chat/completions` endpoints. They do **not** consume your virtual-key budget and do **not** call external providers at your expense.
+Both modes run entirely inside your Routero deployment on an **internal service account** — the matching calls loop back through the gateway itself. They do **not** consume your virtual-key budget and do **not** call external providers at your expense.
 
 {: .note }
-Auto Router is static and configuration-driven — it does **not** learn or adapt over time. The routing decision is fully determined by your route definitions, the message, and the embedding/classifier model. To change behaviour, edit the routes.
+Auto Router is static and configuration-driven — it does **not** learn or adapt over time. The routing decision is fully determined by your route definitions, the message, and the matching mode. To change behaviour, edit the routes.
 
 ---
 
 ## Defining routes
 
-A route has four parts:
+The route builder asks for four things per route:
 
 | Field | Description |
 |---|---|
-| `name` | The target model **group** to route to (must match a configured model group). Must be unique within the router. |
-| `description` | A short human-readable summary of what the route handles. Used by the classifier mode. |
-| `utterances` | Example phrases that characterise the route. The embedding engine compares the incoming message against these. Up to 50 per route, 500 per router. |
-| `score_threshold` | Optional. Similarity score (0–1) a route must exceed to win in embedding mode. Default `0.2`. |
+| **Model** | The target model **group** the route hands off to, picked from your configured groups. Each group can be the target of one route per router. |
+| **Description** | A short human-readable summary of what the route handles. Used by the Advanced mode. |
+| **Topics & examples** | Phrases that characterise the route — type one and press Enter to add it. The Performance mode compares the incoming message against these. Short descriptive phrases ("physics questions", "code analysis") often work better than full example prompts. Up to 50 per route, 500 per router. |
+| **Score threshold** | Optional (0–1). How similar the message must be for the route to win in Performance mode. Default `0.2`. |
 
 Example route table for a triage router:
 
-| Route (model group) | Description | Example utterances |
+| Route (model group) | Description | Example phrases |
 |---|---|---|
 | `reasoning` | Complex reasoning, maths, analysis | *"prove this theorem", "debug this algorithm", "analyse the trade-offs"* |
 | `coding` | Code generation and explanation | *"write a python function", "refactor this class", "explain this stack trace"* |
 | `general` (default) | Everyday questions and chat | *everything else* |
 
-![The route builder — model, description, utterances, score threshold, and a live JSON preview](/assets/images/auto-router/auto-router-route-builder.png)
+![The route builder — model, description, topics, score threshold, and an optional JSON preview](/assets/images/auto-router/auto-router-route-builder.png)
+
+The form validates as you go — duplicate targets, out-of-range thresholds, and phrase-count limits are flagged before you can save — and an optional **JSON preview** shows exactly what will be stored.
 
 ---
 
 ## Creating an Auto Router
 
-Auto Routers are created as **virtual deployments** from the dashboard or the model-management API. The simplest path is the dashboard: **Models & Endpoints → Add → Auto Router**.
+Open **Models & Endpoints → Add → Auto Router**. The drawer takes:
+
+- **Organization** — the organisation the router belongs to.
+- **Auto Router Name** — the name callers will use in their requests (see below).
+- **Default Model** — the model group used when no route matches.
+- **Routing Mode** — Performance or Advanced.
+- **Routes** — built with the route builder above; at least one, each with a target model, a description, and at least one example phrase.
 
 ![The Add menu on the Models & Endpoints page, with the Auto Router option](/assets/images/auto-router/add-auto-router-entry.png)
 
-The fields the gateway stores:
-
-```yaml
-# Conceptual — created via the dashboard "Add Auto Router" flow or the model API,
-# not written directly into your main config file.
-- model_name: triage
-  litellm_params:
-    model: auto_router/triage
-    auto_router_config: |
-      {
-        "routes": [
-          { "name": "reasoning", "description": "Complex reasoning, maths, analysis",
-            "utterances": ["prove this theorem", "analyse the trade-offs"],
-            "score_threshold": 0.3 },
-          { "name": "coding", "description": "Code generation and explanation",
-            "utterances": ["write a python function", "refactor this class"] }
-        ]
-      }
-    auto_router_default_model: general
-    auto_router_routing_mode: embedding      # or "classifier"
-    # auto_router_classifier_model: internal-gpt-4o-mini   # required only in classifier mode
-```
-
-Required fields:
-
-- `model` — must start with `auto_router/`. The suffix becomes the router's name.
-- `auto_router_config` — a JSON string with the `routes` array.
-- `auto_router_default_model` — the model group used when no route matches or the engine errors.
-
-Optional fields:
-
-- `auto_router_routing_mode` — `embedding` (default) or `classifier`.
-- `auto_router_classifier_model` — the model used for classification (required in classifier mode; ignored otherwise).
-- `auto_router_embedding_model` — override the embedding model used in embedding mode.
-
-The dashboard form validates uniqueness, thresholds, and utterance limits for you, and shows a live JSON preview of the config.
-
 ![The Add Auto Router drawer — name, default model, routing mode, and the route builder](/assets/images/auto-router/add-auto-router-drawer.png)
+
+The router then appears on the Models & Endpoints page tagged **Auto Router**, and the same fields are editable later from its detail view.
 
 ---
 
 ## Calling an Auto Router
 
-From the caller's perspective, an Auto Router is just another model name. Point your existing request at it:
+From the caller's perspective, an Auto Router is just another model name: the name you gave it when creating it, exactly as it appears in the dashboard's model list. Point your existing request at it:
 
 ```python
 response = client.chat.completions.create(
-    model="auto_router/triage",          # the Auto Router picks the real model group
+    model="triage",                      # the router's own name — it picks the real model group
     messages=[{"role": "user", "content": "Prove that the sum of two evens is even."}],
 )
 ```
+
+{: .warning }
+**Call the router by its plain name (`triage`), never with the `auto_router/` prefix.** The prefix is an internal identifier the gateway stores behind the name for its own bookkeeping — it is not a callable model. A request for `auto_router/triage` matches no model, and the gateway then reads `auto_router` as an unknown provider and rejects the call with an **Unmapped LLM provider** error.
 
 The gateway selects `reasoning` for that message, hands off to the Router for deployment selection, and returns the response. The response carries headers showing which deployment ultimately served the call:
 
@@ -137,25 +113,20 @@ Auto Router inspects message **content**, so it is skipped for requests without 
 
 Each Auto Router is **org-scoped**: a router belongs to one organisation, and its routes are resolved only for keys in that organisation. When you have per-organisation model groups, give each org its own Auto Router referencing its own groups.
 
-The internal embedding and classifier models default to region-appropriate values so a China-region workspace uses domestic models out of the box:
+The internal models that power matching are region-appropriate, so a China-region workspace uses domestic models out of the box:
 
-| Region | Default embedding model | Default classifier model |
+| Region | Performance-mode model | Advanced-mode model |
 |---|---|---|
 | China (`cn-north-1`) | `internal-text-embedding-v4` | `internal-qwen-plus` |
 | All other regions | `internal-text-embedding-3-small` | `internal-gpt-4o-mini` |
 
-Override either by setting `auto_router_embedding_model` / `auto_router_classifier_model` on the router.
+These run on the internal service account — they are not part of your model list and never bill your keys.
 
 ---
 
-## Dependencies and enablement
+## Availability
 
-| Mode | Requirement |
-|---|---|
-| **Embedding** | The `semantic-router` Python package. The gateway raises a clear install instruction if a router in embedding mode is created without it. |
-| **Classifier** | No extra dependencies — uses the standard chat-completions path. |
-
-Both modes need the internal embedding and classifier models present in your model list (they are tagged `usage: auto_router` in the default configuration) and a seeded internal service account. These are part of a standard Routero deployment; no Redis, vector database, or GPU is required for Auto Router itself.
+Everything Auto Router needs is part of a standard Routero deployment. Both matching modes and their internal models are included and run on the platform — there is nothing to install or provision on your side, and no Redis, vector database, or GPU is required.
 
 ---
 

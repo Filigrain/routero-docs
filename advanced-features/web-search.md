@@ -42,6 +42,23 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → Knowledg
 
 ---
 
+## Which models search natively
+
+Provider-side search is a property of the **individual model**, not of the vendor as a whole — at request time the gateway checks the requested model against its model catalogue, and a model without the capability falls back to the Routero engine (or skips search in native-only mode). Model families that currently include search-capable models:
+
+| Provider | Families |
+|---|---|
+| OpenAI | GPT‑4.1, the GPT‑5 family, o3 / o4‑mini, and the dedicated `*-search` variants |
+| Anthropic | Claude |
+| Google | Gemini |
+| xAI | Grok |
+| Alibaba DashScope | Qwen |
+| Zhipu AI / Z.ai | GLM |
+
+Not every model in these families necessarily has built-in search, and the catalogue evolves as providers release models — you don't have to track it yourself. The **Add Web Search** form shows how many of your deployed models have provider-side search and lists them by name, so you know what the fallback mode would actually do. On the China deployment there is no gateway engine, so only models with built-in search are searched — see [Region availability](#region-availability).
+
+---
+
 ## Search depth and domain filters
 
 Two settings shape provider-side search:
@@ -106,6 +123,7 @@ On the **China deployment**, the Routero search engine is not offered; web searc
 
 - **Provider-side search** is billed by the provider per query, at the depth you configured; the charge appears in your normal spend views.
 - **The Routero engine** carries no per-query fee — its cost shows up as the additional prompt tokens of the injected results block (bounded at five results) and a little added latency.
+- **What a successful search looks like in the logs.** In the request's detail drawer, the metadata shows which web search tool ran (`web_search_id`) and which path served it (`web_search_mode`: `native` for provider-side search, `third_party` for the Routero engine). Engine-path requests also record `web_search_results_injected` — the number of results added — and the injected reference block is visible in the logged request messages; native-path requests return the provider's own citations in the response.
 - Every request that skips searching records why (no query, no results, model without native search, backend error) in the request's metadata, so you can tell "searched and found nothing" apart from "never searched" in the logs.
 
 ---

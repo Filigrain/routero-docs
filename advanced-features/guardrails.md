@@ -83,7 +83,7 @@ Detects and anonymises personally identifiable information using [Microsoft Pres
 
 **What it scans:** pre-call, every message's text — including text blocks inside multimodal content and tool-call arguments; post-call, the model's response. Masked placeholders are what the model and the provider ever see; the original PII never leaves your gateway.
 
-**Dependencies:** `presidio-analyzer`, `presidio-anonymizer`, plus the spaCy language model for the chosen language — all included in the platform. Presidio runs locally inside the gateway — PII never reaches an external moderation vendor.
+**Dependencies:** none for you. The Presidio packages and the spaCy language models run inside the **Routero runtime**, pre-installed on the platform — nothing for you, your applications, or your end clients to install. Presidio runs locally inside the gateway — PII never reaches an external moderation vendor.
 
 ---
 
@@ -98,7 +98,7 @@ Detects leaked credentials in prompts using [Yelp detect-secrets](https://github
 
 The 21 built-in detector short-names: `aws`, `artifactory`, `azure`, `basic_auth`, `base64_entropy`, `cloudant`, `discord`, `github`, `hex_entropy`, `ibm_cos`, `ibm_iam`, `jwt`, `mailchimp`, `npm`, `private_key`, `sendgrid`, `slack`, `softlayer`, `square`, `stripe`, `twilio`.
 
-**Dependencies:** `detect-secrets`.
+**Dependencies:** none for you — the `detect-secrets` package ships inside the Routero runtime.
 
 ---
 
@@ -167,14 +167,14 @@ Every guardrail outcome is recorded as it happens — blocks, masks, and engine 
 
 ## Dependencies and enablement
 
-| Engine | Optional deps | Runs |
+| Engine | Runs inside the Routero runtime | Runs |
 |---|---|---|
-| Content Filter | — | pre & post |
-| Tool Permission | — | pre |
-| Secret Detection | `detect-secrets` | pre |
+| Content Filter | nothing beyond the gateway itself | pre & post |
+| Tool Permission | nothing beyond the gateway itself | pre |
+| Secret Detection | the `detect-secrets` package | pre |
 | Presidio PII | `presidio-analyzer`, `presidio-anonymizer` + spaCy model (`en`/`zh`) | pre & post (incl. streaming) |
 
-Content Filter and Tool Permission work out of the box. The Presidio and Secret Detection engines require their Python packages — on the hosted platform they are pre-installed, including both language models for PII detection. The gateway validates a PII engine's language at creation time and rejects the configuration with a clear message if the required model is missing.
+Every engine runs inside the **Routero runtime** — the packages listed above are part of the platform and pre-installed on the hosted deployment, including both spaCy language models for PII detection. There is nothing for you, your applications, or your end clients to install; guardrails are configured in the dashboard and enforced at the gateway. At creation time the gateway validates a PII engine's language and rejects the configuration with a clear message if the required model is missing.
 
 ---
 

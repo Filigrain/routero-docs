@@ -84,7 +84,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → Knowledg
 
 **扫描范围：** 调用前，检查每条消息的文本——包括多模态内容中的文本块与工具调用参数；调用后，检查模型响应。模型与供应商看到的只会是脱敏后的占位符；原始 PII 绝不会离开你的网关。
 
-**依赖项：** `presidio-analyzer`、`presidio-anonymizer`，以及所选语言的 spaCy 模型——平台均已内置。Presidio 在网关内本地运行——PII 绝不会离开你的基础设施去往外部审核厂商。
+**依赖项：** 你无需安装任何东西。Presidio 相关包与 spaCy 语言模型都运行在 **Routero 运行时**内，已预装在平台中——你、你的应用、你的终端客户端都不需要安装。Presidio 在网关内本地运行——PII 绝不会离开你的基础设施去往外部审核厂商。
 
 ---
 
@@ -99,7 +99,7 @@ GuardrailHook → PromptHook → TokenSavingPlanHook → MemoryHook → Knowledg
 
 21 个内置检测器短名：`aws`、`artifactory`、`azure`、`basic_auth`、`base64_entropy`、`cloudant`、`discord`、`github`、`hex_entropy`、`ibm_cos`、`ibm_iam`、`jwt`、`mailchimp`、`npm`、`private_key`、`sendgrid`、`slack`、`softlayer`、`square`、`stripe`、`twilio`。
 
-**依赖项：** `detect-secrets`。
+**依赖项：** 你无需安装任何东西——`detect-secrets` 包已内置于 Routero 运行时。
 
 ---
 
@@ -168,14 +168,14 @@ response = client.chat.completions.create(
 
 ## 依赖与启用
 
-| 引擎 | 可选依赖 | 运行时机 |
+| 引擎 | Routero 运行时内含 | 运行时机 |
 |---|---|---|
-| Content Filter | — | pre & post |
-| Tool Permission | — | pre |
-| Secret Detection | `detect-secrets` | pre |
+| Content Filter | 网关自带，无需额外组件 | pre & post |
+| Tool Permission | 网关自带，无需额外组件 | pre |
+| Secret Detection | `detect-secrets` 包 | pre |
 | Presidio PII | `presidio-analyzer`、`presidio-anonymizer` + spaCy 语言模型（`en`/`zh`） | pre & post（含流式） |
 
-Content Filter 与 Tool Permission 开箱即用。Presidio 与 Secret Detection 引擎需要各自的 Python 包——在托管平台上均已预装，包括 PII 检测的两种语言模型。创建 PII 引擎时，网关会校验其语言，若缺少所需模型会以明确消息拒绝该配置。
+所有引擎都运行在 **Routero 运行时**内——上表所列的包属于平台的一部分，在托管部署中均已预装（包括 PII 检测的两种 spaCy 语言模型）。你、你的应用、你的终端客户端都无需安装任何东西；护栏在仪表板中配置，在网关处强制执行。创建 PII 引擎时，网关会校验其语言，若缺少所需模型会以明确消息拒绝该配置。
 
 ---
 
