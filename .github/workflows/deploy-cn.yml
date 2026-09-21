@@ -62,7 +62,23 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           audience: sts.amazonaws.com.cn
 
-      # Two complementary passes so each content type gets its own
+      # The runner uploads cross-border to s3.cn-north-1.amazonaws.com.cn and
+      # bad transpacific routes regularly kill streams (SSL EOF, PutObject
+      # RequestTimeout, throughput down to KiB/s). Two mitigations:
+      #   - adaptive retry mode with a raised attempt budget, so single
+      #     dropped PUTs recover inside the CLI instead of failing the job;
+      #   - fewer concurrent streams, which is gentler on a lossy link.
+      - name: Tune S3 transfer settings for a lossy cross-border link
+        run: |
+          aws configure set default.retry_mode adaptive
+          aws configure set default.max_attempts 8
+          aws configure set default.s3.max_concurrent_requests 4
+
+      # Retry helper: re-run a command up to 5 times with linear backoff.
+      # Every S3 write below is idempotent (sync skips keys already uploaded;
+      # put-object overwrites the same key), so a retry only sends what a
+      # failed attempt left behind.
+      # Two complementary sync passes so each content type gets its own
       # Cache-Control (s3 sync applies one metadata value per pass):
       #   pass 1 — assets (css/js/images/fonts): browser-cached 1 day
       #   pass 2 — HTML + search-data JSON: always revalidate
@@ -72,10 +88,27 @@ jobs:
       - name: Sync _site to S3
         run: |
           set -euo pipefail
-          aws s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
+          retry() {
+            desc="$1"; shift
+            for attempt in 1 2 3 4 5; do
+              echo "::group::${desc} (attempt ${attempt})"
+              if aws "$@"; then
+                echo "::endgroup::"
+                echo "${desc}: succeeded on attempt ${attempt}"
+                return 0
+              fi
+              echo "::endgroup::"
+              echo "${desc}: attempt ${attempt} failed" >&2
+              [ "${attempt}" -eq 5 ] && break
+              sleep $((attempt * 30))
+            done
+            echo "${desc}: giving up after 5 attempts" >&2
+            return 1
+          }
+          retry "assets pass" s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
             --exclude "CNAME" --exclude "*.html" --exclude "*.json" \
             --cache-control "public, max-age=86400"
-          aws s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
+          retry "html pass" s3 sync _site/ "s3://${S3_BUCKET}/" --delete \
             --exclude "*" --include "*.html" --include "*.json" \
             --cache-control "no-cache, must-revalidate"
 
@@ -88,12 +121,20 @@ jobs:
       - name: Publish directory-index aliases (zh-CN)
         run: |
           set -euo pipefail
+          retry() {
+            for attempt in 1 2 3 4 5; do
+              if "$@" > /dev/null; then return 0; fi
+              [ "${attempt}" -eq 5 ] && return 1
+              sleep $((attempt * 10))
+            done
+          }
           for KEY in "zh-CN" "zh-CN/"; do
-            aws s3api put-object \
+            retry aws s3api put-object \
               --bucket "${S3_BUCKET}" --key "${KEY}" \
               --body _site/zh-CN/index.html \
               --content-type "text/html" \
-              --cache-control "no-cache, must-revalidate" > /dev/null
+              --cache-control "no-cache, must-revalidate" \
+              || { echo "alias key '${KEY}' failed after retries" >&2; exit 1; }
           done
           echo "published /zh-CN and /zh-CN/ alias keys"
 
@@ -101,7 +142,14 @@ jobs:
       # a few minutes; waiting here would add minutes to every docs deploy.
       - name: Invalidate CloudFront edge cache
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "${DISTRIBUTION_ID}" \
-            --paths "/*" \
-            --query "Invalidation.Status" --output text
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if aws cloudfront create-invalidation \
+              --distribution-id "${DISTRIBUTION_ID}" \
+              --paths "/*" \
+              --query "Invalidation.Status" --output text; then
+              exit 0
+            fi
+            [ "${attempt}" -eq 5 ] && { echo "invalidation failed after retries" >&2; exit 1; }
+            sleep $((attempt * 10))
+          done
