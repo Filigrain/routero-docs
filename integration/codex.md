@@ -22,11 +22,11 @@ In `~/.codex/config.toml`:
 ```toml
 model_provider = "routero"
 model = "openai/gpt-5.5"
-preferred_auth_method = "apikey"
 
 [model_providers.routero]
 name = "routero"
 base_url = "{{ site.api_base_url }}/v1"
+env_key = "OPENAI_API_KEY"
 wire_api = "responses"
 ```
 
@@ -40,13 +40,16 @@ export OPENAI_API_KEY="YOUR_ROUTERO_KEY"
 |---|---|
 | `model_provider` | the name of the `[model_providers.*]` block below (`routero`) |
 | `model` | any model Routero serves (e.g. `openai/gpt-5.5`) |
-| `preferred_auth_method` | `apikey` — authenticate with an API key, not ChatGPT login |
+| `env_key` | `OPENAI_API_KEY` — the env var Codex reads your Routero virtual key from and sends as `Authorization: Bearer` |
 | `base_url` | `{{ site.api_base_url }}/v1` |
 | `wire_api` | `responses` (recommended) or `chat` |
-| `OPENAI_API_KEY` | your Routero virtual key (sent as `Authorization: Bearer`) |
+| `OPENAI_API_KEY` | your Routero virtual key, not an OpenAI key |
 
 {: .note }
-`preferred_auth_method = "apikey"` tells Codex to authenticate with `OPENAI_API_KEY` instead of ChatGPT sign-in. Set that env var to your **Routero virtual key**, not an OpenAI key.
+For a custom provider, Codex sends the key named by `env_key`. Without `env_key`, the key is never attached and Routero returns `401 Unauthorized: No api key passed in`.
+
+{: .note }
+`preferred_auth_method = "apikey"`, sometimes cited for API-key auth, is **not recognized** by recent Codex versions (verified against Codex CLI v0.157.1, which warns it is an unknown config key and ignores it). On older releases it may still be accepted; it is harmless to remove.
 
 ---
 

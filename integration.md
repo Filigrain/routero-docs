@@ -4,7 +4,7 @@ page_id: integration
 title: Integration
 nav_order: 10
 has_children: true
-description: "Get connected to Routero — call the API directly, or connect Cursor, Claude Code, and Codex."
+description: "Get connected to Routero — call the API directly, or connect Cursor, Claude Code, Codex, ZCode, Kimi Code, and Trae."
 ---
 
 # Integration
@@ -22,6 +22,9 @@ Get connected to Routero. The gateway is fully **OpenAI-compatible** (and also s
 - [Cursor]({% link integration/cursor.md %}) — route the Cursor editor through Routero.
 - [Claude Code]({% link integration/claude-code.md %}) — route the Claude Code CLI through Routero (base URL + model-slot mapping).
 - [Codex]({% link integration/codex.md %}) — route the Codex CLI through Routero via a custom model provider.
+- [ZCode]({% link integration/zcode.md %}) — route the ZCode coding agent through Routero as an OpenAI-compatible provider.
+- [Kimi Code]({% link integration/kimi-code.md %}) — route Kimi Code through Routero as a custom OpenAI-protocol provider.
+- [Trae]({% link integration/trae.md %}) — route the Trae IDE through Routero via a custom OpenAI-compatible model.
 
 {: .note }
 Other OpenAI-compatible agents — Cline, Continue, Aider, GitHub Copilot, Windsurf, and the rest — work the same way: point the tool's base URL at Routero and use a virtual key. See [Calling the API]({% link integration/api-calling.md %}).

@@ -23,11 +23,11 @@ Codex 支持两种线路格式——`chat`（`/chat/completions`）与 `response
 ```toml
 model_provider = "routero"
 model = "openai/gpt-5.5"
-preferred_auth_method = "apikey"
 
 [model_providers.routero]
 name = "routero"
 base_url = "{{ site.api_base_url }}/v1"
+env_key = "OPENAI_API_KEY"
 wire_api = "responses"
 ```
 
@@ -41,13 +41,16 @@ export OPENAI_API_KEY="YOUR_ROUTERO_KEY"
 |---|---|
 | `model_provider` | 下方 `[model_providers.*]` 块的名称（`routero`） |
 | `model` | Routero 提供的任意模型（例如 `openai/gpt-5.5`） |
-| `preferred_auth_method` | `apikey`——用 API 密钥鉴权，而非 ChatGPT 登录 |
+| `env_key` | `OPENAI_API_KEY`——Codex 从该环境变量读取你的 Routero 虚拟密钥，并以 `Authorization: Bearer` 发送 |
 | `base_url` | `{{ site.api_base_url }}/v1` |
 | `wire_api` | `responses`（推荐）或 `chat` |
-| `OPENAI_API_KEY` | 你的 Routero 虚拟密钥（以 `Authorization: Bearer` 发送） |
+| `OPENAI_API_KEY` | 你的 Routero 虚拟密钥，而不是 OpenAI 密钥 |
 
 {: .note }
-`preferred_auth_method = "apikey"` 告诉 Codex 用 `OPENAI_API_KEY` 鉴权，而不是 ChatGPT 登录。请把该环境变量设为你的 **Routero 虚拟密钥**，而不是 OpenAI 密钥。
+对于自定义 provider，Codex 发送的是 `env_key` 所指名的密钥。缺少 `env_key` 时，密钥不会被附加，Routero 将返回 `401 Unauthorized: No api key passed in`。
+
+{: .note }
+有时被提及用于 API 密钥鉴权的 `preferred_auth_method = "apikey"`，在较新的 Codex 版本中**不被识别**（已针对 Codex CLI v0.157.1 验证：启动时警告该配置项未知并被忽略）。更早的版本可能仍接受它；删除它没有影响。
 
 ---
 
