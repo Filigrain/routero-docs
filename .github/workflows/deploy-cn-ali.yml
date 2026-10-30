@@ -2,13 +2,14 @@ name: Deploy docs to China (Alibaba Cloud OSS + CDN)
 
 # China docs on Alibaba Cloud: https://docs.routero.dcsmartvision.com
 #
-# Same build as deploy-cn.yml (the China overlay, _config.cn.yml), published to
-# the private OSS bucket behind the Alibaba Cloud CDN (scripts/publish-oss.sh),
-# then the CDN cache is refreshed. The bucket, CDN domain and its rules are in
+# The Jekyll build with the China overlay (_config.cn.yml), published to the
+# private OSS bucket behind the Alibaba Cloud CDN (scripts/publish-oss.sh), then
+# the CDN cache is refreshed. Independent of the GitHub Pages deploy (deploy.yml
+# → docs.routero.ai). The bucket, CDN domain and its rules are in
 # llmrouter-terraform (tf-production-cn-ali/docs-cdn.tf); the certificate is the
 # *.routero.dcsmartvision.com one in Alibaba Cloud CAS, so no renewal job here.
-# deploy-cn.yml and cert-renewal-cn.yml (AWS China CloudFront) stay until the
-# docs hostname points at the CDN.
+# It replaced the AWS China S3 + CloudFront deploy and its Let's Encrypt
+# renewal (deploy-cn.yml, cert-renewal-cn.yml) on 2026-10-30.
 #
 # Auth: GitHub OIDC → the RAM role llmrouter-production-cn-ali-github-actions-docs
 # (llmrouter-terraform scripts/cn-ali-github-oidc.sh), which trusts ONLY

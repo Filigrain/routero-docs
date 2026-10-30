@@ -1,4 +1,4 @@
-# China build overlay — applied ONLY by .github/workflows/deploy-cn.yml via
+# China build overlay — applied ONLY by .github/workflows/deploy-cn-ali.yml via
 #   jekyll build --config _config.yml,_config.cn.yml
 # (the GitHub Pages / overseas deploy never sees this file).
 #
