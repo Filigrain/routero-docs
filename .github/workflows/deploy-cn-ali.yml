@@ -1,0 +1,86 @@
+name: Deploy docs to China (Alibaba Cloud OSS + CDN)
+
+# China docs on Alibaba Cloud: https://docs.routero.dcsmartvision.com
+#
+# Same build as deploy-cn.yml (the China overlay, _config.cn.yml), published to
+# the private OSS bucket behind the Alibaba Cloud CDN (scripts/publish-oss.sh),
+# then the CDN cache is refreshed. The bucket, CDN domain and its rules are in
+# llmrouter-terraform (tf-production-cn-ali/docs-cdn.tf); the certificate is the
+# *.routero.dcsmartvision.com one in Alibaba Cloud CAS, so no renewal job here.
+# deploy-cn.yml and cert-renewal-cn.yml (AWS China CloudFront) stay until the
+# docs hostname points at the CDN.
+#
+# Auth: GitHub OIDC → the RAM role llmrouter-production-cn-ali-github-actions-docs
+# (llmrouter-terraform scripts/cn-ali-github-oidc.sh), which trusts ONLY
+# repo:Filigrain/routero-docs:environment:production-cn-ali and may write the
+# docs bucket and refresh this CDN domain. No static keys.
+#
+# Environment production-cn-ali variables: ALICLOUD_ROLE_ARN,
+# ALICLOUD_OIDC_PROVIDER_ARN, DOCS_OSS_BUCKET.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC token for the RAM role
+
+concurrency:
+  group: deploy-cn-ali
+  cancel-in-progress: false
+
+env:
+  DOCS_URL: https://docs.routero.dcsmartvision.com/
+  ALIYUN_CLI_VERSION: "3.5.1"
+
+jobs:
+  deploy:
+    name: Build & publish (Alibaba Cloud)
+    runs-on: ubuntu-latest
+    environment: production-cn-ali
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Build with Jekyll (China overlay)
+        run: bundle exec jekyll build --config _config.yml,_config.cn.yml
+        env:
+          JEKYLL_ENV: production
+
+      - name: Install aliyun CLI
+        run: |
+          curl -fsSL "https://github.com/aliyun/aliyun-cli/releases/download/v${ALIYUN_CLI_VERSION}/aliyun-cli-linux-${ALIYUN_CLI_VERSION}-amd64.tgz" \
+            | sudo tar -xz -C /usr/local/bin aliyun
+
+      - name: Assume the RAM role (OIDC)
+        id: sts
+        uses: aliyun/configure-aliyun-credentials-action@v1
+        with:
+          role-to-assume: ${{ vars.ALICLOUD_ROLE_ARN }}
+          oidc-provider-arn: ${{ vars.ALICLOUD_OIDC_PROVIDER_ARN }}
+          audience: sts.aliyuncs.com
+          role-session-name: gha-${{ github.run_id }}
+
+      - name: Configure the CLI
+        env:
+          AK: ${{ steps.sts.outputs.aliyun-access-key-id }}
+          SK: ${{ steps.sts.outputs.aliyun-access-key-secret }}
+          TK: ${{ steps.sts.outputs.aliyun-security-token }}
+        run: |
+          echo "::add-mask::$AK"; echo "::add-mask::$SK"; echo "::add-mask::$TK"
+          aliyun configure set --profile ci --mode StsToken --region cn-beijing \
+            --access-key-id "$AK" --access-key-secret "$SK" --sts-token "$TK" >/dev/null
+
+      - name: Upload to OSS
+        run: scripts/publish-oss.sh _site "${{ vars.DOCS_OSS_BUCKET }}"
+
+      - name: Refresh the CDN cache
+        run: aliyun --profile ci cdn RefreshObjectCaches --ObjectPath "$DOCS_URL" --ObjectType Directory
