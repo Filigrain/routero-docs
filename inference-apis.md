@@ -4,7 +4,7 @@ page_id: inference-apis
 title: Inference APIs
 nav_order: 11
 has_children: true
-description: "The inference endpoints Routero exposes — chat, embeddings, images, and models — one OpenAI-compatible surface across every provider."
+description: "The inference endpoints Routero exposes — chat, embeddings, images, videos, and models — one OpenAI-compatible surface across every provider."
 ---
 
 # Inference APIs
@@ -24,17 +24,23 @@ Every endpoint accepts the standard OpenAI request shape and returns the standar
 |---|---|---|
 | [`/chat/completions`]({% link inference-apis/chat.md %}) | POST | Generate text and conversations |
 | [`/embeddings`]({% link inference-apis/embeddings.md %}) | POST | Create vector embeddings |
-| [`/images/generations`]({% link inference-apis/images.md %}) | POST | Generate and edit images |
+| [`/images/generations`]({% link inference-apis/images.md %}) | POST | Generate images |
+| [`/images/edits`]({% link inference-apis/images.md %}) | POST | Edit uploaded images |
+| [`/videos`]({% link inference-apis/videos.md %}) | POST | Create a video task |
+| [`/videos/{video_id}`]({% link inference-apis/videos.md %}) | GET | Check video task status |
+| [`/videos/{video_id}/content`]({% link inference-apis/videos.md %}) | GET | Download a generated video |
 | [`/models`]({% link inference-apis/models.md %}) | GET | List available models |
 
 {: .note }
 For chat, Routero also speaks the Anthropic-native Messages API at `{{ site.api_base_url }}/anthropic/v1/messages`. See [Chat]({% link inference-apis/chat.md %}).
 
+Video generation uses an asynchronous task workflow. Follow [Videos]({% link inference-apis/videos.md %}) to create a task, check its status, and download the result. For model-specific request options, see [Provider-specific parameters]({% link integration/api-calling.md %}#provider-specific-parameters).
+
 ---
 
 ## Response headers
 
-Every inference response carries `x-routero-*` headers you can log or display:
+Inference responses can include `x-routero-*` headers you can log or display. Available headers depend on the endpoint and provider:
 
 | Header | Meaning |
 |---|---|

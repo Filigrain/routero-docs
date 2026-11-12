@@ -92,6 +92,38 @@ for chunk in stream:
 
 ---
 
+## Provider-specific parameters
+
+Routero uses OpenAI-compatible request fields for common operations. For options specific to a provider or model, the OpenAI Python SDK offers the `extra_body` request option.
+
+For an image model whose Routero adapter supports `seed`, for example:
+
+```python
+response = client.images.generate(
+    model="YOUR_IMAGE_MODEL",
+    prompt="A watercolour of a city skyline at sunset",
+    extra_body={"seed": 123},
+)
+```
+
+For this JSON image-generation request, the SDK merges these fields into the HTTP request body:
+
+```json
+{
+  "model": "YOUR_IMAGE_MODEL",
+  "prompt": "A watercolour of a city skyline at sunset",
+  "seed": 123
+}
+```
+
+`extra_body` is an SDK request option; using it does not mean the HTTP JSON body must contain a field named `extra_body`. Follow the endpoint's request format when using a plain HTTP client. File-upload endpoints use multipart form data instead of this JSON format.
+
+The selected model and Routero adapter determine which extension fields and values are supported. Add only the options your model needs. Routero capability IDs such as `guardrail_id` configure gateway features, while provider-specific parameters configure model behavior.
+
+See [Images]({% link inference-apis/images.md %}) and [Videos]({% link inference-apis/videos.md %}) for the basic media workflows, and the [OpenAI Python SDK documentation](https://developers.openai.com/api/reference/python) for additional request options.
+
+---
+
 ## AI capabilities on a request
 
 Pass the [AI capability]({% link advanced-features.md %}) IDs (guardrails, prompts, memory, token saving) through the SDK's `extra_body`, or as extra JSON fields in the request body. Routero applies them inside the gateway and strips them before the upstream provider sees the request.
