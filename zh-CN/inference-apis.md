@@ -5,7 +5,7 @@ permalink: /inference-apis.html
 title: 推理 API
 nav_order: 11
 has_children: true
-description: "Routero 暴露的推理端点——聊天、向量、图像与模型——跨供应商的单一 OpenAI 兼容接口。"
+description: "Routero 暴露的推理端点——聊天、向量、图像、视频与模型——跨供应商的单一 OpenAI 兼容接口。"
 ---
 
 # 推理 API
@@ -25,17 +25,23 @@ Routero 在单一 OpenAI 兼容 API 之后，对所有供应商的请求与响�
 |---|---|---|
 | [`/chat/completions`]({% link zh-CN/inference-apis/chat.md %}) | POST | 生成文本与对话 |
 | [`/embeddings`]({% link zh-CN/inference-apis/embeddings.md %}) | POST | 生成向量嵌入 |
-| [`/images/generations`]({% link zh-CN/inference-apis/images.md %}) | POST | 生成与编辑图像 |
+| [`/images/generations`]({% link zh-CN/inference-apis/images.md %}) | POST | 生成图像 |
+| [`/images/edits`]({% link zh-CN/inference-apis/images.md %}) | POST | 编辑上传的图像 |
+| [`/videos`]({% link zh-CN/inference-apis/videos.md %}) | POST | 创建视频任务 |
+| [`/videos/{video_id}`]({% link zh-CN/inference-apis/videos.md %}) | GET | 查询视频任务状态 |
+| [`/videos/{video_id}/content`]({% link zh-CN/inference-apis/videos.md %}) | GET | 下载生成的视频 |
 | [`/models`]({% link zh-CN/inference-apis/models.md %}) | GET | 列出可用模型 |
 
 {: .note }
 对于聊天，Routero 还支持 Anthropic 原生 Messages API，地址为 `{{ site.api_base_url }}/anthropic/v1/messages`。参见[聊天]({% link zh-CN/inference-apis/chat.md %})。
 
+视频生成采用异步任务流程。参见[视频]({% link zh-CN/inference-apis/videos.md %})，了解如何创建任务、查询状态并下载结果。模型专有的请求选项参见[供应商扩展参数]({% link zh-CN/integration/api-calling.md %}#供应商扩展参数)。
+
 ---
 
 ## 响应头
 
-每个推理响应都会带有 `x-routero-*` 响应头，可供记录或展示：
+推理响应中可以包含 `x-routero-*` 响应头，供记录或展示；具体返回哪些响应头取决于端点和供应商：
 
 | 响应头 | 含义 |
 |---|---|

@@ -93,6 +93,38 @@ for chunk in stream:
 
 ---
 
+## 供应商扩展参数
+
+Routero 使用兼容 OpenAI 的请求字段完成通用操作。对于供应商或模型专有的选项，可以使用 OpenAI Python SDK 的 `extra_body` 请求选项。
+
+例如，所选图像模型和 Routero 适配器支持 `seed` 时：
+
+```python
+response = client.images.generate(
+    model="YOUR_IMAGE_MODEL",
+    prompt="日落时分的城市天际线，水彩画风格",
+    extra_body={"seed": 123},
+)
+```
+
+对于这个 JSON 图像生成请求，SDK 会将额外字段合并到 HTTP 请求体中：
+
+```json
+{
+  "model": "YOUR_IMAGE_MODEL",
+  "prompt": "日落时分的城市天际线，水彩画风格",
+  "seed": 123
+}
+```
+
+`extra_body` 是 SDK 的请求选项，使用它不代表 HTTP JSON 请求体必须包含名为 `extra_body` 的字段。使用普通 HTTP 客户端时，请遵循对应端点的请求格式；文件上传端点使用 multipart 表单，不能直接套用这里的 JSON 格式。
+
+可用的扩展字段和取值取决于所选模型与 Routero 适配器，请按模型需要添加。`guardrail_id` 等 Routero 能力 ID 用于配置网关功能，供应商扩展参数则用于配置模型行为。
+
+基础图视频流程参见[图像]({% link zh-CN/inference-apis/images.md %})和[视频]({% link zh-CN/inference-apis/videos.md %})；SDK 的额外请求选项参见 [OpenAI Python SDK 文档](https://developers.openai.com/api/reference/python)。
+
+---
+
 ## 在请求上使用 AI 能力
 
 通过 SDK 的 `extra_body`，或作为请求体中的额外 JSON 字段，传入 [AI 能力]({% link zh-CN/advanced-features.md %}) ID（护栏、提示词、记忆、Token 节省）。Routero 在网关内部应用它们，并在上游供应商看到请求之前将其剥离。
